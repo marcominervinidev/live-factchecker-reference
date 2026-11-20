@@ -1,260 +1,198 @@
-# Agentic coding in this project
+# Agentic coding: a reference guide
 
 **English** · [Deutsch](agentic-coding.de.md)
 
-This document explains how software gets built with AI agents in `live-factchecker-v2`. It is written for people
-who want to know how Marco, as the owner, works with agents. Read in full it takes about eight minutes; the
-headings, bold openings and tables alone carry the core in three. Every statement points to the file that
-implements it, so anything said here can be checked in the repository.
+This guide explains how to build software with AI agents when one human carries the responsibility and the agents
+work in separate roles. It sets out the rules that have proven useful and why they matter. You can carry it over to
+your own project; each part ends with a short note on how this repository does it.
 
-The short version: agents write almost all of the code, the tests and the reviews in this project. They do it in
-separate roles, against decisions a human made beforehand, under checks that run as code. The human decides at two
-points.
+The model in one sentence: agents write code, tests and reviews, the owner decides at two gates, and whatever can be
+checked is checked by code rather than by a model.
 
-## Part 1: Eight principles
+## Part 1: The principles
 
-The remaining parts show how these eight points work day to day. None of them is just a wish in a document; each is
-anchored in a place an agent cannot talk its way past.
-
-| Principle | Where it lives |
+| Rule | Why |
 |---|---|
-| Whoever writes the code never writes its tests, Marco included. | separate roles in [`.claude/agents/`](../.claude/agents/), [`process/rollen.md`](process/rollen.md) |
-| Contracts between modules are read-only for agents. | hook [`contracts.sh`](../.claude/hooks/contracts.sh), skill [`new-contract`](../.claude/skills/new-contract/SKILL.md) |
-| After gate 1, tests, contracts and ticket text are frozen. | one manifest per ticket in [`.claude/frozen/`](../.claude/frozen/README.md), hooks (sha256) and CI (red before green) |
-| Two gates belong to the owner: before the code and before the merge. | [`process/rollen.md`](process/rollen.md), [ADR 0011](adr/0011-rollen-und-bahnen-des-arbeitssystems.md) |
-| A rule a tool can check becomes a check, not prose. | [`lefthook.yml`](../lefthook.yml), scripts under [`tools/`](../tools/) |
-| A task is done only with evidence, never on a claim. | skill [`evidence`](../.claude/skills/evidence/SKILL.md), acceptance report per ticket |
-| One session works on one issue; every implementer task gets a fresh one. | [`CLAUDE.md`](../CLAUDE.md), section *Working* |
-| Nobody weakens, skips or parks a test; a wrong test is reported. | hook [`test-integrity.sh`](../.claude/hooks/test-integrity.sh), [`CLAUDE.md`](../CLAUDE.md) |
+| Whoever writes the code never writes its tests. | A model that tests itself only checks its own reading of the task. |
+| Contracts between modules are read-only for agents. | Otherwise the agent bends the interface to fit its code instead of the reverse. |
+| After approval, tests and contracts are frozen. | A target that can move during the build is not a target. |
+| The owner decides at two gates: before the code and before the merge. | That is where responsibility sits; roles and checks work in between. |
+| What a tool can check becomes a check, not prose. | Written rules get skimmed; checks do not. |
+| Done means proven. | A done report without command output, a report or a screenshot does not count. |
+| One session, one task. | Context from other tasks makes every answer worse. |
+| No test is weakened, skipped or parked. | A wrong test is reported and decided by the owner, never quietly fixed. |
 
-**Why splitting code from tests comes first.** A model that tests its own code mostly tests its own reading of the
-task. So here the test designer writes the red tests, a critic on a stronger model tier attacks them, and only then
-does the implementer start.
+*In this repo:* [`CLAUDE.md`](../CLAUDE.md), roles in [`.claude/agents/`](../.claude/agents/), hooks
+[`contracts.sh`](../.claude/hooks/contracts.sh) and [`test-integrity.sh`](../.claude/hooks/test-integrity.sh),
+frozen states in [`.claude/frozen/`](../.claude/frozen/README.md).
 
-**Why two gates are enough.** Marco does not read every intermediate step. At the start he decides what "done"
-means (tests and contracts); at the end he decides whether the result matches (diff and verdicts). In between,
-hooks, CI and review roles hold the line.
+## Part 2: Roles and gates
 
-## Part 2: Who carries what
+Agents read a lot quickly and stay consistent across many files. But they like to build more than was asked,
+report success early and take a shortcut when a test would otherwise stay red. Separate roles catch exactly that:
+each role has a job and a list of what it never does.
 
-Agents read a lot quickly and stay consistent across many files. They also tend to build more than was asked,
-report success early and take a shortcut when a test would otherwise stay red. The split is aimed right there.
-
-| Owner (Marco) | Agent roles | Checks without a model |
+| Role | Does | Never does |
 |---|---|---|
-| architecture, boundaries, contracts, ADRs | ticket draft from ADR and spec | format, lint, types, dependency boundaries |
-| approving tests and contracts (gate 1) | red tests, acceptance cases, counter-check | checking frozen files by hash |
-| reading diff and verdicts, merging (gate 2) | production code per task | "red before green" on the PR base |
-| deciding every exception | reviews with file and line, never editing | acceptance run, scanners, PR size |
-| model tiers, rules, what gets learned | retro proposals | context budget, due dates, model sync |
+| owner | architecture, contracts, approvals, exceptions | write the tests for their own code |
+| refinement | ticket with acceptance criteria from the decision | code or tests |
+| test designer | red tests and acceptance cases before the code | production code |
+| critic | attacks the tests, on a stronger model | edit tests |
+| implementer | turns the frozen tests green | tests, contracts, push |
+| reviewers | look for shortcuts, boundary and security faults | change code |
+| acceptance judge | judges evidence against the expectation written beforehand | read code; run on the author's model |
 
-Eleven roles are defined, each with what it does and what it never does; the table in the
-[README](../README.md#3-how-the-agents-work-together) lists them all.
+**Gate 1** comes before the code: you approve tests and contracts, and they are frozen. **Gate 2** comes before the
+merge: you read the diff and the verdicts. Everything in between runs without you, but not without control.
 
-## Part 3: From ticket to merge
+One trick keeps the judge honest: among the acceptance cases sits a deliberately wrong one, a canary. If the judge
+passes it, its verdict does not count.
 
-Every change takes the same path, long at the start and short at the end on purpose.
+*In this repo:* [`process/rollen.md`](process/rollen.md), [ADR 0011](adr/0011-rollen-und-bahnen-des-arbeitssystems.md),
+model tiers in [`.claude/models.json`](../.claude/models.json).
 
-1. **Decide.** Marco settles open questions in grilling rounds and records them as ADR and spec
-   ([`docs/adr/`](adr/), [`docs/spec/`](spec/), [`process/wayfinder.md`](process/wayfinder.md)).
-2. **Cut.** The refinement agent turns them into a ticket draft with acceptance criteria, risk and tasks
-   ([`process/tickets.md`](process/tickets.md)). The issue is the plan; there are no plan files.
-3. **Tests first.** The test designer writes Gherkin features, red unit tests and acceptance cases, including one
-   deliberately wrong case as a canary. The critic reviews for at most two rounds.
-4. **Gate 1.** Marco approves tests and contracts. A manifest freezes them by hash.
-5. **Build.** One implementer per task in its own worktree, branch and Compose project, with at most three attempts
-   to reach green. It then reports `DONE`, `DONE_WITH_CONCERNS` or `BLOCKED`, with real command output.
-6. **Check.** The review chain runs in parallel over one shared packet (Part 6). Then the acceptance run executes
-   as code, and a judge on a different model than the author's assesses its report.
-7. **Gate 2.** Marco reads diff and verdicts and merges. Exception: a PR whose derived risk is "low" (revertible and
-   local) and that passed everything is merged by the main session and shown to Marco afterwards
-   ([`process/pr-format.md`](process/pr-format.md)).
+## Part 3: Small steps with proof
 
-**Small steps with proof.** One task is one PR, below about 400 lines of production code
-([`check_pr_size.py`](../tools/check_pr_size.py) warns above that and blocks at 800). Commits come in reading order:
-contract, red tests, logic, wiring, docs. CI checks on the PR base that the frozen tests fail there for the right
-reason ([`check_red_before_green.sh`](../tools/check_red_before_green.sh)); a test that is already green without
-the change proves nothing.
+**The ticket is the plan.** Acceptance criteria and tasks live in the ticket, not in loose plan files nobody keeps
+up to date.
 
-**Findings go back into the concept.** When a boundary, a contract or a principle shifts during the build, a dated
-ADR addendum is written first; it overrides the spec, which is updated in the same commit, and
-[`architecture.md`](architecture.md) follows. Only then comes a new attempt. A correction in a PR that needs several
-paragraphs of explanation is a spec change and belongs in the issue
-([`spec/process/tickets.md`](spec/process/tickets.md)).
+**One task, one pull request.** Small PRs get read; large ones get waved through. A hard limit on production lines
+keeps it that way.
+
+**Red before green.** A test proves something only if it fails for the right reason without the change. Let CI check
+that on the PR's base.
+
+**Done comes with evidence.** An agent reports done with real command output, a report or a screenshot. The
+acceptance run is code; the model only judges its result.
+
+**Findings flow back into the concept.** When the build shows that a boundary or contract has to change, the decision
+is recorded first (as an architecture decision record, ADR, or an addendum), then the work restarts. A correction that needs several paragraphs of
+explanation is a spec change and belongs in the ticket.
+
+*In this repo:* [`process/tickets.md`](process/tickets.md), [`process/pr-format.md`](process/pr-format.md),
+[`check_pr_size.py`](../tools/check_pr_size.py), [`check_red_before_green.sh`](../tools/check_red_before_green.sh),
+skill [`evidence`](../.claude/skills/evidence/SKILL.md).
 
 ## Part 4: Spending context and tokens carefully
 
-What an agent has in its context window decides what it delivers. Whatever sits there without serving the task
-crowds out what matters, and every line is paid for, often again on every call. So the project treats context as a
-tight budget rather than a place to store everything just in case.
+What an agent has in its context window decides what it delivers. Anything there that does not serve the task
+crowds out what matters, and every line costs, often again on every call. So treat context as a tight budget.
 
-**Fixed line budgets, checked before the commit and in CI.** The files Claude Code loads on its own have ceilings:
-`CLAUDE.md` 120 lines, area rules 80, roles 120, skills 100. Above that, text is cut or moved to a document the
-file points to; [`check_context_budget.py`](../tools/check_context_budget.py) checks it.
+- **Line budgets with a check.** The files the agent always loads get a ceiling that a script checks. When a file
+  grows too long, cut it or point to a document instead.
+- **Load on demand.** The main file holds principles and pointers. Rules for one area load only when the agent works
+  there; procedures live in skills, of which only the short description is always loaded.
+- **Summarise instead of carrying along.** Before larger work in an area, a separate session writes a short note on
+  responsibilities, data flow, types and pitfalls. The implementation reads the note, not the area.
+- **Subagents for a reason.** A subagent keeps the main session clean but rebuilds its context and spends tokens of
+  its own. Use it for broad reading and for reviews, with a briefing of scope, files, decisions and the expected
+  output form.
+- **Model by role, effort by risk.** The strongest models judge (critic, judge, architecture), implementation runs a
+  tier below, and its reasoning effort follows the task's risk.
+- **One shared prefix.** All reviewers get the same packet as the start of their prompt. That saves through prompt
+  caching and keeps findings comparable.
+- **Fixed sequences.** Recurring chains run as scripts with capped rounds, not as agents calling each other.
+- **Compact in time.** At 60 to 70 percent context fill, compact, after writing the open points into the ticket.
+- **Measure.** Every PR shows rounds, attempts and, where available, tokens per role. The retro bases its proposals on them.
 
-**Three ways in instead of one big file.**
-
-| What | When it is loaded | Where |
-|---|---|---|
-| rules for every session | always, so short and mostly pointers | [`CLAUDE.md`](../CLAUDE.md) |
-| rules for one area | only when the agent touches files on that path | [`.claude/rules/`](../.claude/rules/) with `paths:` |
-| procedures | only the short description up front, the body on use | [`.claude/skills/`](../.claude/skills/) |
-| checklists for roles | preloaded only into the roles that need them | `skills:` field in the role files |
-
-**Summarise instead of carrying along.** When a session has to understand a whole area of the code, a separate
-session first writes a synthesis note: what the area is responsible for, how data flows, which types carry it,
-where it snags, with date and commit ([`docs/synthesis/`](synthesis/README.md)). The implementer reads the note
-instead of the whole area. Briefings list the files one by one instead of handing over whole folders. Raw
-measurement data stays out of the repository; only the evaluation is committed.
-
-**Subagents only for a reason.** A subagent keeps the main session clean because it reads and returns only the
-result. But it builds its context from scratch and spends tokens of its own. So background subagents are the
-default for read-only work and the review chain ([`CLAUDE.md`](../CLAUDE.md), *Working*), each briefed with scope,
-files, decisions already taken, the expected output form and the host rules. When the usage quota runs low, a hook
-refuses new subagents altogether ([`limit-guard.sh`](../.claude/hooks/limit-guard.sh)).
-
-**Model tier by role, effort by risk.** The tiers live in one place, [`.claude/models.json`](../.claude/models.json).
-The judgements everything rests on (acceptance judge, critic, architecture review) run on the highest tier; no
-review role runs below "stark". The implementer's reasoning effort follows the ticket's risk: low, medium or high.
-[`sync_agent_models.py`](../tools/sync_agent_models.py) writes the tiers into the role files and fails the check
-when a floor is broken.
-
-**One prefix for all reviewers.** The main session builds the review packet once (diff, manifest, synthesis note,
-tool results) and hands it to every reviewer as the identical start of its prompt
-([`review-chain.js`](../.claude/workflows/review-chain.js)). That lets prompt caching work.
-
-**Fixed sequences instead of free chains.** The three chains that repeat (test design, review, acceptance) run as
-scripts under [`.claude/workflows/`](../.claude/workflows/). No agent calls another at its own discretion. Rounds
-and attempts are capped: two rounds of critique, three attempts to green.
-
-**Compact in time.** At 60 to 70 percent context fill the session is compacted by hand, after the open points have
-been written into the issue as a comment. A hint hook speaks up from 60 percent
-([`context-hint.sh`](../.claude/hooks/context-hint.sh)), and before every compaction a hook notes the git state
-([`pre-compact.sh`](../.claude/hooks/pre-compact.sh)).
-
-**Measure, don't guess.** Every PR carries an agent balance: rounds, attempts to green and verdicts per role, plus
-tokens where the session data is available ([`agent_balance.py`](../tools/agent_balance.py)). The retro reads these
-numbers and proposes changes to the model tiers.
+*In this repo:* [`check_context_budget.py`](../tools/check_context_budget.py),
+[`.claude/rules/`](../.claude/rules/), [`.claude/skills/`](../.claude/skills/),
+[`docs/synthesis/`](synthesis/README.md), [`review-chain.js`](../.claude/workflows/review-chain.js),
+[`.claude/workflows/`](../.claude/workflows/), [`agent_balance.py`](../tools/agent_balance.py).
 
 ## Part 5: Working in sessions
 
-**One issue, one session.** Anything that does not belong to the issue gets its own issue and, later, its own
-session. Every implementer task starts fresh, so the code of one task does not depend on the noise of the last.
+**One main session orchestrates.** Only it pushes, opens PRs and prepares merges. Implementers work in a fresh
+session per task, on their own branch and in their own working copy, never on shared files.
 
-**The main session orchestrates, the roles do the work.** Only the main session pushes, opens PRs and prepares
-merges. Implementers commit on their own branch and nothing else. At most three run in parallel, never on shared
-files.
+**The briefing is all a subagent knows.** Give it a fixed shape: task, exact paths, contract, the red tests,
+verification command, limits, report format.
 
-**The briefing is all a subagent knows.** So it has a fixed shape
-([`brief-implementer`](../.claude/skills/brief-implementer/SKILL.md)): task, exact paths, contract, the frozen red
-tests, verification command, host rules, worktree and stack names, report format.
+**Stop cleanly at limits.** When the usage quota runs low, start no new subagents, write the state into the ticket
+and plan the continuation instead of breaking off mid-task.
 
-**Limits of a run.** When the limit watcher ([`tools/limit-waechter/`](../tools/limit-waechter/README.md)) reports
-the hard limit, the main session stops all subagents, writes the state into the issue and schedules the
-continuation.
-
-**Don't:** an implementer that "quickly" extends the contract on the side and rewords an acceptance criterion; that
-is exactly what the hooks [`contracts.sh`](../.claude/hooks/contracts.sh) and
-[`frozen-manifest.sh`](../.claude/hooks/frozen-manifest.sh) refuse.
+*In this repo:* skill [`brief-implementer`](../.claude/skills/brief-implementer/SKILL.md),
+hook [`limit-guard.sh`](../.claude/hooks/limit-guard.sh), [`tools/limit-waechter/`](../tools/limit-waechter/README.md).
 
 ## Part 6: Review
 
-**Several pairs of eyes, different questions.** The reviewers are separate roles with their own field and never
-edit.
+**Tools before models.** Static analysis, scanners and dependency checks run first; their results go into the review
+packet.
 
-| Role | Looks for |
-|---|---|
-| reviewer (always) | shortcuts: loosened types, weakened tests, extras nobody asked for |
-| security reviewer | secrets, input limits, privacy boundary, CI security; every finding blocks |
-| architecture reviewer | module boundaries, duplicated state, missing ADRs, stale synthesis notes |
-| frontend reviewer | components, accessibility, i18n; only for changes under `apps/` |
+**Separate fields.** One reviewer looks for shortcuts (loosened types, weakened tests, extras nobody asked for), one
+for security, one for architecture. None changes code; each reports with file and line.
 
-Tools come before models: Fallow and Sonar from [`process/review-tools.md`](process/review-tools.md), Semgrep and
-Trivy from the PR pipeline ([`pr.yml`](../.github/workflows/pr.yml)); their results sit in the review packet
-([ADR 0011, addendum 2026-10-25](adr/0011-rollen-und-bahnen-des-arbeitssystems.md)). The reviewers also get a short
-checklist for plans, ADRs and diffs preloaded, and they judge by the [coding standards](CODING_STANDARDS.md), which
-hold only judgement calls; anything mechanical is a lint rule.
+**The PR explains itself.** At the top stand the risk, the revertibility and the few places that deserve a close
+look. Every reference number appears with the sentence it points to.
 
-**Acceptance judges evidence, not code.** The acceptance judge reads only the report of the acceptance run and
-compares it with the expectation written down before anything was built. It is not told which case is the canary.
-If it passes the canary, its verdict is thrown away.
+**Green reviews pre-sort; they do not replace gate 2.** What gets merged is what the owner has read. You may define
+an exception for narrowly scoped low-risk PRs, but only with written conditions.
 
-**The PR is written for a reader who has not seen the ticket.** At the top sits the German review guide with risk,
-revertibility and at most five places that deserve a close look. Every number appears with the sentence it refers
-to. Ideas nobody ordered appear as suggestions in the PR, not quietly in the code.
+*In this repo:* [`process/review-tools.md`](process/review-tools.md), [`pr.yml`](../.github/workflows/pr.yml),
+[`CODING_STANDARDS.md`](CODING_STANDARDS.md), [`process/pr-format.md`](process/pr-format.md).
 
-Green verdicts are a pre-sort for gate 2, not a substitute for it; what gets merged is what Marco has read.
+## Part 7: Clean modules
 
-## Part 7: Clean modules at agent speed
+What wears a codebase down under agents rarely shows in one diff but in the sum of many harmless ones: a required
+field that becomes optional, a type that gets wider, a silent default that swallows an error. Forbid exactly these
+shortcuts in so many words.
 
-What threatens the code here does not show in one diff but in the sum of many that each look harmless: a required
-field that becomes optional, a type that gets wider, a silent default that swallows an error
-([`CLAUDE.md`](../CLAUDE.md), *Quality*; role [`reviewer`](../.claude/agents/reviewer.md)).
+**Boundaries before building.** Every seam between modules gets a checked contract. Only the owner may change it,
+with a decision, a version bump and contract tests.
 
-**Boundaries before building.** Every seam between modules has a contract as a Zod schema with generated JSON
-Schema ([ADR 0012](adr/0012-vertraege-in-zod-json-schema-erzeugt.md), `packages/contracts/`). Only the owner may
-change one, with an ADR, a version bump and contract tests.
+**Boundaries as tooling.** Dependency rules and project references turn wrong imports into build errors. Every new
+area gets a short README with purpose, boundaries and pitfalls.
 
-**Boundaries as tooling.** dependency-cruiser runs before the commit and in CI, TypeScript project references keep
-the packages apart, and the architecture reviewer knows the contracts. New directories under `apps/`, `services/`,
-`packages/` and `tests/` get a README (purpose, boundaries, pitfalls, commands) and a matching area rule;
-[`check_docs_coverage.py`](../tools/check_docs_coverage.py) checks it.
+**Deep modules, one vocabulary.** Small interfaces with a lot of behaviour behind them, no exports just for tests,
+and a glossary so agents do not invent synonyms.
 
-**Deep modules.** A small interface with a lot of behaviour behind it, one concept in one place. No export and no
-parameter just so a test can reach internals ([`CODING_STANDARDS.md`](CODING_STANDARDS.md)). A new sub-project
-takes over the structure and quality level of the best existing one
-([`new-service`](../.claude/skills/new-service/SKILL.md)).
-
-**One vocabulary.** Domain terms are defined once in the [glossary](../CONTEXT.md), together with the terms not to
-use.
+*In this repo:* [ADR 0012](adr/0012-vertraege-in-zod-json-schema-erzeugt.md),
+[`check_docs_coverage.py`](../tools/check_docs_coverage.py), [`CODING_STANDARDS.md`](CODING_STANDARDS.md),
+[glossary](../CONTEXT.md).
 
 ## Part 8: Learning from mistakes
 
-An agent repeats a mistake until something stops it. The loop for that has three steps.
+An agent repeats a mistake until something stops it. The loop has three steps:
 
-1. **The first time**, the mistake or Marco's correction becomes one row in [`lessons.md`](lessons.md), noting
-   whether a tool would have caught it (skills [`lesson`](../.claude/skills/lesson/SKILL.md) and
-   [`feedback`](../.claude/skills/feedback/SKILL.md)).
-2. **The second time**, it becomes a safeguard, in the narrowest place that fits and preferably as a check: lint,
-   hook or CI job before an area rule, an area rule before `CLAUDE.md`. Prose only when nothing can be checked.
-3. **The third time**, the question is no longer the mistake but why the safeguard does not take hold.
+1. **The first time**, one row in a lessons file, noting whether a tool would have caught it.
+2. **The second time**, a safeguard in the narrowest place that fits, preferably a check (lint, hook, CI), otherwise
+   a rule for the area, the main file only as a last resort.
+3. **The third time**, ask why the safeguard does not take hold.
 
-Two examples from the table that are hooks today: [`git-pipe.sh`](../.claude/hooks/git-pipe.sh) (a pipe hid failed
-commits) and [`owner-stack.sh`](../.claude/hooks/owner-stack.sh) (agents reached the owner's stack).
+A retro after the first tickets and then per stage proposes changes to rules, thresholds and model tiers. Project
+rules belong in the repository, never in an agent's personal memory.
 
-The [retro](../.claude/skills/retro/SKILL.md) runs after the first three merged tickets and then at the end of
-every increment, and proposes changes to rules, thresholds and model tiers. Project rules live in the repository,
-never in an agent's personal memory.
+*In this repo:* [`lessons.md`](lessons.md), skills [`lesson`](../.claude/skills/lesson/SKILL.md) and
+[`retro`](../.claude/skills/retro/SKILL.md), hook [`git-pipe.sh`](../.claude/hooks/git-pipe.sh) as an example of a
+promoted lesson.
 
 ## Part 9: Boundaries and security
 
-What agents may not do is drawn in several layers.
+Agents get far-reaching rights. So put several layers in place:
 
-| Layer | What it prevents |
+| Layer | Protects against |
 |---|---|
-| Claude Code sandbox on the host | access outside the allowed paths and network destinations |
-| toolbox container | installs on the host: Node, pnpm and packages run only in the container (`scripts/tb`) |
-| permissions in [`settings.json`](../.claude/settings.json) | reading and writing `.env` files and the secrets directory |
-| hooks | secrets, the owner's stack, frozen files, contracts, disabled tests, pipes after git commands |
-| isolation | own worktree, branch and Compose project `lfc-<issue>-<task>` with throwaway secrets per task |
-| pre-commit and CI | gitleaks, scanners, image scan, an expiry date for every exception |
+| sandbox | access outside the allowed paths and network destinations |
+| container for tooling | installs on the owner's machine |
+| permissions | reading and writing secrets and `.env` files |
+| hooks | changes to secrets, frozen files, contracts and tests |
+| isolation | collisions: own working copy, own stack, throwaway secrets per task |
+| pre-commit and CI | secrets in commits, scanner findings, expired exceptions |
 
-**Hooks warn early but do not decide alone.** They are comfort and early warning; the real guards are the git hooks
-via [lefthook](../lefthook.yml) and CI. No protection relies on a hook being loaded. Every clone sets up the
-pre-commit checks in `lefthook.yml` itself; because `--no-verify` can skip them, CI repeats each one
-([`ci.yml`](../.github/workflows/ci.yml), [`pr.yml`](../.github/workflows/pr.yml)). The hooks have a regression
-test of their own ([`test-hooks.sh`](../.claude/hooks/test-hooks.sh)).
+**Hooks are early warning, not the last word.** Local checks can be skipped; CI repeats each one.
 
-**No agent sees secrets.** It does not read, print or write `.env` files or anything that looks like a key. When
-Marco has to set a secret, he gets a one-line command and runs it himself.
+**No agent sees secrets.** When the owner has to set one, they get a one-line command and run it themselves.
 
-**Blocked means: report.** When the sandbox or a hook refuses a command, the agent does not look for another way;
-it reports. No agent declares a scanner finding a false positive; a narrow exception needs a reason in the code, a
-mention in the PR and an expiry date that [`check_due_dates.py`](../tools/check_due_dates.py) enforces
-([`process/due.md`](process/due.md)).
+**Blocked means report.** When the sandbox or a hook refuses a command, the agent does not look for a way around it.
+No agent declares a scanner finding a false positive; every exception needs a reason and an expiry date that a check
+enforces.
 
-## What this means
+*In this repo:* [`settings.json`](../.claude/settings.json), [`.claude/hooks/`](../.claude/hooks/),
+[`lefthook.yml`](../lefthook.yml), [`ci.yml`](../.github/workflows/ci.yml),
+[`check_due_dates.py`](../tools/check_due_dates.py).
 
-For a client project this means: agents make the work faster, not less controlled. Every decision has a place,
-every step has proof, and every rule broken twice becomes a check. How much of this a project needs depends on its
-size; the principles from Part 1 and the context discipline from Part 4 always apply.
+## In closing
+
+Agents make the work faster, not less controlled. Every decision has a place, every step has proof, and every rule
+broken twice becomes a check. How much of this a project needs depends on its size. The principles from Part 1 and
+the careful use of context from Part 4 always apply.

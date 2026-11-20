@@ -20,7 +20,7 @@ to get green.**
 | Tests | Vitest and fast-check (unit), Cucumber (integration, API, end-to-end), Playwright, StrykerJS (mutation) |
 | Agents | Claude Code with 11 roles, 12 hooks, 12 skills and 3 deterministic workflows under `.claude/` |
 
-How the agents are used, readable in about eight minutes: [docs/agentic-coding.md](docs/agentic-coding.md).
+A reference guide to building software with role-separated coding agents, readable in about six minutes: [docs/agentic-coding.md](docs/agentic-coding.md).
 
 ## Contents
 
