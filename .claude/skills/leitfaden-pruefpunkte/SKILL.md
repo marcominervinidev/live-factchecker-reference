@@ -1,12 +1,12 @@
 ---
 name: leitfaden-pruefpunkte
-description: "Checklist distilled from the agentic-coding guide (devowl.io, \"Leitfaden für agentisches KI-Coding\", 2026-10-05; essence and source in docs/research/leitfaden-essenzen.md) for reviewing plans, ADRs and diffs. Background knowledge preloaded into reviewer roles; not for direct invocation."
+description: "Checklist distilled from an agentic-coding guide the owner keeps locally (2026-10-05); how this project applies it: docs/agentic-coding.md. For reviewing plans, ADRs and diffs. Background knowledge preloaded into reviewer roles; not for direct invocation."
 user-invocable: false
 ---
 
 # Review checkpoints from the agentic-coding guide
 
-Source: the guide's parts I (principles), IV (workflow, reviews) and V (modularity under agent pressure); essences in `docs/research/leitfaden-essenzen.md`. Use only the section that matches what you review. Each point is a question; an unanswered "no" is a finding.
+Source: the guide's parts I (principles), IV (workflow, reviews) and V (modularity); how this project applies them: `docs/agentic-coding.md`. Use only the section that matches what you review. Each point is a question; an unanswered "no" is a finding.
 
 ## Plan (guide part IV, steps 2 to 8)
 
