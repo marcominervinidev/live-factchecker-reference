@@ -56,7 +56,7 @@ pnpm workspaces monorepo (`apps/*`, `services/*`, `packages/*`, `tests/*`, `eval
 
 - Never read, print or write `.env` files, the secrets directory or anything that looks like a key. When the owner must set a secret, hand him a one-line command; never run it yourself.
 - Secrets never go into code, commits, images, build args, logs, errors, metrics or traces. `.env.example` holds only non-secret settings.
-- Never dismiss a scanner or review finding as false positive or won't fix, never disable a rule; a narrow suppression needs a reason in code and a mention in the PR. The owner decides.
+- Never dismiss a scanner or review finding as false positive or won't fix, never disable a rule; a narrow suppression needs a reason in code and a mention in the PR. The owner decides. Every temporary exception, pause or advisory gate carries `DUE <date>` where it lives; `tools/check_due_dates.py` fails once the date has passed (stage 0).
 - Audio is never stored; transcripts never in logs; only what ADR 0009 allows leaves the backend.
 
 ## Learning

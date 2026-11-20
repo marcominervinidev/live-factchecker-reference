@@ -264,6 +264,8 @@ service, of `@lfc/service-kit` and of `@lfc/contracts` mounted read-only. In the
 Session routes, so no client of the stack reaches them yet (stage 2a calls them in-process).
 
 ## Pitfalls
+
+- Stop of the process: `close` first ends the Sessions' analysis (`createSessionPipelines().close()`: one abort signal for every model call, wait until the calls in flight have returned, no final analysis, timers dropped), then closes Redis. A failed request logs the class of its error as `reason`; a programming error answers 500, the store being away 503.
 - A Segment the store accepts (204) is not analysed when the Session's Input has ended (`POST /sessions/{id}/end`) or
   when this process has no analysis for the Session (it was created before a restart of the service, or its lifetime
   passed): it is stored, but reaches no extractor, and today no log line shows it. There is no rebuild from the

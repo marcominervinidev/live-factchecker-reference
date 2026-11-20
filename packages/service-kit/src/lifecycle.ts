@@ -9,6 +9,7 @@ import { createServer, type RequestListener, type Server } from 'node:http';
 
 import { createProbeHandler, type Check } from './health.ts';
 import type { Logger } from './logger.ts';
+import { errorCode } from './error-code.ts';
 
 /** Where SIGTERM arrives: the process in production, an emitter in tests. */
 export interface Signals {
@@ -115,8 +116,9 @@ export async function runService(options: ServiceOptions): Promise<void> {
   server.maxConnections = MAX_CONNECTIONS;
   try {
     await listen(server, options.port);
-  } catch {
-    options.logger.log({ event: 'service.port_unavailable' });
+  } catch (error) {
+    // The class of the error only (error-code.ts): its text names the address.
+    options.logger.log({ event: 'service.port_unavailable', reason: errorCode(error) });
     await options.close().catch(() => undefined);
     exit(1);
     return;

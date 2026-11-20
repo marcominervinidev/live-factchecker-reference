@@ -10,7 +10,7 @@ Short form for readers in the repo. Decision: ticket "PR-Format, Größe, Commit
 | dependency-cruiser | cycles and zone boundaries | `pnpm depcruise` | **blocks** (lefthook, `ci.yml` static) | – | – | `.dependency-cruiser.cjs` |
 | Knip | dead code (counter-check while Fallow is young) | `pnpm exec knip` | – | – (nightly only) | report | `knip.json` |
 | StrykerJS | surviving mutants | `pnpm --filter <pkg> test:mutation` | – | – until the first retro sets `break` per package; then `--incremental` on changed packages, survivors in the PR | changed packages, all on Sundays | `<pkg>/stryker.config.mjs` from `tools/templates/` |
-| SonarQube Cloud | bugs, smells, secrets, taint, duplication | – | – | runs in `ci.yml` on push, advisory until 2026-11-16, then Quality Gate on new code | – | `sonar-project.properties` |
+| SonarQube Cloud | bugs, smells, secrets, taint, duplication | – | – | runs in `ci.yml` on push, advisory until the owner decides (`docs/process/due.md`), then Quality Gate on new code | – | `sonar-project.properties` |
 
 Zones (same in Fallow and dependency-cruiser): `apps/*` → `packages/*`; `services/*` → `packages/*` (never another service, never apps); `packages/*` → `packages/*` only; `tests/*` → `packages/*` and test helpers, never service or app code; `evals/` is outside the graph. Cycles and dead code start with Fallow; dependency-cruiser stays only until Fallow's boundaries have caught the same violations on real code for one increment (increment 1 has none yet), then its removal is an owner decision in a PR; Knip runs nightly only, never in the PR.
 

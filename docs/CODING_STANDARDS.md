@@ -63,3 +63,13 @@ Heuristics, not laws – report with file:line and a suggestion (Fowler, *Refact
 - **Shotgun surgery:** one logical change forcing edits across many files – gather it.
 - **Speculative generality:** abstractions, flags or hooks with a single caller and no task in
   the plan – delete or inline (CLAUDE.md, Quality: no overbuild).
+
+## Failure and lifecycle paths
+
+- A catch names what it expects. An error that is dropped still leaves a diagnostic code: the class of the error (`errorCode` of `@lfc/service-kit`), never its text or its `code`, which can name a host, a path or protected data. A programming error never looks like an unavailable dependency.
+- Every outbound call takes a signal or a timeout that something can trigger. A fresh signal that nobody aborts is the same as none.
+- Background work (timers, loops, calls in flight) ends before the connection it uses is closed; the stop path drains or cancels it, and a test shows it.
+
+## Temporary exceptions
+
+A suppression, an ignore entry, a paused updater or an advisory gate is as narrow as the tool allows, carries its reason and `DUE <date>` next to it, and is removed when the date arrives or renewed by a new owner decision (`docs/process/due.md`, `tools/check_due_dates.py`).

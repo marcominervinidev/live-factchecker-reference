@@ -64,6 +64,8 @@ client for a particular dependency: a service brings its own (the detection serv
 check and a close function. Source is run directly by Node's type stripping; there is no build step.
 
 ## Pitfalls
+
+- An error that is caught and not rethrown leaves its class in the log as `reason` (`errorCode`), never its text or its `code`: a text can name a host, a path or protected data. `isProgrammingError` tells a mistake in the code from a failed dependency.
 - Background work (a stream consumer, a timer loop) must end inside `close`, before the connection it uses is closed
   (`quit()`); explicit lifecycle phases come with T3.
 - Never `console` or `process.stdout`/`process.stderr` in a service (ESLint refuses them); log through

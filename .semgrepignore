@@ -28,13 +28,13 @@ evals/golden/*/korrektur.html
 # (owner decision E1); owner confirms at gate 2.
 # services/detection/src/config.session.test.ts is frozen too (gate 1, .claude/frozen/27.json); its finding is a
 # throwaway test value (pw-27-...), rule ajinabraham.njsscan.generic.hardcoded_secrets.node_secret. Main-session
-# decision 2026-10-30; owner confirms at gate 2. Remove when #27 closes.
+# decision 2026-10-30; owner confirms at gate 2. Remove when #27 closes. DUE 2026-12-18
 # Same rule for gate 1 of .claude/frozen/26.json: model-call.test.ts uses Math.random for throwaway test Session
 # ids (ajinabraham.njsscan.crypto.crypto_node.node_insecure_random_generator). Main-session decision 2026-10-30;
-# owner confirms at gate 2. Remove when #26 closes.
+# owner confirms at gate 2. Remove when #26 closes. DUE 2026-12-18
 # Same rule for gate 1 of .claude/frozen/26.json: flaky.test.ts names a const PASSES that holds a scenario title,
 # not a password (ajinabraham.njsscan.generic.hardcoded_secrets.node_password). Main-session decision 2026-10-30;
-# owner confirms at gate 2. Remove when #26 closes.
+# owner confirms at gate 2. Remove when #26 closes. DUE 2026-12-18
 services/detection/features/steps/detection.steps.ts
 services/detection/src/config.session.test.ts
 services/detection/src/config.test.ts

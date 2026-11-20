@@ -12,6 +12,7 @@ import {
 import {
   ConfigError,
   createLogger,
+  errorCode,
   runService,
   writeConfigError,
   type Env,
@@ -26,7 +27,10 @@ import {
   type DetectionConfig,
   type TopicExtractorConfig,
 } from './config.ts';
-import { createSessionPipelines, type SessionPipelines } from './session/session-pipelines.ts';
+import {
+  createSessionPipelines,
+  type ClosableSessionPipelines,
+} from './session/session-pipelines.ts';
 import { createSessionRoutes } from './session/routes.ts';
 import { createSessionRecords, createSessionStore } from './session/store.ts';
 
@@ -78,14 +82,14 @@ async function disconnect(redis: Redis): Promise<void> {
 function mockAdapter(config: ClaimExtractorConfig): ModelAdapter {
   const { mock } = config;
   if (mock === undefined) throw new ConfigError('MOCK_EXPECTATIONS_FILE', 'is required');
+  // Only the file's content is a configuration error; a failure of the mock itself is not blamed on the file.
+  let expectations: ReturnType<typeof parseExpectations>;
   try {
-    return createMockClaimExtractor({
-      ...mock,
-      expectations: parseExpectations(mock.expectations),
-    });
+    expectations = parseExpectations(mock.expectations);
   } catch {
     throw new ConfigError('MOCK_EXPECTATIONS_FILE', 'must hold one valid label per line');
   }
+  return createMockClaimExtractor({ ...mock, expectations });
 }
 
 /** The Topic Extractor's mock adapter; loadConfig sets its settings whenever it configures the Topic Extractor. */
@@ -99,7 +103,7 @@ function pipelinesOf(
   adapters: { readonly claim: ModelAdapter | undefined; readonly topic: ModelAdapter | undefined },
   redis: Redis,
   logger: Logger,
-): SessionPipelines | undefined {
+): ClosableSessionPipelines | undefined {
   const { claim: adapter, topic: topicAdapter } = adapters;
   if (config.claimExtractor === undefined || adapter === undefined) return undefined;
   const topic = config.topicExtractor;
@@ -132,7 +136,12 @@ export async function startDetection(options: DetectionOptions): Promise<void> {
     topicAdapter =
       config.topicExtractor === undefined ? undefined : topicMockAdapter(config.topicExtractor);
   } catch (error) {
-    logger.log({ event: 'config.invalid' });
+    // A ConfigError names its variable on stderr; anything else is a bug at start and logs the class of its error.
+    logger.log(
+      error instanceof ConfigError
+        ? { event: 'config.invalid' }
+        : { event: 'config.invalid', reason: errorCode(error) },
+    );
     writeConfigError('detection', error);
     exit(1);
     return;
@@ -154,6 +163,7 @@ export async function startDetection(options: DetectionOptions): Promise<void> {
     report(false);
   });
 
+  const pipelines = pipelinesOf(config, { claim: adapter, topic: topicAdapter }, redis, logger);
   await runService({
     port: config.port,
     logger,
@@ -165,9 +175,13 @@ export async function startDetection(options: DetectionOptions): Promise<void> {
         maxSessions: config.maxSessions,
       }),
       logger,
-      pipelines: pipelinesOf(config, { claim: adapter, topic: topicAdapter }, redis, logger),
+      pipelines,
     }),
-    close: () => disconnect(redis),
+    // The Sessions' calls end first: they write to the detection stream over this connection.
+    close: async () => {
+      await pipelines?.close();
+      await disconnect(redis);
+    },
     signals: options.signals,
     exit,
   });

@@ -8,6 +8,7 @@ export {
   type Env,
   type ServiceConfig,
 } from './config.ts';
+export { errorCode, isProgrammingError } from './error-code.ts';
 export { runService, type Signals } from './lifecycle.ts';
 export {
   createModelCallRecorder,

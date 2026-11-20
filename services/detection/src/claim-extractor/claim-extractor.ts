@@ -45,6 +45,9 @@ export interface ClaimExtractorCounters {
   readonly dropped: number;
 }
 
+/** For a caller without a stop signal (a test of one extractor): a signal nobody aborts. */
+const NEVER_ABORTED = new AbortController().signal;
+
 export interface ClaimExtractorOptions {
   readonly sessionId: string;
   readonly config: ClaimExtractorConfig;
@@ -57,6 +60,8 @@ export interface ClaimExtractorOptions {
   readonly stream: DetectionStream;
   readonly candidates: CandidatePort;
   readonly logger: Logger;
+  /** Aborted when the process stops (session-pipelines.ts); without one a call cannot be cancelled. */
+  readonly signal?: AbortSignal | undefined;
 }
 
 /** The fixed reason of a dropped element that passed the contract check but cannot become a record (owner A7, A8). */
@@ -176,7 +181,7 @@ export function createClaimExtractor(
         schemaName: 'claim_extractor_output',
         maxTokens: config.maxTokens,
         deadline: Date.now() + config.deadlineSeconds * 1000,
-        signal: new AbortController().signal,
+        signal: options.signal ?? NEVER_ABORTED,
       },
       {
         schema: ClaimExtractorOutput,

@@ -13,7 +13,7 @@
 import type { IncomingMessage, RequestListener, ServerResponse } from 'node:http';
 
 import type { Segment } from '@lfc/contracts';
-import type { Logger } from '@lfc/service-kit';
+import { errorCode, isProgrammingError, type Logger } from '@lfc/service-kit';
 
 import { parseSegment, readBody } from './segment-input.ts';
 import type { SessionPipelines } from './session-pipelines.ts';
@@ -246,13 +246,18 @@ async function route(
   await target.handle(response, options, request);
 }
 
-/** The request listener for runService's `routes`; a failure (Redis away) answers 503 and logs no error text. */
+/**
+ * The request listener for runService's `routes`. A failure logs no error text, only the class of the error
+ * (`reason`, error-code.ts). The store being away answers 503; a mistake in this service's own code answers 500, so
+ * an outage and a bug do not look the same to a caller or in the log.
+ */
 export function createSessionRoutes(options: SessionRoutesOptions): RequestListener {
   return (request, response) => {
-    route(request, response, options).catch(() => {
-      options.logger.log({ event: 'session.request_failed' });
-      if (!response.headersSent) send(response, 503, { error: 'Session store unavailable' });
-      else response.destroy();
+    route(request, response, options).catch((error: unknown) => {
+      options.logger.log({ event: 'session.request_failed', reason: errorCode(error) });
+      if (response.headersSent) response.destroy();
+      else if (isProgrammingError(error)) send(response, 500, { error: 'internal error' });
+      else send(response, 503, { error: 'Session store unavailable' });
     });
   };
 }

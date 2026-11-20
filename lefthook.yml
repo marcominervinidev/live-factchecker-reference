@@ -42,6 +42,9 @@ pre-commit:
       glob: '{.github/workflows/*.yml,scripts/ci/local.sh}'
       run: python3 -I tools/check_ci_pins.py
 
+    - name: dated commitments not overdue
+      run: python3 -I tools/check_due_dates.py
+
     - name: agent models in sync
       glob: '.claude/**'
       run: python3 -I tools/sync_agent_models.py --check

@@ -25,6 +25,8 @@ export interface SessionTurns {
   accept(segment: Segment): Promise<void>;
   /** The end of the Input; resolves once every call has returned. */
   end(): Promise<void>;
+  /** Resolves once every call in flight has returned; starts no final analysis (the stop of the process). */
+  settle(): Promise<void>;
   /** The Turns whose end is known (after end(): every Turn). */
   readonly turns: readonly EndedTurn[];
   /** Every Turn seen so far, open or ended, each once in its latest state (the context of a call, #29 AC5). */
@@ -81,6 +83,9 @@ export function createSessionTurns(options: {
       } finally {
         await scheduler.drain();
       }
+    },
+    async settle() {
+      await scheduler.drain();
     },
     turns,
     get seen() {

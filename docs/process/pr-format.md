@@ -29,7 +29,7 @@ The judge's verdicts are a **PR comment** per run (one quote, at most two images
 | stage 0 (tsc, ESLint, Prettier, dependency-cruiser), stages 1, 2a, 2b for affected workspaces | `ci.yml` | yes |
 | red before green: the frozen tests a PR brings (changed manifest or listed file) fail on the base (`tools/check_red_before_green.sh`) | `ci.yml` | yes |
 | Golden Set stage 1 (harness tests, mock run) | `ci.yml`, nightly | yes |
-| SonarQube Cloud (Frankfurt) | `ci.yml` | advisory until 2026-11-16, then Quality Gate on new code without the coverage condition (activation coupled to the first service: owner decision pending, #122) |
+| SonarQube Cloud (Frankfurt) | `ci.yml` | advisory until the owner decides (`docs/process/due.md`), then Quality Gate on new code without the coverage condition (activation coupled to the first service: owner decision pending, #122) |
 | PR size, commits, PR title, eval report present (`tools/check_eval_report.py`) | `pr.yml` | yes |
 | contract check, hadolint, Semgrep, image build + Trivy (fixable CRITICAL, secrets); no image build for a docs-only PR | `pr.yml` | yes |
 | Fallow `audit --gate new-only` with PR comment | `pr.yml` | yes (new findings only) |
@@ -77,7 +77,7 @@ The owner can take a PR out of auto-merge with the label `owner-reads`; the retr
 1. Rulesets on a private repo need GitHub Pro (the API answers 403 on Free; cost research #117). On Pro: ruleset on `main` with require a pull request (0 required approvals: the owner is the PR author because agents push under his account, and GitHub never lets an author approve his own PR), required checks `ci passed` and `pr passed`, linear history, block force pushes; squash merge only, default squash title = PR title. CODEOWNERS stays as the list of paths the review guide must name under "Hier genau hinschauen"; it is not a required review.
 2. "Automatically delete head branches" on.
 3. Secrets: `SONAR_TOKEN` (SonarQube Cloud project `marcominervinidev_live-factcheck_2`, organisation `marcominervinidev`, new-code definition "previous version"), later `DEEPGRAM_API_KEY` for the nightly probe.
-4. SonarQube Cloud: create the project bound to the repo, disable "Automatic Analysis" (CI-based analysis is configured), after 2026-11-16 set the Quality Gate as required (reminder: v2 issue #3).
+4. SonarQube Cloud: create the project bound to the repo, disable "Automatic Analysis" (CI-based analysis is configured), after the decision in `docs/process/due.md` set the Quality Gate as required (reminder: v2 issue #3).
 5. Create one issue labelled `nightly` for the trend comments.
 6. `make hooks-install` on the host after the first platform ticket provides the toolbox shim.
 7. Settings → Code security: Dependabot alerts and Dependabot security updates on (#126); version updates come from `.github/dependabot.yml`.

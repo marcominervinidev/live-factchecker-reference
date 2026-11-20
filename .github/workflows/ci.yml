@@ -44,6 +44,8 @@ jobs:
         run: python3 -I tools/check_docs_coverage.py
       - name: context budget
         run: python3 -I tools/check_context_budget.py
+      - name: dated commitments not overdue
+        run: python3 -I tools/check_due_dates.py
       - name: tool image pins agree (workflows and make ci-local)
         run: python3 -I tools/check_ci_pins.py
       - name: tool tests
@@ -302,7 +304,8 @@ jobs:
     steps:
       - env:
           NEEDS: ${{ toJSON(needs) }}
-        # Sonar is advisory until 2026-11-16 (docs/process/pr-format.md, #122); its result is not required here.
+        # Sonar is advisory; the decision on its Quality Gate is DUE 2026-12-18 (docs/process/due.md, #122); its result is
+        # not required here.
         run: |
           printf '%s' "$NEEDS" | node -e "
             const needs = JSON.parse(require('fs').readFileSync(0, 'utf8'));

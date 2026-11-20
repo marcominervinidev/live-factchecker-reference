@@ -10,7 +10,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume. DUE 2026-12-18
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
@@ -23,7 +23,7 @@ updates:
     labels: []
   - package-ecosystem: docker
     directory: /.github/workflows
-    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume. DUE 2026-12-18
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
@@ -36,7 +36,7 @@ updates:
     labels: []
   - package-ecosystem: docker-compose
     directory: /
-    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume. DUE 2026-12-18
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
@@ -52,7 +52,7 @@ updates:
   # the Node major, so a refreshed digest can raise the runtime's Node patch or minor level (review R7, round 4).
   - package-ecosystem: docker
     directories: ['/services/*']
-    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume. DUE 2026-12-18
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
@@ -71,7 +71,7 @@ updates:
     labels: []
   - package-ecosystem: npm
     directory: /
-    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume. DUE 2026-12-18
     open-pull-requests-limit: 0
     schedule:
       interval: weekly

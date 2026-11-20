@@ -5,7 +5,9 @@
 // Topic Extractor configured (#32, O2) each Session also gets its own, whose tag list starts from the Setting and whose
 // Topic events go to the same detection stream; without one its lane answers at once and does nothing. Everything here
 // is derived state in process memory and is dropped once the Session's lifetime has passed without a Segment, as its
-// keys in Redis are.
+// keys in Redis are. When the process stops, close() aborts the calls in flight through one signal every extractor
+// passes to its adapter, waits until they have returned and drops the timers, so nothing writes to the detection
+// stream after its connection is closed (packages/service-kit/README.md: background work ends inside `close`).
 import type { DetectionEvent, Segment } from '@lfc/contracts';
 import type { ModelAdapter } from '@lfc/providers';
 import type { Logger } from '@lfc/service-kit';
@@ -26,6 +28,15 @@ export interface SessionPipelines {
   accept(sessionId: string, segment: Segment): void;
   /** The end of the Input; resolves once every call has returned. A second end waits for the same calls. */
   end(sessionId: string): Promise<void>;
+}
+
+/** What the process holds: the Sessions' analysis, and its stop. The routes see only SessionPipelines. */
+export interface ClosableSessionPipelines extends SessionPipelines {
+  /**
+   * The stop of the process: aborts every call in flight, resolves once all of them have returned, and starts no
+   * final analysis (the Input has not ended). Afterwards no Session is opened and no Segment analysed.
+   */
+  close(): Promise<void>;
 }
 
 export interface SessionPipelinesOptions {
@@ -50,9 +61,11 @@ interface Pipeline {
   expiry?: ReturnType<typeof setTimeout>;
 }
 
-export function createSessionPipelines(options: SessionPipelinesOptions): SessionPipelines {
+export function createSessionPipelines(options: SessionPipelinesOptions): ClosableSessionPipelines {
   const { config, records, logger } = options;
   const pipelines = new Map<string, Pipeline>();
+  /** Aborted by close(); every model call of every Session carries its signal. */
+  const stopping = new AbortController();
 
   /** Drops the Session's state once its lifetime has passed without a Segment (ADR 0009). */
   function touch(sessionId: string, pipeline: Pipeline): void {
@@ -65,6 +78,8 @@ export function createSessionPipelines(options: SessionPipelinesOptions): Sessio
 
   return {
     open(sessionId, start) {
+      // A Session created while the process stops is stored, not analysed.
+      if (stopping.signal.aborted) return;
       const labels = new Set<string>();
       const segments: Segment[] = [];
       const stream = { append: (event: DetectionEvent) => records.detection(sessionId, event) };
@@ -78,6 +93,7 @@ export function createSessionPipelines(options: SessionPipelinesOptions): Sessio
         stream,
         candidates: { hand: (record) => records.candidate(sessionId, record) },
         logger,
+        signal: stopping.signal,
       });
       const { topic } = options;
       const topicExtractor =
@@ -92,6 +108,7 @@ export function createSessionPipelines(options: SessionPipelinesOptions): Sessio
               session: { segments: () => segments },
               stream,
               logger,
+              signal: stopping.signal,
             });
       const turns = createSessionTurns({
         sessionId,
@@ -105,8 +122,9 @@ export function createSessionPipelines(options: SessionPipelinesOptions): Sessio
     },
     accept(sessionId, segment) {
       const pipeline = pipelines.get(sessionId);
-      // A Session of another process, or one whose Input has ended: its Segments are stored, not analysed.
-      if (pipeline === undefined || pipeline.ended !== undefined) return;
+      // A Session of another process, one whose Input has ended, or a stopping process: its Segments are stored,
+      // not analysed.
+      if (pipeline === undefined || pipeline.ended !== undefined || stopping.signal.aborted) return;
       touch(sessionId, pipeline);
       pipeline.labels.add(segment.speaker);
       // Only a Topic Extractor reads the Session's Segments; without one nothing is kept.
@@ -126,6 +144,16 @@ export function createSessionPipelines(options: SessionPipelinesOptions): Sessio
         logger.log({ event: 'tick.failed', sessionId });
       });
       return pipeline.ended;
+    },
+    async close() {
+      stopping.abort();
+      const settling = [...pipelines.values()].map((pipeline) => {
+        clearTimeout(pipeline.expiry);
+        // The end of an Input that is already running is waited for; otherwise only the calls in flight.
+        return pipeline.ended ?? pipeline.turns.settle();
+      });
+      pipelines.clear();
+      await Promise.all(settling);
     },
   };
 }

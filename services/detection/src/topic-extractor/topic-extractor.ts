@@ -17,6 +17,9 @@ import { TIME_TOLERANCE, type Extractor, type ExtractorCall } from '../turns/tic
 import { topicBlocks, TopicExtractorOutput, topicJsonSchema, topicPrefixBlock } from './prompt.ts';
 import { applyTopicOutput, seedTagList, type TagList, type TopicTag } from './tag-list.ts';
 
+/** For a caller without a stop signal (a test of one extractor): a signal nobody aborts. */
+const NEVER_ABORTED = new AbortController().signal;
+
 export interface TopicExtractorOptions {
   readonly sessionId: string;
   readonly config: TopicExtractorConfig;
@@ -28,6 +31,8 @@ export interface TopicExtractorOptions {
   readonly session: { segments(): readonly Segment[] };
   readonly stream: DetectionStream;
   readonly logger: Logger;
+  /** Aborted when the process stops (session-pipelines.ts); without one a call cannot be cancelled. */
+  readonly signal?: AbortSignal | undefined;
 }
 
 export interface TopicExtractor extends Extractor {
@@ -88,7 +93,7 @@ export function createTopicExtractor(options: TopicExtractorOptions): TopicExtra
         schemaName: 'topic_output',
         maxTokens: config.maxTokens,
         deadline: Date.now() + config.deadlineSeconds * 1000,
-        signal: new AbortController().signal,
+        signal: options.signal ?? NEVER_ABORTED,
       },
       { schema: TopicExtractorOutput, retries: config.schemaRetries },
     ).finally(() => running.delete(carried));
