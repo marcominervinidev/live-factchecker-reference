@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - services/*
+  - packages/*
+  - tests/*
+
+# Dependency install scripts are denied unless explicitly allowed here (.claude/rules/platform.md).
+allowBuilds:
+  # The bundler (service images, ADR 0011 addendum 2026-10-28) runs its binary from the platform package.
+  esbuild: false
+  # Git hooks come from `make hooks-install` (shim into the toolbox), never from a postinstall.
+  lefthook: false

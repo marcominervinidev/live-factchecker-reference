@@ -1,0 +1,57 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "ignorePatterns": ["evals/**", "**/*.generated.*", "**/reports/**", "**/.stryker-tmp/**"],
+  "ignoreFindings": ["**/*.test.ts", "**/*.test.tsx", "tests/fixtures/**"],
+  "health": {
+    "maxCyclomatic": 20,
+    "maxCognitive": 15,
+    "maxCrap": 30,
+    "maxUnitSize": 60,
+    "thresholdOverrides": [
+      {
+        "files": ["**/*.test.ts", "**/*.test.tsx", "tests/**/steps/**"],
+        "maxUnitSize": 500,
+        "reason": "Test suites and step libraries: describe/it and step blocks are long by design"
+      },
+      {
+        "files": ["**/features/steps/**", "tests/**/steps/**"],
+        "maxCrap": 100,
+        "reason": "Step definitions run only through their scenarios and fallow estimates CRAP without coverage, so a branching assertion step reads as untested; owner decision 2026-11-02"
+      },
+      {
+        "files": ["tests/fixtures/**"],
+        "maxCrap": 150,
+        "reason": "Frozen fixture helpers of the test designer run only through their tests and fallow estimates CRAP without coverage; to be confirmed by the owner at gate 2 (#27 task 2)"
+      }
+    ]
+  },
+  "audit": {
+    "gate": "new-only"
+  },
+  "boundaries": {
+    "zones": [
+      { "name": "apps", "patterns": ["apps/**"] },
+      { "name": "services", "patterns": ["services/**"] },
+      { "name": "packages", "patterns": ["packages/**"] },
+      { "name": "tests", "patterns": ["tests/**"] }
+    ],
+    "rules": [
+      { "from": "apps", "allow": ["packages"] },
+      { "from": "services", "allow": ["packages"] },
+      { "from": "packages", "allow": [] },
+      { "from": "tests", "allow": ["packages"] }
+    ]
+  },
+  "rules": {
+    "boundary-violation": "error",
+    "circular-dependencies": "error",
+    "package-cycle": "error",
+    "unused-dev-dependencies": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["**/src/testing/**", "tests/**/steps/support/**"],
+      "rules": { "unused-exports": "warn" }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "title": "The edge serves the token and cost counters of the detection service",
+  "expected": "Wenn ich über den Eingang per HTTPS /detection/metrics abfrage, antwortet der Erkennungsdienst mit 200 und nennt die Token und Kosten seiner Modellaufrufe je Gespräch.",
+  "whyWrong": "The metric is a line in the JSON stream on stdout, with no Prometheus endpoint and no route (ticket #26, Assumptions, 'Metric form'; Contracts: no route); the edge routes only /detection/health and /detection/ready and answers /detection/metrics itself with 404 (#25 AC9, tests/api/features/edge.feature)."
+}

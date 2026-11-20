@@ -1,0 +1,240 @@
+<!-- Quelle: https://claude.ai/artifact/UnxiB5PMT6HJjHojiFWTp3, exportiert 2026-10-23, Ticket #48 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lernpfad Plattform-Engineering</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f6f8; --card:#ffffff; --fg:#1d3d5c; --muted:#4d6479; --line:#d3dde5;
+  --teal:#0f766e; --teal-soft:#d9efec; --amber:#b45309; --amber-soft:#fbe9d2; --rose:#9f1239; --rose-soft:#fbe0e6;
+  --display:"Archivo",system-ui,sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1a24; --card:#16232f; --fg:#d8e4ee; --muted:#a3b6c6; --line:#2b3c4c;
+  --teal:#2dd4bf; --teal-soft:#123a38; --amber:#f5b041; --amber-soft:#3d2a0e; --rose:#fb7185; --rose-soft:#3f1420; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1a24; --card:#16232f; --fg:#d8e4ee; --muted:#a3b6c6; --line:#2b3c4c;
+  --teal:#2dd4bf; --teal-soft:#123a38; --amber:#f5b041; --amber-soft:#3d2a0e; --rose:#fb7185; --rose-soft:#3f1420; color-scheme:dark }
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55;padding:28px 16px 64px}
+.wrap{max-width:980px;margin:0 auto}
+header{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:22px;margin:40px 0 12px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:17px;margin:20px 0 8px}
+p{max-width:72ch;margin:0 0 12px}
+.lead{font-size:19px;max-width:72ch}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pill{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.pill.ok{background:var(--teal-soft);border-color:transparent}
+.pill.wait{background:var(--amber-soft);border-color:transparent}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15.5px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+code{font-family:var(--mono);font-size:.92em}
+.figure{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:12px}
+.figure svg{display:block;min-width:900px;width:100%;height:auto}
+.figure text{font-family:var(--body);font-size:13px;fill:var(--fg)}
+.figure text.small{font-size:12px;fill:var(--muted)}
+.figure text.head{font-family:var(--display);font-weight:600;font-size:14px}
+.figure .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.figure .box.teal{stroke:var(--teal);stroke-width:2}
+.figure .box.amber{stroke:var(--amber);stroke-width:2}
+.figure .arrow{stroke:var(--muted);stroke-width:1.6;fill:none;marker-end:url(#arr)}
+.figure .arrow.amber{stroke:var(--amber)}
+.q{border-left:4px solid var(--teal);padding:10px 16px;margin:14px 0;background:var(--card);border-radius:0 10px 10px 0}
+.q h3{margin:0 0 6px}
+.q ul{margin:6px 0 0 18px;padding:0}
+.q li{margin:4px 0}
+.rec{font-weight:700;color:var(--teal)}
+ul.plain{margin:0 0 12px 20px;padding:0;max-width:72ch}
+ul.plain li{margin:5px 0}
+.note{font-size:15px;color:var(--muted);max-width:72ch}
+dl.gloss{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;max-width:72ch;margin:0}
+dl.gloss dt{font-family:var(--display);font-weight:600}
+dl.gloss dd{margin:0}
+@media (max-width:600px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} body{font-size:16px} }
+</style></head><body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket #48 · Entscheidungsübersicht · entschieden 2026-10-22</div>
+  <h1>Lernpfad Plattform-Engineering</h1>
+  <p class="lead">Das letzte Ticket der Prozess-Map ist entschieden. Du baust Teile der Plattform selbst, markiert je Task, mit denselben Toren und derselben Review-Kette wie die Agenten; ein Platform-Coach ohne Schreibrechte begleitet dich, und eine Frist von sieben Tagen schützt den kritischen Pfad. Spezifikation: <code>docs/spec/process/lernpfad.md</code>, ADR 0011 Nachtrag; Dateien in v2 auf dem Branch <code>process/lernpfad</code>.</p>
+  <div class="pills">
+    <span class="pill ok">Marker Hand: owner am Task</span>
+    <span class="pill ok">Tor 1 unverändert, Tor 2 umgedreht</span>
+    <span class="pill ok">Platform-Coach: Read, Glob, Grep</span>
+    <span class="pill ok">Frist 7 Tage, Übernahme, Nachbau</span>
+    <span class="pill ok">Erste Hand-Tasks: Toolbox-Build, nightly.yml</span>
+  </div>
+</header>
+
+<h2>1. Was schon feststeht</h2>
+<div class="tablewrap"><table>
+<tr><th>Baustein</th><th>Stand</th><th>Quelle</th></tr>
+<tr><td>Label <code>ready-for-human</code></td><td>„braucht Marcos Hand (Lernpfad, Zugang, Entscheidung)“; Zuweisung heißt „in Arbeit“; die Frontier lässt beanspruchte Tickets aus</td><td><code>docs/spec/process/tickets.md</code>, v2 <code>.claude/rules/tickets.md</code></td></tr>
+<tr><td>Rolle Platform-Engineer</td><td>Baut Dockerfiles, Compose, CI nach zwölf Faktoren; „you teach while you do it“; jede Entscheidung in drei Zeilen: was, warum, was sonst möglich war; prüft mit hadolint, <code>docker compose config</code>, actionlint, echtem Start</td><td>v2 <code>.claude/agents/platform-engineer.md</code>, <code>docs/spec/process/rollen.md</code></td></tr>
+<tr><td>Rule <code>platform</code></td><td>Gilt für Dockerfiles, Compose, Workflows, deploy, scripts, Makefile; nennt Handarbeit ausdrücklich: „some tasks the owner takes by hand (ticket Lernpfad)“</td><td>v2 <code>.claude/rules/platform.md</code></td></tr>
+<tr><td>Stack-Trennung</td><td>Hook <code>owner-stack</code> schützt <code>live-factchecker-v2</code>, <code>lfc-owner</code>; <code>make up/dev/down</code> gehört allein dir, Agenten nutzen <code>lfc-&lt;issue&gt;-…</code></td><td><code>docs/spec/process/agentenregeln.md</code> 3</td></tr>
+<tr><td>Tor 1 und Tor 2</td><td>Tor 1: Fälle und Verträge vor dem Bauen (Manifest, rote Tests). Tor 2: Diff vor dem Merge mit den drei Leitfaden-Fragen. Du bist Autor jedes PR, weil Agenten unter deinem Konto pushen</td><td><code>docs/spec/process/pr-format.md</code> 4, 7</td></tr>
+<tr><td>Skill <code>lesson</code>, <code>docs/lessons.md</code></td><td>Nur für Fehler von Agenten und deine Korrekturen, nicht für dein eigenes Lernen</td><td><code>docs/spec/process/agentenregeln.md</code> 6</td></tr>
+<tr><td>Persönlicher Skill <code>teach</code></td><td>Lag unter <code>~/.claude/skills/teach/</code>, nie im Repo; Lern-Arbeitsplätze außerhalb des Repos</td><td>altes Repo, <code>feature-prozess-teststrecke.md</code></td></tr>
+<tr><td>Altes Repo</td><td>Keine Markierung für Arbeit, die du selbst machst, keine Übergaberegel; die Rolle Platform-Engineer existierte, ohne belegte Anwendung</td><td>Prozessartefakte-Inventar</td></tr>
+</table></div>
+
+<h2>2. So könnte ein Hand-Task fließen</h2>
+<div class="figure">
+<svg viewBox="0 0 1100 300" role="img" aria-label="Fluss eines Hand-Tasks: Quiz, Tor 1, Bauen mit Begleiter, PR, Review-Kette, Tor 2; Nebenweg Frist und Übernahme">
+  <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <rect class="box" x="16" y="50" width="160" height="90" rx="10"/>
+  <text class="head" x="30" y="76">cut-tickets</text>
+  <text x="30" y="98">Quiz fragt je Task:</text>
+  <text x="30" y="116">Agent oder Hand?</text>
+  <text class="small" x="30" y="132">Hand → Body-Marker</text>
+  <path class="arrow" d="M176,95 L208,95"/>
+  <rect class="box" x="210" y="50" width="160" height="90" rx="10"/>
+  <text class="head" x="224" y="76">Tor 1</text>
+  <text x="224" y="98">Manifest, rote Tests</text>
+  <text x="224" y="116">vom Testdesigner</text>
+  <text class="small" x="224" y="132">wie bei jedem Task</text>
+  <path class="arrow" d="M370,95 L402,95"/>
+  <rect class="box teal" x="404" y="38" width="200" height="114" rx="10"/>
+  <text class="head" x="418" y="64">Du baust</text>
+  <text x="418" y="86">Branch task/&lt;issue&gt;-&lt;task&gt;</text>
+  <text x="418" y="104">Worktree, dein Stack</text>
+  <text x="418" y="122">Begleiter: erklärt, prüft,</text>
+  <text x="418" y="140">fragt; schreibt nicht</text>
+  <path class="arrow" d="M604,95 L636,95"/>
+  <rect class="box" x="638" y="50" width="150" height="90" rx="10"/>
+  <text class="head" x="652" y="76">PR</text>
+  <text x="652" y="98">Skill open-pr</text>
+  <text x="652" y="116">Review-Kette läuft</text>
+  <text class="small" x="652" y="132">Platform-Engineer reviewt</text>
+  <path class="arrow" d="M788,95 L820,95"/>
+  <rect class="box" x="822" y="50" width="130" height="90" rx="10"/>
+  <text class="head" x="836" y="76">Abnahme</text>
+  <text x="836" y="98">Richter, Belege</text>
+  <text x="836" y="116">wie sonst</text>
+  <path class="arrow" d="M952,95 L984,95"/>
+  <rect class="box" x="986" y="50" width="100" height="90" rx="10"/>
+  <text class="head" x="1000" y="76">Tor 2</text>
+  <text x="1000" y="98">du erklärst</text>
+  <text x="1000" y="116">den Diff</text>
+  <text class="small" x="1000" y="132">dann Merge</text>
+  <rect class="box amber" x="404" y="200" width="384" height="80" rx="10"/>
+  <text class="head" x="418" y="226">Frist überschritten und Pfad blockiert</text>
+  <text x="418" y="248">Label kippt auf ready-for-agent, Platform-Engineer baut,</text>
+  <text x="418" y="266">schreibt eine Lernnotiz; du baust es später daneben nach</text>
+  <path class="arrow amber" d="M504,152 L504,198"/>
+</svg>
+</div>
+<p class="note" style="margin-top:10px">Der Hauptweg nutzt die Bahnen, die es schon gibt. Neu sind nur der Marker im Quiz, der Begleit-Modus und der Nebenweg unten.</p>
+
+<h2>3. Plattformaufgaben in Inkrement 1</h2>
+<div class="tablewrap"><table>
+<tr><th>Aufgabe</th><th>Auf dem kritischen Pfad?</th><th>Eignung für Hand</th></tr>
+<tr><td><b>T1 Gerüst</b>: Workspace, Service mit Health-Route, Compose mit Caddy und Redis, Dockerfile, Stufen 0 bis 3</td><td>Ja, T1 blockiert alle anderen</td><td>Riskant: hängt alles an deinem Tempo</td></tr>
+<tr><td>Erstes Plattform-Ticket: <code>make</code>-Ziele (<code>ci-stack-up</code>, <code>test-api</code>, <code>hooks-install</code> …), Skripte aus dem alten Repo</td><td>Teilweise (Hooks warten darauf)</td><td>Mittel; in Stücke teilbar</td></tr>
+<tr><td>Nächtlicher No-Cache-Build der Toolbox (Lesson in <code>docs/lessons.md</code>)</td><td>Nein</td><td>Gut: klein, abgegrenzt</td></tr>
+<tr><td><code>nightly.yml</code> erweitern, Stack <code>lfc-ci-&lt;run&gt;</code></td><td>Nein</td><td>Gut</td></tr>
+<tr><td>T2 Redis ohne Platte, T8 Mock in der CI, T9 Eval mit Schlüsseln</td><td>Teile</td><td>Eher Begleitung als Handarbeit</td></tr>
+<tr><td>Einmalige Checkliste: Ruleset, Secrets, Sonar, Label</td><td>Nein</td><td>Handarbeit wegen Zugang, kein Lernpfad</td></tr>
+</table></div>
+
+<h2>4. Entschieden</h2>
+<p>Alle neun Empfehlungen übernommen. Die erste, hervorgehobene Zeile jedes Blocks ist die Entscheidung; die weiteren Zeilen sind verworfen.</p>
+
+<div class="q">
+<h3>Q1 · Wo hängt die Markierung</h3>
+<ul>
+<li><span class="rec">Am Task, nicht am Ticket.</span> Empfehlung. Ein Task ist ein Body-Abschnitt mit genau einem PR; ein ganzes Ticket an dich zu geben, wäre zu grob. Der Task-Abschnitt bekommt die Zeile <code>Hand: Marco</code>; das Label <code>ready-for-human</code> kommt aufs Ticket, sobald ein Hand-Task der nächste ist, und geht wieder runter, wenn er gemergt ist. Kein neues Label.</li>
+<li>Eigenes Label <code>lernpfad</code> am Ticket; die Agenten lassen das ganze Ticket liegen.</li>
+<li>Präfix im Task-Titel, etwa <code>[Hand]</code>, ohne Label.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q2 · Wann wird markiert</h3>
+<ul>
+<li><span class="rec">Im <code>cut-tickets</code>-Quiz, je Task eine Frage: Agent oder Hand.</span> Empfehlung. Dort kennst du Größe und Lage im Pfad; die Vorlage <code>ticket.md</code> bekommt das Feld.</li>
+<li>An Tor 1, wenn du Manifest und Tests abnimmst.</li>
+<li>Jederzeit per Kommentar; die Hauptsession liest es beim Session-Start.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q3 · Tor 1 für Hand-Tasks</h3>
+<ul>
+<li><span class="rec">Ja, unverändert: Manifest und rote Tests vom Testdesigner, bevor du baust.</span> Empfehlung. „Wer Code schreibt, schreibt nicht die Tests“ gilt auch für dich; rote Tests sind außerdem dein bestes Lernziel: du baust, bis sie grün sind.</li>
+<li>Nein, Hand-Tasks laufen ohne Manifest; nur Review und Abnahme.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q4 · Branch, Review, Tor 2</h3>
+<ul>
+<li><span class="rec">Gleicher Branch <code>task/&lt;issue&gt;-&lt;task&gt;</code>, gleicher Skill <code>open-pr</code>, gleiche Review-Kette; der Platform-Engineer sitzt für Hand-PRs im Reviewer-Stuhl. Tor 2 wird umgedreht: du erklärst den Diff dem Reviewer (die drei Leitfaden-Fragen), er bestätigt oder fragt nach.</span> Empfehlung. Ein PR, der nicht erklärt werden kann, wird nicht gemergt; das ist der Leitsatz des Leitfadens.</li>
+<li>Eigene Branch-Form <code>hand/…</code> und eine leichtere Kette (nur Reviewer, kein Security und Architektur).</li>
+<li>Kein Agenten-Review für Hand-PRs; nur Gates und Abnahme.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q5 · Der Begleiter</h3>
+<ul>
+<li><span class="rec">Der Platform-Engineer bekommt einen zweiten Modus „begleiten“: nur lesende Werkzeuge, kein Edit, kein Write; er erklärt, prüft mit den echten Befehlen, stellt Fragen, schlägt nie den fertigen Diff vor. Aufruf über einen Skill <code>begleiten</code> in der Hauptsession.</span> Empfehlung. Eine Werkzeugliste ohne Schreibrechte ist härter als jede Regel im Prompt.</li>
+<li>Deinen persönlichen Skill <code>teach</code> ins Repo holen und daraus den Begleiter machen.</li>
+<li>Kein eigener Modus; du nutzt den Platform-Engineer wie bisher und sagst ihm, was er nicht tun soll.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q6 · Wo landen die Erklärungen</h3>
+<ul>
+<li><span class="rec">Als Kommentar im Ticket unter dem Hand-Task, eine Notiz je Sitzung: was gelernt, was offen.</span> Empfehlung. Das Ticket ist der Plan; dort findet es die Retro wieder. <code>docs/lessons.md</code> bleibt den Agentenfehlern vorbehalten.</li>
+<li>Eigene Datei <code>docs/lernpfad.md</code> mit Spalte Ziel, wie <code>lessons.md</code>.</li>
+<li>Nur im Chat, nichts im Repo.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q7 · Frist und Übernahme</h3>
+<ul>
+<li><span class="rec">Hand-Tasks liegen vorzugsweise neben dem kritischen Pfad; das Quiz warnt, wenn einer darauf liegt. Liegt er doch dort: Frist 7 Tage ab Tor 1. Danach kippt die Hauptsession das Label auf <code>ready-for-agent</code>, der Platform-Engineer baut, schreibt als Lernnotiz die drei Zeilen je Entscheidung ins Ticket, und du baust den Task später außerhalb des Pfads nach, mit demselben Manifest.</span> Empfehlung.</li>
+<li>Keine Frist; du entscheidest je Fall mit <code>wontfix</code> oder Umlabeln.</li>
+<li>Frist in Sitzungen statt Tagen, etwa „bevor der dritte Frontier-Schritt dahinter wartet“.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q8 · Welche Aufgaben du übernimmst</h3>
+<ul>
+<li><span class="rec">Fallweise im Quiz, mit einer kurzen Lernziel-Liste in der Rule <code>platform.md</code> (Docker-Härtung, Compose-Netze, CI-Stack, später Kubernetes und Terraform). Für Inkrement 1: nicht T1, sondern der nächtliche Toolbox-Build und <code>nightly.yml</code> als erste Hand-Tasks, dazu T1 als Begleitung mit Erklär-Pflicht an Tor 2.</span> Empfehlung.</li>
+<li>Nach Kategorie: immer Compose und CI von Hand, Rest Agent.</li>
+<li>T1 selbst bauen, der Pfad wartet.</li>
+</ul>
+</div>
+
+<div class="q">
+<h3>Q9 · Agent-Bilanz und Kennzahlen</h3>
+<ul>
+<li><span class="rec">Hand-PRs bekommen in der Bilanz eine Zeile „Hand“ mit deiner Zeit statt Tokens; die Retro zählt Hand-Tasks, Übernahmen und Nachbauten.</span> Empfehlung.</li>
+<li>Keine Bilanz für Hand-PRs.</li>
+</ul>
+</div>
+
+<h2>5. Begriffe</h2>
+<dl class="gloss">
+<dt>Hand-Task</dt><dd>Ein Task, den du selbst baust. Agenten begleiten, bauen aber nicht.</dd>
+<dt>Begleiter</dt><dd>Der Platform-Engineer ohne Schreibrechte: erklärt, prüft, fragt.</dd>
+<dt>Kritischer Pfad</dt><dd>Die Kette von Tickets, hinter der alles andere wartet. In Inkrement 1 beginnt sie mit T1.</dd>
+<dt>Übernahme</dt><dd>Ein Agent baut einen Hand-Task, weil die Frist um ist; die Lernnotiz bleibt im Ticket.</dd>
+<dt>Nachbau</dt><dd>Du baust einen übernommenen Task später noch einmal, außerhalb des Pfads, mit demselben Manifest.</dd>
+<dt>Tor 1 / Tor 2</dt><dd>Deine zwei Stopps: Fälle und Verträge vor dem Bauen; Diff vor dem Merge.</dd>
+</dl>
+</div>
+</body></html>
+
+</body></html>

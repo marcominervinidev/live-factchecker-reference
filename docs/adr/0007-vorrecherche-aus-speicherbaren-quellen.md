@@ -1,0 +1,29 @@
+# 0007: Vorrecherche nur aus speicherbaren Quellen, Belegspeicher je Session, gemeinsamer Index
+
+Die **Vorrecherche (Prefetch)** von live-factchecker lädt Belege zu einem Topic, bevor eine Behauptung dazu fällt. Sie wird vom **Setting** ausgelöst (Modus als Pflichtfeld; Sprecher mit Rolle und "öffentliche Person" sowie Anfangs-Topic freiwillig mit Standardwerten) und von jedem **neuen Topic** des Topic Extractors; Unter-Topics erben, ein zurückkehrendes Topic lädt nicht neu. Geladen wird **nur aus Quellen, deren Lizenz das Speichern erlaubt**: der Faktencheck-Index (ClaimReview-Feed und RSS der Faktenchecker), amtliche Statistik (Eurostat, GENESIS, Bundesbank), Parlament je öffentlichem Sprecher (DIP, abgeordnetenwatch) sowie Wikipedia und Wikidata. **Presse und Websuche werden nie vorab geladen**; sie laufen nur live je Behauptung. Die Belege einer Conversation liegen im **Belegspeicher (Evidence Store)** je Session in Redis, getaggt nach Topic, mit Abrufzeit, Lebensdauer Session plus 15 Minuten, nie mit Transkripttext; die dauerhaft gepflegten Quellen (Faktenchecks, amtliche Tabellen) bilden den **gemeinsamen Index (Shared Index)**, der von einem geplanten Job nachgeführt wird. Die Prüfung liest zuerst den Belegspeicher nach Topic-Tags und Stichworten, dann Live-Quellen, zuletzt die Websuche; **Embeddings gibt es in Version 1 nicht**. Das Topic ist für den Nutzer sichtbar, als Tag auf der Karte und als Kapitel in der Zeitleiste. Marco hat das am 2026-10-12 entschieden.
+
+Status: accepted. Quelle: Wayfinder-Ticket "Topic und Vorrecherche: Setting erfassen, Themenwechsel erkennen, Belege vorab laden" (marcominervinidev/live-factchecker-plan#24); Research "Quellen-Landschaft" (#23), "Klassifikator-Optionen" (#32, Themenwechsel), "Rechtslage" (#6). Spezifikation: `docs/spec/topic-vorrecherche.md`. Begriffe: `CONTEXT.md` (Prefetch, Evidence Store, Shared Index neu; Setting und Topic ergänzt). Schaubild: https://claude.ai/artifact/NXuV18tJRjXgptqdqJBbkt (Kopie: docs/schaubilder/024-topic-und-vorrecherche.html). Ersetzt den `topic-tracker` aus Phase 4 des alten Briefs (Abschnitt 9.4) und dessen ADR 0008 Stufe 2 (semantischer Cache, Evidenz-Speicher) und 0012/0013 (Embeddings, Vektorstore) für das erste Inkrement.
+
+## Considered Options
+
+- **Setting als Pflicht in allen Feldern:** Ein Nutzer, der spontan mithört, scheitert am Formular. Verworfen; nur der Modus ist Pflicht, weil die Einwilligung vor dem ersten Ton geklärt sein muss (Rechtslage #6). Was die Modi im Einzelnen bedeuten, prüft die Research "Modi Sendung und Gespräch" (#40) für das Datenschutzmodell (#11).
+- **Vorrecherche nur beim Setting:** verfehlt den Themenwechsel, der den Prefetch erst nötig macht. Verworfen.
+- **Vorrecherche in jedem Tick:** Wikimedia-Limits (200 Anfragen je Minute gesamt) und Kosten. Verworfen; ein Auftrag je neuem Topic, Abkühlzeit 10 Minuten.
+- **Websuche vorab** ("Top-Suchergebnisse abrufen, chunken, indexieren", alter Brief 9.4): speichert Presse-Text (§ 44b, § 87g UrhG) und verstößt gegen die Brave-Bedingungen ohne Speicherplan; kostet Brave-Anfragen je Topic. Verworfen.
+- **Belegspeicher dauerhaft oder mandantenübergreifend:** Belege einer Session sind an ihr Topic gebunden und wertlos danach; TDM-Kopien sind zu löschen, sobald nicht mehr nötig. Verworfen; der dauerhafte Teil ist der gemeinsame Index aus lizenzierten Quellen.
+- **Gemeinsamer Index live nachgeführt:** belastet den Live-Pfad und die Rate-Limits. Verworfen; geplanter Job nachts für Feed und Tabellen, stündlich für RSS.
+- **Embeddings und Vektorspeicher in Version 1** (ADR 0012, 0013 alt): ein Belegspeicher je Session hat wenige hundert Absätze; Tag-Filter plus Stichwortsuche reichen, die Relevanzstufe der Prüfung liest die Kandidaten ohnehin. Verworfen für Version 1; "Abruf: Stichwort gegen Embeddings" wird Variable im Messaufbau der Prüfung (#39), das Embedding-Modell käme dann mit der EU-Anforderung aus ADR 0006.
+- **Topic nur intern:** Der Nutzer sieht nicht, warum welche Belege kommen. Verworfen; sichtbar als Tag und Kapitel, Bearbeiten entscheidet der Prototyp Live-Ansicht (#16).
+- **Exakte Themengrenzen im Golden Set labeln:** teuer, und kein Verfahren braucht sie. Verworfen; Version 2 bekommt je Ausschnitt eine Topic-Liste mit Minutenangabe.
+- **Vortor für Themenwechsel:** bleibt gestrichen (ADR 0004), bis die Topic-Labels zeigen, dass der Topic Extractor im Tick zu teuer oder zu spät ist.
+
+## Consequences
+
+- Das Setting bekommt ein Pflichtfeld Modus; Einwilligungsfluss und die Regeln je Modus (ob nach außen gesucht wird) entscheidet das Datenschutzmodell (#11) mit der Research #40.
+- Der Sprecher-Prefetch (Parlament) setzt voraus, dass das Setting Sprecher als öffentliche Personen markiert; "Sprecher benennen" (#20) legt fest, wie.
+- Der gemeinsame Index ist der erste dauerhafte Datenbestand des Produkts; wo er liegt, entscheidet das Datenmodell (Nebel); bis dahin Redis mit Platte nur für diesen Index, getrennt vom flüchtigen Redis der Pipeline (ADR 0018 alt).
+- Die Prüfung braucht ein zentrales Budget für Wikimedia, das Prefetch und Prüfung teilen, mit Vorrang für die Prüfung.
+- Die Vorrecherche bekommt eine Messzahl: die Prefetch-Trefferquote (Anteil der Belege einer Prüfung aus dem Belegspeicher) und die Zeit bis zum ersten Beleg mit und ohne Vorrecherche; beides ein Arm im Messaufbau der Prüfung (#39).
+- Golden Set Version 2 (#25) bekommt je Ausschnitt eine Topic-Liste mit Minutenangabe; daraus werden Erkennung, Verzögerung und Fehlalarme des Topic Extractors berichtet.
+- Alle Mengen (Artikel, Entitäten, Tabellen, Topics je Session, Abkühlzeit, Nachführung) sind Parameter mit Startwerten in der Spezifikation, keine Produktentscheidung.
+- Die Namensmaske aus ADR 0002 gilt für jede Anfrage der Vorrecherche nach außen; Suchbegriffe tragen nur Namen öffentlicher Personen.

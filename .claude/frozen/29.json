@@ -1,0 +1,351 @@
+{
+  "issue": 29,
+  "approvedAt": "2026-11-03T13:53:10Z",
+  "ticketSha256": "f3f589006f5d6463e606875b9f9ba1477251dc9135c88012a5a2c74677a9db1f",
+  "paths": [
+    "packages/contracts/src/claim-event.test.ts",
+    "packages/contracts/src/detection-event.test.ts",
+    "packages/providers/src/call-validated.test.ts",
+    "packages/providers/src/call-validated.elements.test.ts",
+    "packages/providers/src/mock/mock-claim-extractor.test.ts",
+    "services/detection/src/claim-extractor/prompt.test.ts",
+    "services/detection/src/claim-extractor/prompt.property.test.ts",
+    "services/detection/src/claim-extractor/output-schema.test.ts",
+    "services/detection/src/claim-extractor/claims.test.ts",
+    "services/detection/src/config.claim-extractor.test.ts",
+    "services/detection/src/claim-extractor/claim-extractor.test.ts",
+    "services/detection/src/claim-extractor/claim-extractor.elements.test.ts",
+    "services/detection/src/session/session-turns.rethrow.test.ts",
+    "services/detection/features/claim-extractor.feature",
+    "services/detection/features/steps/claim-extractor.steps.ts",
+    "services/detection/features/support/redis.ts",
+    "tests/acceptance/features/29/claim-events.feature",
+    "tests/acceptance/canaries/29.json"
+  ],
+  "tasks": {
+    "1": [
+      "packages/contracts/src/claim-event.test.ts",
+      "packages/contracts/src/detection-event.test.ts"
+    ],
+    "1b": [
+      "packages/providers/src/call-validated.test.ts",
+      "packages/providers/src/call-validated.elements.test.ts",
+      "packages/providers/src/mock/mock-claim-extractor.test.ts"
+    ],
+    "2": [
+      "services/detection/src/claim-extractor/prompt.test.ts",
+      "services/detection/src/claim-extractor/prompt.property.test.ts",
+      "services/detection/src/claim-extractor/output-schema.test.ts",
+      "services/detection/src/claim-extractor/claims.test.ts"
+    ],
+    "3": [
+      "services/detection/src/config.claim-extractor.test.ts",
+      "services/detection/src/claim-extractor/claim-extractor.test.ts",
+      "services/detection/src/claim-extractor/claim-extractor.elements.test.ts",
+      "services/detection/src/session/session-turns.rethrow.test.ts",
+      "services/detection/features/claim-extractor.feature",
+      "services/detection/features/steps/claim-extractor.steps.ts",
+      "services/detection/features/support/redis.ts",
+      "tests/acceptance/features/29/claim-events.feature",
+      "tests/acceptance/canaries/29.json"
+    ]
+  },
+  "taskNotes": {
+    "1": {
+      "interface": "packages/contracts: ClaimEvent (src/claim-event.ts), DetectionEvent (src/detection-event.ts), fixtures claimEventFixture and detectionEventFixture; full field rules in the header of claim-event.test.ts. packages/providers (@lfc/providers, new workspace): src/model-adapter.ts port (ModelRole, Thinking, ContentBlock, ModelRequest with deadline in epoch ms and AbortSignal, Usage, AdapterResult ok/error with kinds fatal, retryable, timeout, ModelAdapter), src/call-validated.ts callValidated(adapter, request, { schema: zod, contract?, elementLists?, retries? }) -> CallOutcome (valid with dropped elements, or schema_failure, adapter_error, timeout, fatal); src/mock/mock-claim-extractor.ts createMockClaimExtractor({ expectations, latencySeconds, invalidCalls? }) and parseExpectations(jsonl). Headers of call-validated.test.ts and mock-claim-extractor.test.ts.",
+      "implementerPaths": [
+        "packages/contracts/src/claim-event.ts",
+        "packages/contracts/src/detection-event.ts",
+        "packages/contracts/src/index.ts",
+        "packages/contracts/src/testing/fixtures.ts",
+        "packages/contracts/json-schema/ (generated)",
+        "packages/contracts/README.md",
+        "packages/providers/ (package.json with zod, vitest.config.ts, tsconfig.json, README.md, src/*)",
+        "commitlint.config.mjs (scope providers)",
+        ".claude/rules/pipeline.md (file map)"
+      ],
+      "why": "The mock reads the request blocks in the text form of the prompt (harness text mode), so Task 2 renders that form and the mock parses it; the shared format is pinned in prompt.test.ts and in the header of mock-claim-extractor.test.ts. call-validated.elements.test.ts pins the element-wise contract check (gate 1, owner 2026-11-03, question 1: \"Je Element; AC9/AC10 auf „kein JSON, Schemaverstoß oder Adapterfehler“ schärfen\")."
+    },
+    "2": {
+      "interface": "services/detection/src/claim-extractor/prompt.ts (renderSetting, prefixBlock, attributionBlock, selectContext, createClaimPrompt -> { next(call, claims), listedIds }), output-schema.ts (ClaimExtractorOutput, claimExtractorJsonSchema, normTokens, claimExtractorContract), claims.ts (lastWordEnd, createSessionClaims). Headers of prompt.test.ts, output-schema.test.ts, claims.test.ts.",
+      "implementerPaths": [
+        "services/detection/src/claim-extractor/prompt.ts",
+        "services/detection/src/claim-extractor/output-schema.ts",
+        "services/detection/src/claim-extractor/claims.ts",
+        "services/detection/package.json (dependencies @lfc/providers, zod)"
+      ],
+      "why": "Exact strings were computed by evals/src/harness/prompt.py, schemas.py and util.py; the delta Claims follow the harness rule (owner decision on gate 1 question 9 of 2026-11-03: \"Harness-Regel: zusätzlich die vom Deckel verdrängten listen\"): every Claim of the Session not in the Claim list block, as pipeline.py delta_cards does (`[c for c in self.known_until(t) if c[\"id\"] not in ps.frozen_ids]`), so with more than 100 Claims the displaced ones as well."
+    },
+    "3": {
+      "interface": "loadConfig(env).claimExtractor (header of config.claim-extractor.test.ts); createClaimExtractor (header of claim-extractor.test.ts); POST /sessions with optional { setting, speakerNames }, POST /sessions/{id}/end, Redis stream session:<id>:detection with field event (header of features/steps/claim-extractor.steps.ts); createSessionTurns of #28 task 3 catches tick() rejections and logs tick.failed { sessionId, turnId } (session-turns.rethrow.test.ts). Log events claim_extractor.call, claim_extractor.dropped, claim.repeat, claim.duplicate, candidate.created.",
+      "implementerPaths": [
+        "services/detection/src/claim-extractor/claim-extractor.ts",
+        "services/detection/src/session/ (Setting at creation, end route, detection stream writer in sessionKeys, Candidate records, session-turns.ts catch)",
+        "services/detection/src/config.ts",
+        "services/detection/src/main.ts",
+        "services/detection/Dockerfile (copies the prompt file)",
+        "compose.yml (MODEL_ADAPTER=mock, prompt path, expectations of the CI mock run)",
+        "packages/service-kit/src/logger.ts (fields claimId, candidateId, reason, attempts, outcome)",
+        ".claude/rules/platform.md (log fields)",
+        "services/detection/README.md"
+      ],
+      "needs": [
+        "#28 task 3 merged (src/session/session-turns.ts, features/steps/turn-building.steps.ts with the reused steps)",
+        "T2 task 2 merged (@lfc/inputs sttRecordingInput, tests/fixtures/golden-window.mjs)"
+      ],
+      "why": "AC20 and AC21 are on stage 2a, not 3 (gate 1, owner 2026-11-03, question 4: \"Stufe 2a statt 3, wie bei #27\"): the stage-3 client reaches the edge only. The tick() rejection case is AC22 (owner condition of 2026-11-03; gate 1, owner 2026-11-03, question 7: \"Angenommen, mit Log-Ereignis `tick.failed`\"). createModelCallRecorder of #26 task 1 (PR #135) is not used: token and cost records stay T7's (ticket, Contracts).",
+      "gate1-2026-11-03": [
+        "compose.yml sets MODEL_ADAPTER=mock (owner decision on gate 1 question 12 of 2026-11-03: \"Der 2a-Lauf ersetzt das Abnahmeprotokoll; Aufgabe 3 hält fest, dass compose.yml MODEL_ADAPTER=mock setzt\"); without it the acceptance cases run against a service without Claim Extractor.",
+        "packages/contracts/README.md, line of the Claim event: the rule \"emittedAt nicht vor lastWordEnd\" holds when the Session clock is the audio time (replay); live with a wall clock (T7) it may break (owner decision on gate 1 question 13 of 2026-11-03: \"Regel „emittedAt nicht vor lastWordEnd“ mit der Bedingung (Sitzungsuhr = Audiozeit) in die README-Zeile des Vertrags\")."
+      ]
+    }
+  },
+  "pyramidNote": "Counted like tools/check_test_pyramid.py: 195 tests, stage 1 185 it-calls in 13 files (95 %), stage 2a 10 scenarios in claim-extractor.feature (5 %), stages 3 and 4 none. The ticket is mostly pure logic (prompt, schema, Claims, mock, callValidated) and keeps every error and boundary case on stage 1; stage 3 is unreachable for AC20/AC21 (gate 1, owner 2026-11-03, question 4: \"Stufe 2a statt 3, wie bei #27\"), so 2a carries the replay. Acceptance: three cases through the edge and the canary. Updated on 2026-11-18 after the unlock of A7/A8 (two cases): 197 tests, stage 1 187 it-calls (95 %), stage 2a 10 scenarios; A10 (two cases) and A3b (one case) follow with their own unlock.",
+  "redRunHash": "sha256 over the output without ANSI codes, blank lines, the vitest lines 'Duration' and 'Start at' and per-test timings (' <n>ms' at line end), /workspace replaced by <root>",
+  "redRun": {
+    "packages/contracts/src/claim-event.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/claim-event.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./claim-event.ts; tools/classify_red_reason.py",
+      "sha256": "4ff9d091bc61304b996a213876d2cf0d5f610267686868d8db844c4d4c4e8e6f",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "packages/contracts/src/detection-event.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/detection-event.test.ts'",
+      "base": "3cee025d (week/2026-w47 with #29 task 3) plus the #32 gate-1 commit (frozen red tests of #32; recorded on a37e0ae9, the R3 amend by unlock-30-32-redruns.sh changes only .claude/frozen/32.json) plus both envelope patches of this unlock (29-unlock-envelope-contract.patch, 29-unlock-envelope-writer.patch), i.e. task/32-1 at this commit; the contract DetectionEvent is still at envelope schemaVersion 1 (since #29 task 1)",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour of #32: the contract still has envelope schemaVersion 1, so the three version-2 cases fail: parses an envelope of type claim unchanged, accepts a sessionId of 64 characters, rejects schemaVersion = 1); 3 failed, 12 passed; tools/classify_red_reason.py",
+      "sha256": "ab37a79a87e2540dcfd8464799abbf3d36b128412469a8ed65e6c4232d147cea",
+      "sha256Normalised": true,
+      "recordedBy": "test designer of #32, 2026-11-19, in a throwaway clone on the base above (two runs, same normalised hash; same hash as the stand-in run of 2026-11-18)"
+    },
+    "packages/providers/src/call-validated.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/providers src/call-validated.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./call-validated.ts; tools/classify_red_reason.py",
+      "sha256": "3db92b60d95cb25bfa50f136e57422f588cf6c28baff12622da7c7e4952c8ddd",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "packages/providers/src/call-validated.elements.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/providers src/call-validated.elements.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./call-validated.ts; tools/classify_red_reason.py",
+      "sha256": "eba39e8a191ffbfcbe75981dbf722eade8a15bc380bc9d923e4702bbf7026606",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "packages/providers/src/mock/mock-claim-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/providers src/mock/mock-claim-extractor.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./mock-claim-extractor.ts; tools/classify_red_reason.py",
+      "sha256": "05aaa2e798b68506c8ed3aa52ba12d1d0132fae1ef616e5c9b989f8260f62c30",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "services/detection/src/claim-extractor/prompt.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/prompt.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./prompt.ts; tools/classify_red_reason.py",
+      "sha256": "3baf571ab6c61b14089233100f8ddd9d49972ae96975510b0c8f9cd0998edac0",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "services/detection/src/claim-extractor/prompt.property.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/prompt.property.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./prompt.ts; tools/classify_red_reason.py",
+      "sha256": "457e7a2585a6e451db8b301ec3b627934570f7f24da0e017c8872e60f5443d1d",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "services/detection/src/claim-extractor/output-schema.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/output-schema.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./output-schema.ts; tools/classify_red_reason.py",
+      "sha256": "128ea97e36aa77b05800dfa1221bb4024f17d80b813be59121a10b45d87a275d",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03; hash re-recorded after the unlock patch (critic 2026-11-05; output-schema.test.ts by the test designer on 2026-11-06 for the #48 variant) (same exit code and reason, vitest's code frame shows re-wrapped lines)"
+    },
+    "services/detection/src/claim-extractor/claims.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/claims.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./claims.ts; tools/classify_red_reason.py",
+      "sha256": "cc0b67c283e552218b6eb79f53d52911b5eb352a1c1e6ba363b4419d2896ba98",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03"
+    },
+    "services/detection/src/config.claim-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/config.claim-extractor.test.ts'",
+      "base": "ed404170 plus 29-unlock-a7-a8.patch, 29-unlock-b2.patch, 29-unlock-start.patch and 29-unlock-verifier-prompt.patch (task/29-3 after this unlock)",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour); tools/classify_red_reason.py",
+      "sha256": "2599b4f171b585d32ac968f88f12079ba5366aedc70530d72a9b53a750c2b055",
+      "sha256Normalised": true,
+      "recordedBy": "test designer of #30, 2026-11-18, in a throwaway clone of ed404170 with the four unlock patches (two runs, same normalised hash; 30 failed, 2 passed of 32 as before the patch; the hash before the patch, 2d277adb, was reproduced on the same clone)"
+    },
+    "services/detection/src/claim-extractor/claim-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/claim-extractor.test.ts'",
+      "base": "3cee025d (week/2026-w47 with #29 task 3) plus the #32 gate-1 commit (frozen red tests of #32; recorded on a37e0ae9, the R3 amend by unlock-30-32-redruns.sh changes only .claude/frozen/32.json) plus both envelope patches of this unlock (29-unlock-envelope-contract.patch, 29-unlock-envelope-writer.patch), i.e. task/32-1 at this commit; the module ./claim-extractor.ts of #29 task 3 exists there and its writer still writes envelope schemaVersion 1",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour of #32: the written envelope carries schemaVersion 1, the case at :266 expects 2: appends one contract-valid envelope with the Claim, c-01, at the return time of the call); 1 failed, 16 passed; tools/classify_red_reason.py",
+      "sha256": "5515a9e1e06d3c3daecb70c5285535f12bd15295c3682820515b38a44f4a89db",
+      "sha256Normalised": true,
+      "recordedBy": "test designer of #32, 2026-11-19, in a throwaway clone on the base above (two runs, same normalised hash)"
+    },
+    "services/detection/src/claim-extractor/claim-extractor.elements.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/claim-extractor/claim-extractor.elements.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./claim-extractor.ts; tools/classify_red_reason.py",
+      "sha256": "ec79bb93899b8961476113025379f235563241b8d06b65485315cd907bf57f3f",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash); re-recorded by the test designer on 2026-11-06 after the A7/A8 unlock (same exit code and reason; 5 of 5 runs, in an earlier round 1 of 5 runs interleaved stdout and stderr differently with the same lines), confirmed by the critic"
+    },
+    "services/detection/src/session/session-turns.rethrow.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/session/session-turns.rethrow.test.ts'",
+      "base": "092e0184 (td-29: main 15d200f5 plus #27 task 3, #28 task 1, #28 task 2, local stand-in) plus the frozen files of #29; re-recorded on main after #28 task 3 and T2 task 2 are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./session-turns.ts; tools/classify_red_reason.py",
+      "sha256": "31abc9dfd1c0cb1d5a48764162ab63a2e8254beae5fe8a639aadf6d7aad71530",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-03, re-recorded after the gate 1 decisions (two runs, same normalised hash)"
+    },
+    "services/detection/features/claim-extractor.feature": {
+      "command": "BUILDX_CONFIG=/tmp/claude-501/buildx-lfc COMPOSE_PROJECT_NAME=lfc-29-td WS=@lfc/detection make test-integration",
+      "base": "ed404170 plus 29-unlock-a7-a8.patch, 29-unlock-b2.patch, 29-unlock-start.patch and 29-unlock-verifier-prompt.patch (task/29-3 after this unlock)",
+      "exitCode": 2,
+      "reason": "red: 10 of 41 scenarios (the scenarios of #29) fail for missing behaviour (no end route, empty detection stream, no claim extractor log events); the 31 scenarios of #27 and #28 pass; the three scenarios with hand-written labels (:66, :106, :181) fail at the same steps as before, not at the expectations",
+      "sha256": "a9eea1a04b681ef7e36998ef1f5b5ee4fec83f82f39870c12751d1e11115b067",
+      "sha256Normalised": true,
+      "recordedBy": "test designer of #30, 2026-11-18, in a throwaway clone of ed404170 with the four unlock patches (two runs, same normalised hash; 41 scenarios: 31 passed, 10 failed; 428 steps; the same 10 scenarios fail at the same steps as before the patch, only the step locations of claim-extractor.steps.ts move by four lines; the hash before the patch, 2ee06ebd, was reproduced on the same clone)",
+      "sha256Scope": "the cucumber section only (from the line '$ cucumber-js' up to, not including, the teardown line 'LFC_SECRETS_DIR=…'), normalised as redRunHash says and without cucumber's duration line ('<m>m <s>s (… executing your code)'); the docker build and container lines before it change order and ids from run to run"
+    }
+  },
+  "sha256": {
+    "packages/contracts/src/claim-event.test.ts": "aabf48bde54d17bf9779fcf83b7ab061cee540dcf56b83011a8b0d5b31bfd9b7",
+    "packages/contracts/src/detection-event.test.ts": "712a33a14d31eacd7f470342955dd702b9b6f0a763d6f905837b510bb7c56827",
+    "packages/providers/src/call-validated.test.ts": "0a7430428cbbadf4ca118308a7f049d0708a900f635916c23cb3dcdc7b6a3e0b",
+    "packages/providers/src/call-validated.elements.test.ts": "0c316963198e34263e8c7ffa39ee5459014cb4d29e5bd06976c7636b7009348c",
+    "packages/providers/src/mock/mock-claim-extractor.test.ts": "c0ade5fd70dc2b2c5701d61cfd71e254960a9f40f54ee7d8e76ebd1f082d8550",
+    "services/detection/src/claim-extractor/prompt.test.ts": "9b6496b708cd85780d43d30e15bd470d9ffe7a06dd31d264afa986f0be8bc7ab",
+    "services/detection/src/claim-extractor/prompt.property.test.ts": "41c10636d60795319ac4590342f6878c4318434f2968ac50f96cb7546f018f8e",
+    "services/detection/src/claim-extractor/output-schema.test.ts": "f6bc8da5b58eb1ce6b866183bd605be29ae3c6aa1f78cebc0a4639035ec7f97a",
+    "services/detection/src/claim-extractor/claims.test.ts": "2547d5df3a6863e69afce744a417d5b950de5169fea8571cebc777945058d404",
+    "services/detection/src/config.claim-extractor.test.ts": "ee594f14017484b0c64edaa6395a57eb9025bd7ffd1dddfde5dfcafcf4f05fcd",
+    "services/detection/src/claim-extractor/claim-extractor.test.ts": "0a8608a6e7edcd0d070c07e8d3c0f4e55d26689803ecd71a87959427ba8b8845",
+    "services/detection/src/claim-extractor/claim-extractor.elements.test.ts": "b1490fa3f199410eb26d9dceed344d3f64e2f60e1b7c78ffac1adab055da1545",
+    "services/detection/src/session/session-turns.rethrow.test.ts": "11e7855aba35965cd95f5c083a28897a85f2311c2393a55e1848ebd7aeab3229",
+    "services/detection/features/claim-extractor.feature": "916f33bf03dd271e859027b04e5d31cacec3960b8bd2ba6c1ab2bb3f019fec80",
+    "services/detection/features/steps/claim-extractor.steps.ts": "1147a43c9798b1a1a68404d85c9b60dd8a041099293424443c0b588cbfd092a0",
+    "services/detection/features/support/redis.ts": "201c55f9dc8a6d1033215d1ac698014c571ad51448abb6e52c81715785113de6",
+    "tests/acceptance/features/29/claim-events.feature": "0165a0c64ba3d5d97f464618d21223fc92cdbc66a70328e9b3ea0f5f18ca838b",
+    "tests/acceptance/canaries/29.json": "aa7c8584558e9be7300cfbe56774f15fa9934f6f506a43c96445fd3e72af4316"
+  },
+  "followUp": [
+    "After #27 is closed: switch features/steps/session.steps.ts to features/support/redis.ts (withRedis, allKeys, contentOf) instead of its own copies."
+  ],
+  "ticketSha256Note": "sha256 of `gh issue view 29 --json body -q .body` after the AC8 addition of 2026-11-06 (owner answer to question 4 of task 2)",
+  "ownerDecisions": {
+    "date": "2026-11-03 (gate 1, Marco): 'Alle Fragen wie empfohlen; bei Frage 9 mit zwei Empfehlungen die des Kritikers (Harness-Regel).' Record with quoted questions: https://github.com/marcominervinidev/live-factchecker-v2/issues/29#issuecomment-6605189681",
+    "q1": "contract violation per element; repeat only for no JSON, schema violation or adapter error (ADR 0004 addendum 2026-10-26)",
+    "q2": "internal route POST /sessions/{id}/end, answers once all calls are back",
+    "q3": "MODEL_ADAPTER empty: service runs without Claim Extractor; with mock, prompt file and expectations are mandatory",
+    "q4": "AC20 and AC21 on stage 2a, not 3",
+    "q5": "tests pass A -> Kallac Haqy, B -> Hukgl Suubayy at Session creation",
+    "q6": "Session without Setting: mode 'Gespräch' without Speakers and Topic; a 2a scenario pins that it runs",
+    "q7": "AC22 accepted, log event tick.failed",
+    "q8": "Claim event rules accepted",
+    "q9": "harness rule: delta also lists Claims displaced by the cap",
+    "q10": "names of env vars, log events and stream key accepted",
+    "q11": "a call lost at the deadline counts 15 s",
+    "q12": "2a run replaces the acceptance protocol; compose.yml sets MODEL_ADAPTER=mock",
+    "q13": "README line: emittedAt not before lastWordEnd, holds while Session clock = audio time",
+    "q14": "prompt compared trimmed like the harness",
+    "q15": "ticket: public is the bool of sprecher.md 1; unit case for refersTo to a missing expectation added; mock token values stay free",
+    "task2-q4-2026-11-06": "A4-B"
+  },
+  "unlocks": [
+    {
+      "file": ".claude/frozen/29.json",
+      "date": "2026-11-05",
+      "by": "owner",
+      "reason": "task 1 split into 1 (contract: the two files in packages/contracts) and 1b (model adapter port and mock: the three files in packages/providers), because tools/check_pr_size.py blocks task 1 in one PR (869 > 800 production lines) and tools/check_red_before_green.py accepts a partial PR only per task; no test file, hash or redRun entry changes."
+    },
+    {
+      "files": [
+        "services/detection/src/claim-extractor/claims.test.ts",
+        "services/detection/src/claim-extractor/output-schema.test.ts",
+        "services/detection/src/claim-extractor/prompt.property.test.ts",
+        "services/detection/src/claim-extractor/prompt.test.ts"
+      ],
+      "date": "2026-11-06",
+      "by": "owner",
+      "reason": "task 2: all four files formatted with Prettier 3.9.10 because pnpm format:check was red (layout and trailing commas only, token stream and comments identical). prompt.test.ts: the case 'carries output schema 4.1 without discarded, exactly as the harness requests it in product mode' contradicted 'starts with the instruction text of claim_extractor.v2.de.txt byte for byte' (line 80 of the instruction file names `discarded` for the diagnostic mode); it now checks everything the prefix adds after the instruction, as AC1 says ('the output schema 4.1 without `discarded`'). output-schema.test.ts, three defects: (1) the fixture called 'the example of spec 4.1' named one Segment (`segmentIds: ['s-0412']`) for a wording across two; it now names both Segments as docs/spec/erkennung-modellrollen.md:56 has them (:85: 'alle Segmente, aus denen die Behauptung gebaut ist'). Owner's answer to question 4: 'A4-B'. A new describe block with 13 cases pins the rule decided for #48 on 2026-11-03 (question 13: 'jede genannte Id muss Wörter des Wortlauts enthalten') in the stricter form the harness applies ('Ein Vorkommen des Wortlauts muss genau die genannten Segmente abdecken'), as an element violation `$.claims[<i>].segmentIds` with reason segment_ids; every expectation was printed by the harness function check_claim_contract_in_segments (Python 3.12.7, 2026-11-06); AC8 of the ticket carries the rule. (2) The 'rejects a Claim without %s' and 'rejects a Candidate without %s' cases deleted the field by computed name (@typescript-eslint/no-dynamic-delete); they now build a copy without the field (helper `without`). (3) Prettier as above. Drafted by the test designer, approved by the critic; the redRun hash of output-schema.test.ts moved, exit code and reason are the same."
+    },
+    {
+      "files": [
+        "services/detection/features/steps/claim-extractor.steps.ts",
+        "services/detection/features/support/redis.ts",
+        "services/detection/src/claim-extractor/claim-extractor.elements.test.ts",
+        "services/detection/src/claim-extractor/claim-extractor.test.ts",
+        "services/detection/src/config.claim-extractor.test.ts",
+        "services/detection/src/session/session-turns.rethrow.test.ts"
+      ],
+      "date": "2026-11-06",
+      "by": "owner",
+      "reason": "task 3, before its implementation starts: the six files formatted with Prettier 3.9.10 (layout and trailing commas only); eleven lint findings fixed in the tests without an exception (helper withoutTimeAndService instead of rest destructuring into unused variables, braces around a void arrow body, `cause` on a rethrown error, a typed tuple for speakerNames); the path variable `secretFile` renamed to `redisPasswordPath` because Semgrep reported node_secret, as decided for #28 on 2026-11-05; two type errors fixed (possibly undefined event read with optional chaining, ioredis zrange stop as '-1' as in the unlock of #27). No assertion changes its meaning. Drafted by the test designer, approved by the critic; all files stay red for the same reason; the redRun hash of config.claim-extractor.test.ts moved, exit code and reason are the same. The files themselves get the patch 29-3-unlock-with-types.patch when they enter the task 3 branch from td-29."
+    },
+    {
+      "files": [
+        "services/detection/src/claim-extractor/claim-extractor.elements.test.ts"
+      ],
+      "date": "2026-11-18",
+      "by": "owner",
+      "reason": "task 3, before its implementation, owner decisions of 2026-11-06 (Marco: 'a10 ja, a5 ja A8 ja … a7 ja  alle A ja'). A8 ('Wird `invalid` unter `dropped` gezählt und als `claim_extractor.dropped` mit eigenem festem Grund geloggt?', recommendation 'Feldnamen dürfen mit, Text nie'): a Claim whose Claim event would break the contract takes no id, counts in counters.dropped and is logged as claim_extractor.dropped with sessionId, turnId and a fixed reason. A7 ('Bekommen Candidates die Grenzen des Claim-Ereignisses (200, 1000, und 1000 für `note`), verworfen vor der Id?'): a Candidate whose speaker exceeds 200, verbatim 1000 or note 1000 characters (code points, as the Claim event contract counts; the boundary case uses 200 x U+1F600) takes no Candidate id, reaches no Candidate port and no candidate.created, and is counted and logged the same way (.claude/rules/pipeline.md: 'nothing is silently dropped'). Decided by the test designer under owner decision P1 of 2026-11-06 ('p1 ja') and reported, not asked: the fixed reason INVALID_REASON = 'ungueltig'; an over-long Candidate takes the same reason; field names stay out of the log (the ticket names exactly six new log fields). Header extended, the helper run() records what the Candidate port receives, one new describe block with one case per decision. No existing case changes; Prettier clean, ESLint clean with a stand-in module. Drafted by the test designer, approved by the critic (critic-29b.md, Nachlauf); the file stays red for the same reason, its redRun hash moved because the import line moved."
+    },
+    {
+      "files": [
+        "services/detection/features/claim-extractor.feature"
+      ],
+      "date": "2026-11-18",
+      "by": "owner",
+      "reason": "task 3, before its implementation: claim-extractor.feature, scenario 'The detection stream expires with the Session …' (AC16), Session lifetime 3 s instead of 6 s (title, 'the Session lifetime is 3 seconds', 'at most 3 seconds') plus a three-line comment. The reused step 'the lifetime of the Session has run out' (features/steps/session.steps.ts of #27, frozen in 27.json) sleeps the whole lifetime and then waits up to 3 s under cucumber's default step timeout of 5 s, so 6 s always timed out ('function timed out, ensure the promise resolves within 5000 milliseconds', found by the task 3 implementer on 2026-11-06); session.feature uses the same step with 2 and 3 s. Changing the step or the global timeout would unlock #27 or every scenario; decided by the test designer under owner decision P1 of 2026-11-06 ('p1 ja'). AC16 is still shown by the expiry itself. Without the implementation the same 10 scenarios stay red for missing behaviour; with the implementation of task 3 all 41 pass (two runs). Drafted by the test designer, approved by the critic (critic-29b.md, Nachlauf 2); the redRun is re-recorded on ed404170 (exit 2, 10 of 41 failed)."
+    },
+    {
+      "files": [
+        "services/detection/features/steps/claim-extractor.steps.ts"
+      ],
+      "date": "2026-11-19",
+      "by": "owner",
+      "reason": "task 3, before its implementation: the step 'the expectations of the mock are these labels:' writes `start` from the table row number (critic of #30, finding 11, way A: 'Eigene kleine Entsperrung: Der Schritt schreibt `start` aus der Zeilennummer der Tabelle. Eine Zeile in `claim-extractor.steps.ts`, neuer Hash in `29.json`.'). Reason, as the critic found it: 'Der eingefrorene Schritt … schreibt je Zeile `id, speaker, sentence, verbatim, type, checkworthiness, kind, refersTo, repeatOf`, aber kein `start`. `parseExpectations` verlangt es (`packages/providers/src/mock/mock-claim-extractor.ts:41`, `start: z.number()`). Nachgestellt in der Toolbox mit genau so einer Zeile: `THROWS: expectations line 1: invalid start`.' The row number keeps the table order as the answer order (scenario 5 of #30 expects c-01 for x-61 and the gap at x-62). Critic of #30, round 2: 'Der Patch zu Befund 11 ist in Ordnung' (no collision with 29-unlock-a7-a8.patch and 29-unlock-b2.patch, dry run 41 scenarios, 428 steps, none undefined, Prettier and ESLint clean). Without the implementation the same 10 scenarios stay red for missing behaviour; the redRun is re-recorded because the step locations in the failure output move by three lines."
+    },
+    {
+      "files": [
+        "services/detection/features/steps/claim-extractor.steps.ts",
+        "services/detection/src/config.claim-extractor.test.ts"
+      ],
+      "date": "2026-11-19",
+      "by": "owner",
+      "reason": "task 3, before its implementation: the step library's start() (claim-extractor.steps.ts) and env() of config.claim-extractor.test.ts set VERIFIER_PROMPT_FILE to evals/configs/prompts/verifier.v2.de.txt. Gate 1 of #30, owner 2026-11-18 ('Tor 1, wie empfohlen. Komplett für 30 und für 32.'), recommendation of question 1 'Was tut der Dienst bei gesetztem MODEL_ADAPTER ohne VERIFIER_PROMPT_FILE: (a) ohne Verifier laufen oder (b) den Start verweigern?': (b), the service refuses to start, so AC18 of #30 holds for every configuration (.claude/frozen/30.json, src/config.verifier.test.ts). Without this unlock every frozen #29 test that starts the service or loads the configuration with MODEL_ADAPTER=mock would fail at startup once #30 task 3 exists. The mock Verifier accepts every Claim after 0 s without a script (MOCK_VERIFIER_LATENCY_SECONDS default 0), so #29's expected times stay. Announced in the header of unlock-29-start.sh ('folgt es als eigener Patch mit eigenem Skript'); drafted by the test designer of #30 (.owner-pakete/td30/29-unlock-verifier-prompt.patch), checked by the critic of #30 (round 4). Prettier clean; ESLint reports the same 11 findings as before the patch (types of the missing task 3 configuration), none new. Without the implementation the same tests stay red for missing behaviour; both redRuns are re-recorded because line numbers in the failure output move."
+    },
+    {
+      "files": [
+        "packages/contracts/src/detection-event.test.ts",
+        "services/detection/src/claim-extractor/claim-extractor.test.ts"
+      ],
+      "date": "2026-11-20",
+      "by": "owner",
+      "reason": "#32 (T6) adds the member `topic` to the detection stream envelope, so the envelope goes to schemaVersion 2 for every member, `claim` included, and the Claim event stays at 1 (packages/contracts/README.md, decision of 2026-11-05: 'when T6 adds `topic`, the envelope gets schemaVersion 2 (every member, `claim` included; the writer writes the current version) and the Claim event stays at 1'). Owner decision O1 at gate 1 of #32 on 2026-11-18 (Marco: 'Tor 1, wie empfohlen. Komplett für 30 und für 32.'; question: 'Hülle auf Version 2, mit Entsperrung zweier #29-Dateien im PR von #32 und einem datierten Nachtrag in ADR 0005?'). detection-event.test.ts: valid() at schemaVersion 2, the rejected version is 1, the title of the case 'topic arrives with T6' adjusted (its assertions stay: an envelope of type topic carrying a Claim is still rejected), four comment lines and the interface comment at :7 (z.literal(2)). claim-extractor.test.ts:266: the written envelope carries schemaVersion 2 (a trailing comment). Applied as one owner commit on task/32-1 before the contract commit of #32, because the contract commit may touch nothing outside packages/contracts/ (scripts/check-contract-change.sh) and so cannot change this manifest. Drafted by the test designer of #32 (.owner-pakete/td32/29-unlock-envelope-v2.md); both files red for the right reason on the base, Prettier and ESLint clean."
+    }
+  ]
+}

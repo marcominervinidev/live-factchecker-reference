@@ -1,0 +1,2 @@
+# Run artefacts hold the run's token in traces and aria snapshots; nothing from a run enters the repo.
+reports/

@@ -1,0 +1,432 @@
+<!-- Quelle: https://claude.ai/artifact/7zwDnnBKwG2Jb7V4k13cpX, exportiert 2026-10-23, Ticket #46 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Testteam und Testpyramide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubild in voller Breite; oben die Bahn eines Tickets von links nach rechts mit den zwei Toren, unten die Nebenbahn der Golden-Set-Regression; dieselben Tokens wie die anderen Seiten der Prozess-Map; Schrift nie schwarz. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Prozess-Map · Ticket „Testteam und Testpyramide“ · Schaubild der Entscheidung · 2026-10-18</div>
+<h1>Testteam und Testpyramide</h1>
+<p class="lead">Entschieden in zwei Runden. Sechs Stufen wie im alten Repo, aufgebohrt; Abnahme aus Nutzersicht im PR vor Tor 2 mit Kanarienvogel und Richter auf Fable 5.1; Rot-vor-Grün, Stryker und Quarantäne als Gates aus Code; Golden-Set-Regression in drei Stufen. Spezifikation <code>docs/spec/process/testteam.md</code>, Nachtrag ADR 0011; Dateien in live-factchecker-v2, Branch <code>process/rollen</code>, Commit 12c2512.</p>
+<nav class="nav"><a href="#bahn">Schaubild</a><a href="#v2">Was liegt</a><a href="#alt">Altes Repo</a><a href="#markt">Marktanalyse</a><a href="#golden">Golden Set</a><a href="#annahmen">Annahmen</a><a href="#fragen">Fragen</a></nav>
+</header>
+
+<h2 id="bahn">Die Bahn eines Tickets und die Nebenbahn des Golden Sets</h2>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 560" role="img" aria-label="Oben die Bahn eines Tickets: Ticket mit Akzeptanzkriterien, Testdesigner, Kritiker mit höchstens zwei Runden, Tor 1 bei Marco mit Manifest, Implementierer im Worktree, dann die Gates Stufe 0 statisch, Stufe 1 Unit, Stufe 2 Integration, Stufe 3 System, Mutation nachts, Tor 2 Merge bei Marco, Abnahmelauf als Code, Richter auf anderem Modell mit Kanarienvogel, Ticket-Schluss als Code. Unten die Nebenbahn der Golden-Set-Regression in drei Stufen: jeder PR Mock-Lauf kostenlos, auf Anforderung ein echter Lauf je Arm für etwa elf Dollar von Marco gestartet, vor dem Release ein voller Lauf gegen die Schwellen. Ein durchgestrichener Healer steht außerhalb.">
+  <rect class="zone" x="10" y="10" width="980" height="300" rx="8"/>
+  <text class="lab" x="24" y="32">Bahn eines Tickets</text>
+  <text class="t3" x="190" y="32">wer Code schreibt, schreibt nicht die Tests; Erwartungen gehören Marco</text>
+
+  <rect class="box" x="24" y="60" width="118" height="54" rx="6"/>
+  <text class="t" x="34" y="80">Ticket</text>
+  <text class="t3" x="34" y="95">Akzeptanzkriterien</text>
+  <text class="t3" x="34" y="108">Verträge, Glossar</text>
+
+  <rect class="box box-ok" x="166" y="60" width="130" height="54" rx="6"/>
+  <text class="t" x="176" y="80">Testdesigner</text>
+  <text class="t3" x="176" y="95">Opus 5.5 · Features, Steps,</text>
+  <text class="t3" x="176" y="108">rote Unit-Tests, Abnahmefälle</text>
+
+  <rect class="box box-ok" x="320" y="60" width="118" height="54" rx="6"/>
+  <text class="t" x="330" y="80">Kritiker</text>
+  <text class="t3" x="330" y="95">Fable 5.1 · Veto</text>
+  <text class="t3" x="330" y="108">höchstens 2 Runden</text>
+
+  <rect class="box box-warn" x="462" y="60" width="118" height="54" rx="6"/>
+  <text class="t" x="472" y="80">Tor 1 · Marco</text>
+  <text class="t3" x="472" y="95">Freigabe, Manifest</text>
+  <text class="t3" x="472" y="108">.claude/frozen/&lt;issue&gt;.json</text>
+
+  <rect class="box" x="604" y="60" width="130" height="54" rx="6"/>
+  <text class="t" x="614" y="80">Implementierer</text>
+  <text class="t3" x="614" y="95">Opus 5.5, Effort hoch · Worktree</text>
+  <text class="t3" x="614" y="108">Hook sperrt Eingefrorenes</text>
+
+  <rect class="box box-warn" x="758" y="60" width="110" height="54" rx="6"/>
+  <text class="t" x="768" y="80">Tor 2 · Marco</text>
+  <text class="t3" x="768" y="95">liest den Diff</text>
+  <text class="t3" x="768" y="108">merged</text>
+
+  <path class="ln" d="M142 87 H166"/><path class="ln" d="M296 87 H320"/><path class="ln" d="M438 87 H462"/><path class="ln" d="M580 87 H604"/><path class="ln" d="M734 87 H758"/>
+  <path class="ln ln-dash" d="M380 60 C380 44 240 44 231 60"/>
+  <text class="t3" x="256" y="52">zurück, bis 2×</text>
+
+  <text class="lab lab-ok" x="604" y="150">Gates · Code, kein Modell</text>
+  <rect class="box" x="604" y="160" width="58" height="40" rx="6"/><text class="t" x="610" y="177">0</text><text class="t3" x="610" y="191">statisch</text>
+  <rect class="box" x="668" y="160" width="58" height="40" rx="6"/><text class="t" x="674" y="177">1</text><text class="t3" x="674" y="191">Unit</text>
+  <rect class="box" x="732" y="160" width="58" height="40" rx="6"/><text class="t" x="738" y="177">2a 2b</text><text class="t3" x="738" y="191">Integration</text>
+  <rect class="box" x="796" y="160" width="58" height="40" rx="6"/><text class="t" x="802" y="177">3</text><text class="t3" x="802" y="191">API, Stack</text>
+  <rect class="box" x="860" y="160" width="58" height="40" rx="6"/><text class="t" x="866" y="177">4</text><text class="t3" x="866" y="191">E2E, Kante</text>
+  <rect class="box box-ok" x="604" y="208" width="154" height="40" rx="6"/><text class="t" x="612" y="225">5 nachts</text><text class="t3" x="612" y="239">Stryker, Browser-Matrix, Eval</text>
+  <rect class="box" x="764" y="208" width="154" height="40" rx="6"/><text class="t" x="772" y="225">Rot-vor-Grün</text><text class="t3" x="772" y="239">eingefrorene Tests auf Basis rot</text>
+  <path class="ln" d="M669 114 V160"/>
+  <path class="ln ln-warn" d="M813 114 V140 H940 V210"/>
+  <text class="t3" x="922" y="130">Required Checks</text>
+
+  <rect class="box" x="24" y="160" width="130" height="54" rx="6"/>
+  <text class="t" x="34" y="180">Abnahmelauf</text>
+  <text class="t3" x="34" y="195">Code · Stack lfc-&lt;issue&gt;-acc</text>
+  <text class="t3" x="34" y="208">Bericht, Screenshots, Aria</text>
+
+  <rect class="box box-ok" x="178" y="160" width="130" height="54" rx="6"/>
+  <text class="t" x="188" y="180">Richter</text>
+  <text class="t3" x="188" y="195">anderes Modell als Autor</text>
+  <text class="t3" x="188" y="208">Kanarienvogel, nie in CI</text>
+
+  <rect class="box" x="332" y="160" width="118" height="54" rx="6"/>
+  <text class="t" x="342" y="180">Ticket-Schluss</text>
+  <text class="t3" x="342" y="195">Code · nur wenn alle</text>
+  <text class="t3" x="342" y="208">Fälle passt</text>
+
+  <path class="ln" d="M154 187 H178"/><path class="ln" d="M308 187 H332"/>
+  <path class="ln ln-dash" d="M734 100 H700 V128 H480 V232 H24 V214" />
+  <text class="t3" x="492" y="245">im PR, vor Tor 2 (entschieden)</text>
+
+  <rect class="box box-bad" x="760" y="258" width="150" height="38" rx="6"/>
+  <text class="t" x="770" y="275">Healer</text>
+  <text class="t3" x="770" y="289">gibt es nie (ADR 0011)</text>
+  <path class="ln ln-bad" d="M768 264 L902 290"/>
+
+  <text class="t3" x="24" y="270">Erwartung in jedem Fall vor dem Code · Richter liest nur Berichte · Implementierer darf Unit-Tests für Interna ergänzen, nie bestehende ändern</text>
+  <text class="t3" x="24" y="288">Testfixtures für Erkennung aus evals/golden (nur lesen) · Mocks nur an Systemgrenzen (STT, LLM, Websuche, Backend aus Sicht des Clients)</text>
+
+  <rect class="zone" x="10" y="330" width="980" height="220" rx="8"/>
+  <text class="lab" x="24" y="352">Nebenbahn · Golden-Set-Regression</text>
+  <text class="t3" x="300" y="352">19 abgenommene Ausschnitte, Harness in Python, Schwellen aus ADR 0003</text>
+
+  <rect class="box box-ok" x="24" y="380" width="290" height="80" rx="6"/>
+  <text class="t" x="34" y="400">Stufe 1 · jeder PR</text>
+  <text class="t3" x="34" y="416">Strukturtests des Harness, Mock-Lauf über alle Ausschnitte</text>
+  <text class="t3" x="34" y="430">Mechanik: Turns, Takt, Dedup, Zuschreibung, Bericht</text>
+  <text class="t3" x="34" y="444">0 EUR · Required Check · keine Qualitätszahl</text>
+
+  <rect class="box box-warn" x="344" y="380" width="300" height="80" rx="6"/>
+  <text class="t" x="354" y="400">Stufe 2 · auf Anforderung</text>
+  <text class="t3" x="354" y="416">echter Lauf je Arm, etwa 11 USD, Marco startet (Schlüssel)</text>
+  <text class="t3" x="354" y="430">Auslöser: Prompt, Modell, Parameter geändert</text>
+  <text class="t3" x="354" y="444">Bericht nach evals/reports/ · Vergleich zur Baseline</text>
+
+  <rect class="box box-warn" x="674" y="380" width="300" height="80" rx="6"/>
+  <text class="t" x="684" y="400">Stufe 3 · vor einem Release</text>
+  <text class="t3" x="684" y="416">voller Lauf, drei Wiederholungen, Median</text>
+  <text class="t3" x="684" y="430">gegen die absoluten Schwellen aus ADR 0003</text>
+  <text class="t3" x="684" y="444">Richter aus anderer Familie (Gemini), sonst nachgerichtet</text>
+
+  <path class="ln" d="M314 420 H344"/><path class="ln" d="M644 420 H674"/>
+
+  <text class="t3" x="24" y="490">Offen (Marco, 2026-10-14): Regressionsschwellen relativ zur Baseline, Budgetdeckel je Monat, ob Stufe 2 automatisch erkannt oder automatisch gestartet wird.</text>
+  <text class="t3" x="24" y="508">Harness bleibt Wegwerf-Code in Python, bis die Produktpipeline in TypeScript steht; dann wandert der Lauf hinter dieselben Adapter.</text>
+  <text class="t3" x="24" y="526">Synthetisches TTS-Set (ADR 0003) prüft in der CI nur Mechanik; Sprache in Testfixtures bleibt echte Stimme (Regel vom 2026-10-02).</text>
+</svg>
+</div>
+<figcaption>Oben die Bahn eines Tickets mit den zwei Toren bei Marco und den Gates aus Code. Unten die Nebenbahn, auf der das Golden Set vom Messinstrument zum Regressionstest wird. Grün umrandet sind die Agenten des Testteams, bernstein die Stellen, an denen Marco entscheidet oder bezahlt.</figcaption>
+</figure>
+
+<h2 id="v2">Was in live-factchecker-v2 schon liegt (Branch process/rollen)</h2>
+<div class="tbl"><table>
+<tr><th>Datei</th><th>Stand</th><th>Was dieses Ticket noch festlegen muss</th></tr>
+<tr><td><code>.claude/agents/test-designer.md</code></td><td>Opus 5.5; schreibt Features, Steps, rote Unit-Tests, Abnahmefälle mit <code>expected</code>; Fixtures aus <code>evals/golden/</code>; liefert Dateiliste für das Manifest</td><td>Konventionen (Gherkin-Sprache, Step-Bibliothek, describe-it-Stil), Testentwurfsverfahren, Kanarienvogel-Fall</td></tr>
+<tr><td><code>.claude/agents/critic.md</code></td><td>Fable 5.1; sieben Prüfungen (Abdeckung, Eindeutigkeit, Negativfälle, Ehrlichkeit, Stufe, Glossar, Rot aus richtigem Grund); Veto, zwei Runden</td><td>Ob Spezifikations-Mutanten dazukommen</td></tr>
+<tr><td><code>.claude/agents/acceptance-judge.md</code></td><td>Opus 5.5, nur Read; Urteil je Fall passt, passt nicht, unklar; Kanarienvogel-Regel; Injektion unter „Nicht geprüft“</td><td>Woher der Kanarienvogel kommt, Berichtsformat des Runners</td></tr>
+<tr><td><code>.claude/workflows/test-design.js</code></td><td>Kette Testdesigner, Kritiker, zwei Runden; Schema für das Urteil</td><td>Budgets und Turn-Limits beim ersten Ticket</td></tr>
+<tr><td><code>.claude/workflows/acceptance.js</code></td><td>Phasen Run, Judge, Close; <code>args.canaryTitle</code>; Schluss nur, wenn alle echten Fälle passt und der Kanarienvogel erkannt</td><td>Runner-Befehl, Berichtspfad, Kanarienvogel-Einspeisung</td></tr>
+<tr><td><code>.claude/rules/tests.md</code></td><td>Dateikarte <code>tests/integration</code>, <code>tests/e2e</code>, <code>step-definitions</code>, <code>tests/acceptance</code>, <code>tests/fixtures</code>; fünf Fallstricke; Stacks <code>lfc-&lt;issue&gt;-&lt;task&gt;</code></td><td>Stufen, Zuordnung, Gates, Golden-Set-Regression</td></tr>
+<tr><td>Hooks <code>stop-tests</code>, <code>frozen-manifest</code></td><td>Session endet nur mit grünen Unit-Tests; Eingefrorenes nur mit <code>FROZEN_UNLOCK</code></td><td>Neue Fälle in <code>test-hooks.sh</code> für neue Regeln</td></tr>
+<tr><td><code>.claude/agents/implementer.md</code></td><td>Darf Unit-Tests für Interna ergänzen, nie bestehende ändern; Verbotsliste</td><td>Ob ergänzte Tests ein Review mit Testprüfliste bekommen</td></tr>
+</table></div>
+
+<h2 id="alt">Altes Repo live-factcheck: Stufen, Gates, Lehren</h2>
+<div class="tbl"><table>
+<tr><th>Stufe (Brief 13)</th><th>Inhalt</th><th>Wo es lief</th><th>Lehre</th></tr>
+<tr><td class="num">0 statisch</td><td>typecheck, lint, format, dependency-cruiser, gitleaks über die Historie, Parität der Konfigurationen</td><td>jeder Push, ci.yml</td><td>mechanische Regeln als Checks, nicht als Prompt</td></tr>
+<tr><td class="num">1 Unit</td><td>Vitest je Workspace, Coverage nach Sonar</td><td>jeder Push, betroffene Workspaces</td><td>Coverage kein Gate; Startup-Tests brauchen 60 s Puffer (zweimal gelernt)</td></tr>
+<tr><td class="num">2a / 2b</td><td>Backend-Integration; Frontend-Integration mit <code>vite preview</code> und Playwright</td><td>jeder Push</td><td>CSP-Fehler erst in Stufe 4 sichtbar, weil 2b keine CSP hatte</td></tr>
+<tr><td class="num">3 API</td><td>Playwright gegen den Stack über HTTP, importiert nie Service-Code; Projekt <code>lfc-test</code>, Mock-Provider, Wegwerf-Secrets</td><td>PR, stack-tests.yml</td><td>jeder Audio-Fehlercode ist ein Integrationstest, Stufe 3 nur Pfad plus Stichproben</td></tr>
+<tr><td class="num">4 E2E</td><td>Browser durch Caddy, nur kritische Journeys, Shards, Retry in CI höchstens einmal, <code>@quarantine</code> mit Issue</td><td>PR; volle Browser-Matrix nachts</td><td>klein halten; Flaky heißt Issue, nie ein Wait</td></tr>
+<tr><td class="num">5 nachts</td><td>Stryker je Paket (Command-Runner wegen Vitest-5-Fehler), Schwellen 90/80, <code>break: null</code>; Trivy voll; Claim-Eval mit echten Modellen und Wegwerf-Secrets</td><td>nightly.yml, 02:23</td><td>Mutation vom ersten Paket an, Schwellen gemessen, nie gewünscht; lange Läufe im Wegwerf-Klon</td></tr>
+<tr><td>Abnahme (UAT)</td><td>eigenes Paket <code>tests/uat</code>, <code>expected</code>-Annotation, Richter <code>uat-reviewer</code> mit Kanarienvogel, nie in CI, Spuren git-ignoriert (Token im Trace)</td><td>nach jedem sichtbaren PR, <code>make uat</code></td><td>ADR 0022: Richter nie Autor-Modell; Fall nie außer Dienst; Übernahme als Regressionstest auf der niedrigsten Stufe</td></tr>
+<tr><td>Red Team</td><td>promptfoo gegen echte Pipeline, Checks als Code</td><td>von Hand am Phasenende</td><td>gehört zu Sicherheit (#22)</td></tr>
+</table></div>
+<p class="muted">Weitere Regeln von dort: Sprache in Testaudio ist echte Stimme (2026-10-02); <code>@dod</code>-Tag mit Tabelle „DoD → Tests“, je Kriterium genau ein beweisender Test; jeder Test unabhängig mit eigener Session-Id; Page Objects nur per <code>data-testid</code> oder Rolle; Wiederverwendung vor Neuschreiben.</p>
+
+<h2 id="markt">Marktanalyse Testteam (2026-10-05): was trägt</h2>
+<div class="two">
+<div class="card"><h3>Belegte Fehlerbilder</h3><ul>
+<li>59,6 bis 68,1 % generierter Tests bestehen auf fehlerhaftem Code; Coverage taugt nicht als Gate, Mutation und Rot-vor-Grün schon.</li>
+<li>Agenten mocken in 36 % der Test-Commits, Menschen in 26 %; Mocks nur an Systemgrenzen.</li>
+<li>63 % der Flakiness aus ungeordneten Collections; neue Systemtests dreimal wiederholen.</li>
+<li>LLMs wählen Werte aus der Mitte, nicht an den Grenzen; Negativfälle sind die häufigste Fehlerquelle (13 von 14).</li>
+<li>TDD im Agenten-Loop erzwingen kostete 3 bis 8,5-mal so viele Tokens ohne klaren Gewinn (Böckeler); eingefrorene Erwartungen plus Mutation sind der günstigere Hebel. Marco hat TDD dennoch gesetzt; der Manifest-Hook macht es mechanisch statt per Prompt.</li>
+</ul></div>
+<div class="card"><h3>Muster zum Übernehmen</h3><ul>
+<li>LLM baut das Testmodell, Code rechnet Grenzwerte und Kombinationen (ISO 29119-4: Modell, Überdeckung, Fälle).</li>
+<li>Jede Erwartung hat eine Quelle (Kriterium, Vertrag, Glossar); fehlt sie, wird daraus eine Frage, kein erfundener Wert.</li>
+<li>Spezifikations-Mutanten: der Kritiker erfindet rund zehn plausible Fehler, jeder muss von einem Fall entdeckt werden.</li>
+<li>Kritiker aus anderem Modell als der Autor; Richter aus anderem Modell als der Implementierer.</li>
+<li>Skills als Rohmaterial: 45ck verification-test-design-skills (16 Verfahren), testskills (BDD-Szenarien), superpowers tdd, pr-test-analyzer (Negativ- und Grenzlücken 1 bis 10). Nie blind installieren, prüfen und kopieren.</li>
+<li>Rollen, die bei allen wiederkehren: Analyst, Designer, Kritiker, Automatisierer, Ausführer ohne Modell, Triage, Scribe. Healer nur mit Hook; hier nie.</li>
+</ul></div>
+</div>
+
+<h2 id="golden">Golden Set und Harness heute</h2>
+<div class="tbl"><table>
+<tr><th>Fakt</th><th>Stand</th></tr>
+<tr><td>Korpus</td><td>19 Ausschnitte in drei Teilen (Talkshow, Debatte, Alltag), je <code>audio.opus</code>, <code>transcript.json</code>, <code>labels.jsonl</code>, <code>setting.json</code>, <code>source.md</code>; Branch <code>evals/golden-v1</code>, acht Commits vor origin</td></tr>
+<tr><td>Harness</td><td>Python 3.10, nur Standardbibliothek; <code>unittest</code> mit <code>fixtures/mini_golden</code>; Mock-Lauf über alle Ausschnitte; Checkpoints, <code>--resume</code>, <code>rejudge</code> mit anderem Richter; <code>budget_usd</code> 15 je Lauf</td></tr>
+<tr><td>Schwellen (ADR 0003, vorläufig)</td><td>Recall ≥ 0,75 · Precision ≥ 0,8 · Zuschreibung ≥ 0,95 · p95 bis Karte ≤ 15 s · ≤ 0,063 USD je Minute · Dubletten ≤ 10 % · Alltag ≤ 2 Fehlalarme je 10 Minuten · drei Läufe, Median</td></tr>
+<tr><td>Drei Stufen (Marco, 2026-10-14)</td><td>jeder Commit kostenlos (Struktur, Mock); auf Anforderung etwa 11 USD je Arm bei Prompt-, Modell- oder Parameteränderung mit Bericht nach <code>evals/reports/</code>; vor einem Release voll gegen die Schwellen</td></tr>
+<tr><td>Offen</td><td>Regressionsschwellen, Budgetdeckel, ob Stufe 2 automatisch anspringt; Richter Gemini wartet auf Google-Freischaltung, bis dahin Opus als vorläufiger Richter und Nachrichten</td></tr>
+</table></div>
+
+<h2 id="annahmen">Annahmen für diese Runde</h2>
+<ul>
+<li><strong>Produktstack TypeScript auf Node.</strong> Folgt aus Cucumber mit Step-Definitionen in TypeScript und Vitest (Rollen-Ticket). Ein Architektur-ADR zum Stack fehlt noch (Ticket „Architekturprinzipien und ADRs des alten Projekts“ ist offen); kippt er, kippen nur die Werkzeugnamen, nicht die Stufen.</li>
+<li><strong>Backend zuerst.</strong> Browser-Tests kommen mit dem Client; die Stufe existiert ab heute, ihr erster Fall später.</li>
+<li><strong>Der Harness bleibt Wegwerf-Code</strong>, bis die Produktpipeline steht; die Regression in Stufe 1 läuft heute gegen den Harness, später gegen die Pipeline hinter denselben Adaptern.</li>
+</ul>
+
+<h2 id="runde1">Entschieden in Runde 1 (Marco, 2026-10-18)</h2>
+<div class="tbl"><table>
+<tr><th>Frage</th><th>Entscheidung</th></tr>
+<tr><td>Q1 Stufen</td><td><strong>b)</strong> Sechs Stufen wie das alte Repo, aufgebohrt: 0 statisch, 1 Unit, 2a Backend- und 2b Frontend-Integration, 3 API gegen den Stack, 4 End-to-End durch die Kante, 5 nachts mit Stryker, voller Browser-Matrix und End-to-End-Lauf. Der Zuschnitt der Nacht ist Q14.</td></tr>
+<tr><td>Q2 Gherkin</td><td>a) Englisch mit Glossarbegriffen; Tags <code>@issue-n</code>, <code>@ac-k</code>.</td></tr>
+<tr><td>Q3 Steps und Fixtures</td><td>a) Eine Step-Bibliothek je Stufe; Audio-Fixtures als Golden-Verweis mit Zeitfenster, nie synthetische Stimme.</td></tr>
+<tr><td>Q4 Unit</td><td>a) describe-it schmal, fast-check für reine Logik.</td></tr>
+<tr><td>Q5 Rot-vor-Grün</td><td>a) Mechanisch über Manifest und CI-Job auf der PR-Basis.</td></tr>
+<tr><td>Q6 Mutation</td><td>a) Stryker vom ersten Paket an, nachts voll, im PR inkrementell; Schwelle nach vier Wochen gemessen.</td></tr>
+<tr><td>Q7 Flaky</td><td>a) Keine lokalen Retries, CI einer, neue Stufe-3-Fälle dreimal, Quarantäne mit 14 Tagen Ablauf nur durch Marco.</td></tr>
+<tr><td>Richter-Modell</td><td>Fable 5.1 (Marco). Die Regel „nie das Modell des Autors“ bleibt: der Implementierer läuft dann nie auf Fable.</td></tr>
+</table></div>
+
+<h2 id="uat">Wie die Abnahme aus Nutzersicht läuft</h2>
+<p>Ja, der Testdesigner schreibt auch die Abnahmefälle, und zwar vor dem Code: je Fall die Erwartung wörtlich, so wie du sie als Nutzer sehen willst, Negativfälle eingeschlossen. Du gibst sie an Tor 1 frei; damit gehört dir das Orakel, nicht dem Agenten. Nach dem Bauen läuft ein Programm ohne Modell die Fälle auf einem Wegwerf-Stack und sammelt Beweise (Screenshot, Aria-Schnappschuss, Logzeilen). Der Richter liest nur diese Beweise und urteilt je Fall passt, passt nicht, unklar, mit Zitat und Bild. Erst dann bekommst du den Bericht im PR und entscheidest an Tor 2. Das ist deine Reihenfolge: ein Agent prüft vor dir, du nimmst im PR ab.</p>
+<p><strong>Der Kanarienvogel</strong> ist die Eichung des Richters, übernommen aus ADR 0022 des alten Repos. In jedem Lauf steckt ein Fall, dessen Erwartung absichtlich falsch ist, der Richter weiß nicht welcher. Urteilt er dort „passt“, hat er abgenickt statt geprüft, und sein ganzer Lauf wird verworfen und wiederholt. Ohne ihn merkst du einen Richter, der alles durchwinkt, erst am entwischten Fehler. Offen ist nur, woher der falsche Fall kommt (Q10).</p>
+
+<h2 id="runde2">Entschieden in Runde 2 (Marco, 2026-10-18)</h2>
+<div class="tbl"><table>
+<tr><th>Frage</th><th>Entscheidung</th></tr>
+<tr><td>Q8 Abnahme</td><td>a) Im PR vor Tor 2; Ticket-Schluss nach dem Merge durch Code aus denselben Urteilen; Nachtrag ADR 0011.</td></tr>
+<tr><td>Q9 Ort</td><td>a) Eigenes Paket <code>tests/acceptance</code>, nie in der CI, Fälle nie außer Dienst.</td></tr>
+<tr><td>Q10 Kanarienvogel</td><td>a) Vom Testdesigner, versiegelt in <code>tests/acceptance/canaries/&lt;issue&gt;.json</code>; ein Richter, der ihn durchwinkt, wird verworfen und einmal wiederholt.</td></tr>
+<tr><td>Q11 Runner</td><td>a) <code>make acceptance ISSUE=n</code>, Stack <code>lfc-&lt;issue&gt;-acc</code>, eingeschlossen, Berichte git-ignoriert.</td></tr>
+<tr><td>Q12 Golden-Set-Regression</td><td>a) Erkannt durch CI, gestartet von Marco; Schwellen relativ zur Baseline; Deckel 100 USD im Monat.</td></tr>
+<tr><td>Q13 Rollen</td><td>a) Keine neue Rolle; Kritiker mit Spezifikations-Mutanten; Reviewer mit Testprüfliste; Skill <code>test-design</code>.</td></tr>
+<tr><td>Q14 Nacht</td><td><strong>Angepasst:</strong> Stryker nur für geänderte Pakete (sonntags alle); End-to-End in einem weiteren Browser im täglichen Wechsel statt voller Matrix; Lighthouse; Trivy voll; neu Golden-Set-Mock, Fallow, Knip, Deepgram-Probe, Trend-Kommentar.</td></tr>
+</table></div>
+
+<h2 id="gebaut">Was in v2 liegt (Commit 12c2512 auf process/rollen)</h2>
+<ul>
+<li><code>.claude/rules/tests.md</code> mit Stufentabelle, Dateikarte, Gherkin-, Step- und Unit-Konventionen, Fallstricken und Abnahmebahn; <code>docs/process/test-strategy.md</code> als Kurzfassung mit CI-Zuordnung.</li>
+<li>Agenten: Testdesigner (Skill <code>test-design</code>, Abnahmefälle, Kanarienvogel, <code>redRun</code>), Kritiker (Spezifikations-Mutanten, Kanarienvogel-Prüfung), Richter (Stufe Spitze, vor Tor 2), Reviewer (Prüfliste für ergänzte Unit-Tests); <code>models.json</code> mit der Regel, dass der Implementierer nie auf Spitze läuft.</li>
+<li>Hook <code>test-integrity</code> gegen <code>skip</code>, <code>only</code>, <code>fixme</code>, <code>@quarantine</code> mit acht neuen Testfällen (42 grün); Workflows <code>acceptance.js</code> (Berichtspfad, Wiederholung bei verpasstem Kanarienvogel) und <code>test-design.js</code>.</li>
+<li>Paket <code>tests/acceptance</code> mit Runner-Vertrag, Berichtsform, Kanarienvogel-Ablage und git-ignoriertem <code>reports/</code>.</li>
+<li>Nicht hier, sondern im PR-Format: die Workflow-Dateien <code>ci.yml</code>, <code>pr.yml</code>, <code>nightly.yml</code> und die Required Checks.</li>
+</ul>
+
+<h3>Runde 2 zum Nachlesen</h3>
+<div class="qs">
+
+<div class="q"><h3><span class="n">Q8</span>Abnahmelauf im PR statt nach dem Merge</h3>
+<ul>
+<li><strong>a) Im PR, vor Tor 2:</strong> Runner und Richter laufen, sobald der Implementierer DONE meldet; der Richterbericht mit höchstens zwei Bildern je Fall steht als PR-Kommentar; du liest Diff und Urteile zusammen und mergst; der Ticket-Schluss nach dem Merge ist Code und nutzt dieselben Urteile. ADR 0011 bekommt einen Nachtrag („Richter blockiert nur den Ticket-Schluss“ wird „Richter berät vor Tor 2 und bindet den Ticket-Schluss“).</li>
+<li><strong>b) Nach dem Merge</strong>, wie in ADR 0011 heute.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Das ist dein Wunsch und der Weg des alten Repos; ein Fehler fällt vor dem Merge auf, nicht danach.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q9</span>Wo die Abnahmefälle liegen</h3>
+<ul>
+<li><strong>a) Eigenes Paket <code>tests/acceptance</code></strong> wie das alte UAT: Cucumber mit Browser-Treiber (API-Treiber, solange es keinen Client gibt), Erwartung als Docstring am Szenario; nie in der CI, wächst je Ticket, Fälle werden nie außer Dienst gestellt; aus jedem Fall schlägt der Richter die niedrigste Stufe für einen Regressionstest vor, der im selben PR landet.</li>
+<li><strong>b) Tag <code>@acceptance</code></strong> auf Szenarien der Stufen 2b bis 4: ein Ort, aber die Gate-Suiten wachsen mit jedem Ticket und Stufe 4 bleibt nicht klein.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Die Trennung hielt im alten Repo Stufe 4 klein und die Abnahme vollständig.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q10</span>Woher der Kanarienvogel kommt</h3>
+<ul>
+<li><strong>a) Vom Testdesigner, versiegelt:</strong> je Ticket ein Fall mit plausibler, aber falscher Erwartung in <code>tests/acceptance/canaries/&lt;issue&gt;.json</code>, Teil des Manifests, du siehst ihn an Tor 1; der Runner mischt ihn in den Bericht, der Richter sieht nur Fälle.</li>
+<li><strong>b) Automatisch:</strong> der Runner negiert eine Klausel eines zufälligen Falls; billig, erzeugt aber manchmal Unsinn, den jeder Richter erkennt.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Ein glaubwürdiger Kanarienvogel prüft den Richter wirklich; der Kritiker prüft ihn mit.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q11</span>Der deterministische Runner</h3>
+<ul>
+<li><strong>a) <code>make acceptance ISSUE=n</code>:</strong> Stack <code>lfc-&lt;issue&gt;-acc</code> mit Wegwerf-Secrets und Mock-Providern; Cucumber-JSON, Screenshots und Aria nach <code>tests/acceptance/reports/</code> (git-ignoriert, Token geschwärzt); Beweis im PR ist eine Zusammenfassung mit höchstens zwei Bildern je Fall; echte Provider nur, wenn du den Lauf selbst startest.</li>
+<li><strong>b) Echte Provider in jedem Lauf:</strong> Kosten, Schlüssel auf Agenten-Stacks, nicht deterministisch.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Entspricht ADR 0022 und der Owner-Stack-Regel.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q12</span>Golden-Set-Regression: Auslöser, Schwellen, Deckel</h3>
+<ul>
+<li><strong>a) Erkannt automatisch, gestartet von dir:</strong> ein CI-Check schlägt an, wenn Prompts, Modellfelder oder Pipeline-Parameter sich ändern und kein Eval-Bericht zum PR-Commit vorliegt („Eval-Bericht fehlt“); du startest den Lauf mit deinen Schlüsseln. Schwellen relativ zur letzten abgenommenen Baseline: Recall und Precision höchstens 0,02 schlechter, Kosten höchstens 10 % höher, sonst blockiert; die absoluten Schwellen aus ADR 0003 gelten vor einem Release. Budgetdeckel 100 USD im Monat, geführt in <code>evals/budget.json</code>, der Runner verweigert darüber.</li>
+<li><strong>b) Automatisch gestartet in der CI:</strong> Schlüssel in der CI, Kosten ohne Blick.</li>
+<li><strong>c) Keine Erkennung</strong>, du denkst daran.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Zahlen sind Vorschläge; nenne andere, wenn du willst.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q13</span>Rollen und Testentwurfsverfahren</h3>
+<ul>
+<li><strong>a) Keine neue Agentenrolle:</strong> der Kritiker bekommt Spezifikations-Mutanten (rund zehn plausible Fehler je Ticket, jeder muss von einem Fall erwischt werden); der Reviewer bekommt eine Testprüfliste für die Unit-Tests, die der Implementierer ergänzt; neuer Skill <code>test-design</code> mit Äquivalenzklassen, Grenzwerten, Entscheidungstabelle, Zustandsübergang, Negativfällen und der Regel „jede Erwartung hat eine Quelle“, vorgeladen beim Testdesigner. Triage bleibt Nebel.</li>
+<li><strong>b) Eigener Test-Reviewer-Agent</strong> zusätzlich zum Kritiker.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Drei Agenten mit scharfen Prüflisten schlagen vier mit Überschneidung.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q14</span>Zuschnitt der Nacht (Stufe 5)</h3>
+<ul>
+<li><strong>a) Alt plus vier Dinge:</strong> Stryker alle Pakete; End-to-End in voller Browser-Matrix mit dreifacher Wiederholung; Lighthouse; Trivy voll; neu dazu Golden-Set-Mock-Lauf über alle Ausschnitte, Fallow-Audit und Knip, Deepgram-Probe auf den drei Latenz-Ausschnitten mit Budgetdeckel (ADR 0005), Bericht als Kommentar am Nacht-Issue mit Trend.</li>
+<li><strong>b) Nur wie alt.</strong></li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Die Nacht ist der Platz für alles, was Minuten kostet oder Geld; der Trend-Kommentar macht die Kennzahlen aus ADR 0011 sichtbar.</div>
+</div>
+
+</div>
+
+<h3>Runde 1 zum Nachlesen</h3>
+<div class="qs">
+
+<div class="q"><h3><span class="n">Q1</span>Stufen der Pyramide</h3>
+<ul>
+<li><strong>a) Vier Gates plus Eval:</strong> Stufe 0 statisch (tsc, ESLint, Format, dependency-cruiser, gitleaks), Stufe 1 Unit (Vitest, neben dem Modul), Stufe 2 Integration (Cucumber, im Prozess, Mocks an den Grenzen, Container nur für Redis und Co.), Stufe 3 System (Cucumber gegen den Compose-Stack mit Mock-Providern; Treiber HTTP und WebSocket, später Browser über Playwright für die Journeys), Eval (Golden Set, eigene Bahn). End-to-End ist Stufe 3 mit Browser-Treiber, kein eigenes Gate.</li>
+<li><strong>b) Sechs Stufen wie das alte Repo:</strong> 0, 1, 2a, 2b, 3 API, 4 E2E, 5 nachts; vertraut, aber 2b und 4 entstanden aus dem alten Frontend-Zuschnitt.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Weniger Stufen, jede mit eigener Frage: Stufe 1 „rechnet das Modul richtig“, Stufe 2 „arbeiten die Module zusammen“, Stufe 3 „läuft der Pfad durch den echten Stack“. Der Browser ist ein zweiter Treiber derselben Stufe, nicht eine eigene Welt; die CSP-Lehre wird damit automatisch erfüllt, weil Stufe 3 immer durch die Kante geht.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q2</span>Gherkin-Sprache und Form</h3>
+<ul>
+<li><strong>a) Englisch mit Glossarbegriffen:</strong> Given/When/Then, Begriffe aus CONTEXT.md (Segment, Turn, Claim, Speaker) unübersetzt, deutsche Zeichenketten nur dort, wo der Nutzer sie sieht. Entspricht der Regel „Englisch im Repo“ und dem heutigen Testdesigner-Prompt.</li>
+<li><strong>b) Deutsch mit <code># language: de</code>:</strong> Angenommen/Wenn/Dann; liest sich für Marco direkt, bricht aber die Repo-Sprache und die Glossarbegriffe müssten gemischt werden.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Dazu feste Form: ein Feature je Akzeptanzkriterium-Gruppe, Tag <code>@issue-&lt;n&gt;</code> und <code>@ac-&lt;k&gt;</code> je Szenario als Rückverfolgung (ersetzt das alte <code>@dod</code> und die Tabelle von Hand), <code>Scenario Outline</code> mit getrennten Examples für gültige Klassen, Grenzen und ungültige Klassen, Negativfälle mit „and no &lt;side effect&gt;“.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q3</span>Step-Bibliothek und Fixtures</h3>
+<ul>
+<li><strong>a) Eine Step-Bibliothek je Stufe</strong> unter <code>tests/&lt;stufe&gt;/steps/</code>, Fachsteps in Glossarsprache („a Turn by Speaker Merz containing …“), keine UI-Steps in Stufe 2; Audio-Fixtures als Verweis auf einen Golden-Ausschnitt mit Zeitfenster (Schlüssel, nur lesen), Schnitt deterministisch per Skript in <code>tests/fixtures/</code>, nie synthetische Stimme; das TTS-Set bleibt im Eval für Mechanik.</li>
+<li><strong>b) Steps je Feature-Datei</strong> daneben; schneller zu schreiben, nach zehn Features ein Dickicht.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Der Testdesigner erweitert die Bibliothek, kopiert sie nicht; der Kritiker prüft Wiederverwendung (Regel aus dem alten tests/AGENTS.md). Golden-Verweise halten Fixtures und Messkorpus in einer Wahrheit.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q4</span>describe-it-Konventionen und eigenschaftsbasierte Tests</h3>
+<ul>
+<li><strong>a) Schmale Regeln plus fast-check:</strong> <code>*.test.ts</code> neben dem Modul, ein <code>describe</code> je öffentlicher Funktion oder Verhalten, <code>it</code> als englischer Verhaltenssatz („drops a duplicate claim within 60 s“), keine Snapshot-Tests, Fake-Timer Pflicht bei Zeit; für reine Logik (Turn-Bildung, Dedup, Takt-Plan, Namensmaske) eigenschaftsbasierte Tests mit fast-check, Generatoren liegen beim Testdesigner.</li>
+<li><strong>b) Nur describe-it,</strong> keine eigenschaftsbasierten Tests.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Eigenschaften treffen die Grenzen, die LLM-Beispiele auslassen, und sind der direkte Gegenspieler der Mutanten.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q5</span>Rot-vor-Grün als Gate</h3>
+<ul>
+<li><strong>a) Mechanisch:</strong> das Manifest hält je eingefrorenem Test das Ergebnis des roten Laufs (Befehl, Exit, Hash der Ausgabe); ein CI-Job holt die Basis des PR, legt nur die eingefrorenen Tests darauf und erwartet Rot; grün auf der Basis heißt „unbewiesen“ und blockiert.</li>
+<li><strong>b) Nur im Bericht</strong> des Testdesigners; der Kritiker prüft die Ausgabe (heute so).</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Ein Test, der nie rot war, ist das häufigste Fehlerbild generierter Tests, und die Prüfung ist eine Minute CI.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q6</span>Mutation Testing</h3>
+<ul>
+<li><strong>a) Vom ersten Paket an, Schwelle gemessen:</strong> Stryker je Paket nachts voll; im PR <code>--incremental</code> nur auf geänderten Dateien, vier Wochen nur berichten, dann setzt die Retro <code>break</code> auf den gemessenen Wert minus fünf Punkte; überlebende Mutanten im Diff landen als Liste im PR; Risikoakzeptanz bleibt bei Marco.</li>
+<li><strong>b) Gate ab Tag eins mit 80 %:</strong> gewünscht statt gemessen, Lehre des alten Repos dagegen.</li>
+<li><strong>c) Nur nachts, nie im PR:</strong> wie alt; der Implementierer sieht die Mutanten erst am nächsten Tag.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Mutation ist das objektive Gegenstück zum Kritiker: der eine prüft die Fälle vor dem Code, die andere den Code gegen die Fälle.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q7</span>Flaky-Regel</h3>
+<ul>
+<li><strong>a) Streng:</strong> lokal keine Retries, in CI höchstens einer; ein neuer Stufe-3-Fall läuft im PR dreimal (<code>--repeat-each=3</code>) und zählt nur, wenn dreimal grün; Flaky heißt Issue plus <code>@quarantine</code> mit Ablaufdatum 14 Tage, danach fixen oder löschen; Quarantäne nur durch Marco.</li>
+<li><strong>b) Wie alt:</strong> Retry in CI einmal, Quarantäne ohne Ablaufdatum.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Das Ablaufdatum verhindert den Friedhof; die dreifache Wiederholung fängt die Ordnungs-Flakiness, bevor sie im Hauptzweig liegt.</div>
+</div>
+
+</div>
+
+</div>
+
+</body></html>

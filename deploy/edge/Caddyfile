@@ -1,0 +1,65 @@
+# The edge: the only public entrance of every stack (ticket #25, compose.yml service edge). HTTPS only, certificates
+# from Caddy's internal CA in every stack (dev/prod parity); clients trust its exported root CA, never skip
+# verification. Names: localhost (the published host port) and edge (the stage-3 client on the clients network).
+# Routes: only GET on /detection/health and /detection/ready; a request body over 1 KB gets 413 (the edge reads
+# the body before it forwards). Every other request, HEAD, another method or a foreign Host header included, gets
+# the edge's own 404 marked X-Lfc-Edge: unrouted, which a forwarded answer never carries (gate 1 of #25, AC9;
+# security review S3, S4; review R5).
+{
+	admin off
+	persist_config off
+	skip_install_trust
+	auto_https disable_redirects
+	# Non-root, no capability in use: high ports inside the container.
+	http_port 8080
+	https_port 8443
+}
+
+(unrouted) {
+	header X-Lfc-Edge unrouted
+	respond 404
+}
+
+(probe) {
+	request_body {
+		max_size 1KB
+	}
+	# Buffered before forwarding, so the 1 KB limit is enforced even though the service never reads a body.
+	reverse_proxy detection:8080 {
+		request_buffers 4KB
+		header_down -X-Lfc-Edge
+	}
+}
+
+localhost, edge {
+	tls internal
+
+	@health {
+		path /detection/health
+		method GET
+	}
+	handle @health {
+		rewrite * /health
+		import probe
+	}
+
+	@ready {
+		path /detection/ready
+		method GET
+	}
+	handle @ready {
+		rewrite * /ready
+		import probe
+	}
+
+	handle {
+		import unrouted
+	}
+}
+
+# Any other Host on the same listener (the TLS handshake still picks the localhost or edge certificate by SNI):
+# without this block Caddy answers such a request with an empty 200.
+https://:8443 {
+	tls internal
+	import unrouted
+}

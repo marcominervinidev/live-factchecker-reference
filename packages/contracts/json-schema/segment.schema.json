@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^s-[0-9]{1,15}$"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "speaker": {
+      "type": "string",
+      "pattern": "^[A-Z]+$"
+    },
+    "start": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "end": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "finalizedAt": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 35
+    },
+    "words": {
+      "minItems": 1,
+      "maxItems": 500,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "w": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "start": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          },
+          "end": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          }
+        },
+        "required": [
+          "w",
+          "start",
+          "end"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "sessionId",
+    "speaker",
+    "start",
+    "end",
+    "finalizedAt",
+    "language",
+    "words"
+  ],
+  "additionalProperties": false
+}

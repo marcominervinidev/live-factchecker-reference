@@ -1,0 +1,34 @@
+#!/bin/sh
+# Runs a command in this checkout's toolbox container, starting it when needed: Node tooling never runs on
+# the host. Project: COMPOSE_PROJECT_NAME (required in a git worktree: lfc-<issue>-<task>), else compose.yml's.
+# Usage: scripts/tb pnpm lint   (the host working directory maps to the same path under /workspace)
+set -eu
+ROOT=$(cd "$(dirname "$0")/.." && pwd -P)
+abs() { (cd "$ROOT" && cd "$(git rev-parse "$1")" && pwd -P); }
+LFC_GIT_COMMON_DIR=$(abs --git-common-dir)
+# A worktree needs its own project, named like the ci-guard in the Makefile: lfc-<issue>-<task>.
+if [ "$(abs --git-dir)" != "$LFC_GIT_COMMON_DIR" ]; then
+  n=${COMPOSE_PROJECT_NAME:-}
+  if [ "$n" = lfc-owner ] || ! expr "x$n" : 'xlfc-[a-z0-9][a-z0-9_-]*$' >/dev/null; then
+    echo "scripts/tb: $ROOT is a git worktree; set COMPOSE_PROJECT_NAME=lfc-<issue>-<task> for its own toolbox" >&2
+    exit 2
+  fi
+fi
+LFC_NODE_VERSION=$(cat "$ROOT/.nvmrc")
+export LFC_NODE_VERSION LFC_GIT_COMMON_DIR
+compose() { docker compose -f "$ROOT/compose.yml" --project-directory "$ROOT" --profile toolbox "$@"; }
+if [ -z "$(compose ps -q --status running toolbox 2>/dev/null)" ]; then
+  compose up -d --build --wait toolbox >&2
+fi
+# The project's running toolbox must mount this checkout, never another one started under the same name.
+id=$(compose ps -q toolbox)
+mounted=$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/workspace"}}{{.Source}}{{end}}{{end}}' "$id")
+if [ "$mounted" != "$ROOT" ]; then
+  echo "scripts/tb: the running toolbox mounts '$mounted', not $ROOT; use another COMPOSE_PROJECT_NAME" >&2
+  exit 2
+fi
+HERE=$(pwd -P)
+REL=${HERE#"$ROOT"}
+[ "$REL" != "$HERE" ] || { echo "scripts/tb: run it inside $ROOT" >&2; exit 2; }
+# The container checked above, by id: no window for another container to take the name.
+exec docker exec -i -w "/workspace$REL" "$id" "$@"

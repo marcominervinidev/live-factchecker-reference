@@ -1,0 +1,287 @@
+[
+ {
+  "speaker": "Kallac Haqy",
+  "start": 0.0,
+  "end": 4.0,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Frau",
+    "start": 0.0,
+    "end": 0.5
+   },
+   {
+    "w": "Müller,",
+    "start": 0.5,
+    "end": 1.0
+   },
+   {
+    "w": "wie",
+    "start": 1.0,
+    "end": 1.5
+   },
+   {
+    "w": "stark",
+    "start": 1.5,
+    "end": 2.0
+   },
+   {
+    "w": "sind",
+    "start": 2.0,
+    "end": 2.5
+   },
+   {
+    "w": "die",
+    "start": 2.5,
+    "end": 3.0
+   },
+   {
+    "w": "Mieten",
+    "start": 3.0,
+    "end": 3.5
+   },
+   {
+    "w": "gestiegen?",
+    "start": 3.5,
+    "end": 4.0
+   }
+  ]
+ },
+ {
+  "speaker": "Anna Müller",
+  "start": 4.5,
+  "end": 10.8,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Die",
+    "start": 4.5,
+    "end": 4.909
+   },
+   {
+    "w": "Mieten",
+    "start": 4.909,
+    "end": 5.318
+   },
+   {
+    "w": "in",
+    "start": 5.318,
+    "end": 5.727
+   },
+   {
+    "w": "Berlin",
+    "start": 5.727,
+    "end": 6.136
+   },
+   {
+    "w": "sind",
+    "start": 6.136,
+    "end": 6.545
+   },
+   {
+    "w": "seit",
+    "start": 6.545,
+    "end": 6.955
+   },
+   {
+    "w": "2015",
+    "start": 6.955,
+    "end": 7.364
+   },
+   {
+    "w": "um",
+    "start": 7.364,
+    "end": 7.773
+   },
+   {
+    "w": "vierzig",
+    "start": 7.773,
+    "end": 8.182
+   },
+   {
+    "w": "Prozent",
+    "start": 8.182,
+    "end": 8.591
+   },
+   {
+    "w": "gestiegen.",
+    "start": 8.591,
+    "end": 9.0
+   },
+   {
+    "w": "Das",
+    "start": 9.2,
+    "end": 9.6
+   },
+   {
+    "w": "ist",
+    "start": 9.6,
+    "end": 10.0
+   },
+   {
+    "w": "eine",
+    "start": 10.0,
+    "end": 10.4
+   },
+   {
+    "w": "Schande.",
+    "start": 10.4,
+    "end": 10.8
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 11.0,
+  "end": 13.0,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Herr",
+    "start": 11.0,
+    "end": 11.5
+   },
+   {
+    "w": "Weber,",
+    "start": 11.5,
+    "end": 12.0
+   },
+   {
+    "w": "stimmt",
+    "start": 12.0,
+    "end": 12.5
+   },
+   {
+    "w": "das?",
+    "start": 12.5,
+    "end": 13.0
+   }
+  ]
+ },
+ {
+  "speaker": "Jens Weber",
+  "start": 13.6,
+  "end": 20.0,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Das",
+    "start": 13.6,
+    "end": 14.182
+   },
+   {
+    "w": "stimmt",
+    "start": 14.182,
+    "end": 14.764
+   },
+   {
+    "w": "so",
+    "start": 14.764,
+    "end": 15.345
+   },
+   {
+    "w": "nicht,",
+    "start": 15.345,
+    "end": 15.927
+   },
+   {
+    "w": "die",
+    "start": 15.927,
+    "end": 16.509
+   },
+   {
+    "w": "Mieten",
+    "start": 16.509,
+    "end": 17.091
+   },
+   {
+    "w": "sind",
+    "start": 17.091,
+    "end": 17.673
+   },
+   {
+    "w": "um",
+    "start": 17.673,
+    "end": 18.255
+   },
+   {
+    "w": "zwanzig",
+    "start": 18.255,
+    "end": 18.836
+   },
+   {
+    "w": "Prozent",
+    "start": 18.836,
+    "end": 19.418
+   },
+   {
+    "w": "gestiegen.",
+    "start": 19.418,
+    "end": 20.0
+   }
+  ]
+ },
+ {
+  "speaker": "Anna Müller",
+  "start": 20.6,
+  "end": 27.0,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Die",
+    "start": 20.6,
+    "end": 21.182
+   },
+   {
+    "w": "Löhne",
+    "start": 21.182,
+    "end": 21.764
+   },
+   {
+    "w": "sind",
+    "start": 21.764,
+    "end": 22.345
+   },
+   {
+    "w": "nur",
+    "start": 22.345,
+    "end": 22.927
+   },
+   {
+    "w": "um",
+    "start": 22.927,
+    "end": 23.509
+   },
+   {
+    "w": "zehn",
+    "start": 23.509,
+    "end": 24.091
+   },
+   {
+    "w": "Prozent",
+    "start": 24.091,
+    "end": 24.673
+   },
+   {
+    "w": "gestiegen,",
+    "start": 24.673,
+    "end": 25.255
+   },
+   {
+    "w": "das",
+    "start": 25.255,
+    "end": 25.836
+   },
+   {
+    "w": "wissen",
+    "start": 25.836,
+    "end": 26.418
+   },
+   {
+    "w": "alle.",
+    "start": 26.418,
+    "end": 27.0
+   }
+  ]
+ }
+]

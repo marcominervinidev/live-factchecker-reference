@@ -1,0 +1,184 @@
+{
+  "issue": 32,
+  "approvedAt": "2026-11-18",
+  "ticketSha256": "b71eb9aa6b6badbe5f69669cd2a1c71ffc211ffc7f74aa6affd2fa25805a35bc",
+  "paths": [
+    "packages/contracts/src/topic-event.test.ts",
+    "packages/contracts/src/detection-event.topic.test.ts",
+    "packages/providers/src/mock/mock-topic-extractor.test.ts",
+    "services/detection/src/topic-extractor/tag-list.test.ts",
+    "services/detection/src/topic-extractor/tag-list.property.test.ts",
+    "services/detection/src/topic-extractor/topic-extractor.test.ts",
+    "services/detection/src/topic-extractor/topic-extractor.schedule.test.ts",
+    "services/detection/src/config.topic-extractor.test.ts",
+    "services/detection/features/topic-extractor.feature",
+    "services/detection/features/steps/topic-extractor.steps.ts",
+    "tests/acceptance/features/32/topic-events.feature",
+    "tests/acceptance/canaries/32.json"
+  ],
+  "tasks": {
+    "1": [
+      "packages/contracts/src/topic-event.test.ts",
+      "packages/contracts/src/detection-event.topic.test.ts",
+      "packages/providers/src/mock/mock-topic-extractor.test.ts",
+      "services/detection/src/topic-extractor/tag-list.test.ts",
+      "services/detection/src/topic-extractor/tag-list.property.test.ts",
+      "services/detection/src/topic-extractor/topic-extractor.test.ts",
+      "services/detection/src/topic-extractor/topic-extractor.schedule.test.ts",
+      "services/detection/src/config.topic-extractor.test.ts",
+      "services/detection/features/topic-extractor.feature",
+      "services/detection/features/steps/topic-extractor.steps.ts",
+      "tests/acceptance/features/32/topic-events.feature",
+      "tests/acceptance/canaries/32.json"
+    ]
+  },
+  "taskNotes": {
+    "1": {
+      "interface": "packages/contracts: TopicEvent (src/topic-event.ts, fields schemaVersion 1, tickAt, current, new {tag, parent}, returned, ended; no sessionId; every tag 1 to 200 code points, no list bound, O3), DetectionEvent gets the member { schemaVersion: 2, type: 'topic', sessionId, topic } and the claim member moves to envelope schemaVersion 2 (README decision of 2026-11-05), fixtures topicEventFixture and topicDetectionEventFixture; headers of topic-event.test.ts and detection-event.topic.test.ts. packages/providers: createMockTopicExtractor({ latencySeconds, newRate, seed?, invalidCalls? }) (header of mock-topic-extractor.test.ts). services/detection: src/topic-extractor/tag-list.ts (seedTagList, applyTopicOutput), src/topic-extractor/topic-extractor.ts (createTopicExtractor, request blocks prefix/context/window/new in the harness's text form), loadConfig(env).topicExtractor, undefined without TOPIC_EXTRACTOR_PROMPT_FILE (O2; header of config.topic-extractor.test.ts), log event topic_extractor.call; stage 2a environment TOPIC_EXTRACTOR_PROMPT_FILE, MOCK_TOPIC_NEW_RATE, MOCK_TOPIC_LATENCY_SECONDS, MOCK_TOPIC_INVALID_CALLS.",
+      "implementerPaths": [
+        "packages/contracts/src/topic-event.ts, src/detection-event.ts, src/index.ts, src/testing/fixtures.ts, json-schema/ (generated), README.md: contract commit alone, skill new-contract, its message names 'ADR 0005' (scripts/check-contract-change.sh: a commit that changes a schema touches nothing outside packages/contracts/); the dated addendum to docs/adr/0005-inputs-mit-zwei-naehten.md (field list and bounds of the Topic event, draft .owner-pakete/td32/adr-0005-nachtrag.md) is its own docs commit in the same change set",
+        "packages/contracts/src/detection-event.test.ts and services/detection/src/claim-extractor/claim-extractor.test.ts:266 are NOT the implementer's: the owner unlocks both (O1) with .owner-pakete/unlock-29-envelope-v2.sh in one commit right after this one, before the contract commit; .claude/frozen/29.json cannot change in the contract commit (contract check) and the hook frozen-manifest denies it to agents",
+        "packages/providers/src/mock/mock-topic-extractor.ts, src/index.ts",
+        "services/detection/src/topic-extractor/ (prompt.ts, tag-list.ts, topic-extractor.ts)",
+        "services/detection/src/config.ts, src/main.ts, src/session/ (wiring: the Topic Extractor as the topic_extractor of createSessionTurns, its tag list in the Session state, the Topic events on the detection stream of #29)",
+        "packages/service-kit/src/logger.ts (fields final as a boolean and unknownTags), .claude/rules/platform.md (log fields)",
+        "services/detection/Dockerfile (copies topic_extractor.de.txt), compose.yml (TOPIC_EXTRACTOR_PROMPT_FILE for the CI stack)"
+      ],
+      "needs": [
+        "#29 task 3 merged (Setting at Session creation, POST /sessions/{id}/end, detection stream writer); task/32-1 starts from that main with this commit on top",
+        "the owner unlock .owner-pakete/unlock-29-envelope-v2.sh as the next commit on task/32-1 (O1)"
+      ],
+      "why": "Exact prompt strings computed by evals/src/harness (prompt.py prefix_block, render_segments, assign_breakpoints; pipeline.py call_topic_extractor; schemas.py TOPIC) with Python 3.12.3 on 2026-11-17. AC2 to AC5 are shown with the real Topic Extractor inside #28's createSessionTurns (topic-extractor.schedule.test.ts), because the skip rule itself is #28's and frozen green.",
+      "settledUnderP1": [
+        "names as proposed (tickAt, member topic, fixtures topicEventFixture and topicDetectionEventFixture, log event topic_extractor.call with attempts, final, unknownTags, environment variables TOPIC_* and MOCK_TOPIC_*, block kinds of the harness)",
+        "final in the log is a boolean, as ExtractorCall.final",
+        "a seeded list has the Setting's Topic as its current Topics (none without a Topic); a first result that only confirms it is no Topic event",
+        "tickAt is the call's at for every call, a deferred final analysis included (the port of #28 gives no other time)",
+        "'new since the last analysis' is Session-wide as in the harness (pipeline.py:919-920), Segments carried by a running call excluded",
+        "applied lists only what changed a status; the current Topics compare as a set (a reordered current is no change)",
+        "tokens and duration of the call log are summed over every attempt; cost and tokens are fields of topic_extractor.call (the T1b record has no turnId and no final)",
+        "mock: seed option, default 0, no environment variable; an empty tag list whose note names no Topic opens nothing",
+        "a tag in new and in returned or ended of the same result is known; the merge applies new, then returned, then ended (harness process_topics)",
+        "round 3 (2026-11-18): the bounds of O3 count code points, as zod 4.6.7 counts string length (node_modules zod v4/core/checks.js: 'Strings are measured in Unicode code points, not UTF-16 units') and as #29 counts them (A7, unlock 29-3b); the boundary cases use U+1F5FA (two UTF-16 code units)",
+        "round 3: an answer of the model with a tag the Topic event cannot carry (empty, or more than 200 code points) violates the schema (AC10): repeated once with the error message, then lost; the schema sent to the model stays the harness's TOPIC",
+        "round 3: an empty TOPIC_EXTRACTOR_PROMPT_FILE counts as unset (as #29 treats an empty MODEL_ADAPTER)",
+        "round 3: the two #29 unlocks go into one owner commit before the contract commit instead of 'in the contract commit' and 'in the writer commit': the contract commit may not change .claude/frozen/29.json, and one commit up front leaves the implementer no frozen file to touch; the effect at the PR head is the same",
+        "round 3: the stage-2a feature and its steps stay provisional until #29 task 3 is on main (critic A8, R3); R3 (2026-11-19): re-recorded on 3cee025d (week/2026-w47 with #29 task 3 merged after review), red for the missing Topic Extractor, moved into paths, tasks and sha256 unchanged in content",
+        "round 4 (critic B1): every mock-adapter environment of #32 (env() of config.topic-extractor.test.ts, start of the provisional 2a steps) sets VERIFIER_PROMPT_FILE to evals/configs/prompts/verifier.v2.de.txt, because with a model adapter the service refuses to start without it (gate 1 of #30, owner 2026-11-18, answer 1, 'Start verweigern'); before #30 it has no effect",
+        "round 4 (critic W4): three more O3 cases: 201 code points that form 101 graphemes are rejected (a count in graphemes fails), a model answer with a new parent of 201 characters is a schema violation, a model answer with a new tag of 200 code points outside the BMP is taken without a repeat"
+      ]
+    }
+  },
+  "pyramidNote": "Counted like tools/check_test_pyramid.py over the frozen paths: 158 tests, 154 it-calls on stage 1 and the 4 scenarios of the stage-2a feature (frozen with R3 on 2026-11-19): 97/3/0. Like #29 the ticket is mostly pure logic and keeps every error and boundary case on stage 1 (round 3 adds the O3 bounds: 5 tag positions x 6 classes, lists of 1000); stage 3 cannot reach the Session routes (#27 AC13), so 2a carries the replay. Acceptance: two cases through the edge and the canary; no acceptance case shows that the Topic Extractor runs (critic A7, owner O2).",
+  "redRunHash": "sha256 over the output without ANSI codes, blank lines, the vitest lines 'Duration' and 'Start at' and per-test timings (' <n>ms' at line end), /workspace replaced by <root>",
+  "redRun": {
+    "packages/contracts/src/topic-event.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/topic-event.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./topic-event.ts; tools/classify_red_reason.py",
+      "sha256": "ac3db984f3b9108d064f15c9c65c0be167b43a875129f6f12bbee7b98a4421d9",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 4"
+    },
+    "packages/contracts/src/detection-event.topic.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/detection-event.topic.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour); 16 failed, 8 passed (the 8 rejections hold on the base already: a type the union does not know is refused anyway); tools/classify_red_reason.py",
+      "sha256": "dc96892013cd56a925b2eeda51d82fd55215d1a177ace065030b3c08fb1932b6",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 3"
+    },
+    "packages/providers/src/mock/mock-topic-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/providers src/mock/mock-topic-extractor.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./mock-topic-extractor.ts; tools/classify_red_reason.py",
+      "sha256": "057d8bb558e5a89b7a2fc87d4a4543381510074337fb7544336fe1fe4a23a184",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 2"
+    },
+    "services/detection/src/topic-extractor/tag-list.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/topic-extractor/tag-list.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./tag-list.ts; tools/classify_red_reason.py",
+      "sha256": "16dbdd40b79b61a9f4f7b1b2c7b04ed51c35c92c86ab78d0992199f9f0a26c71",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 2"
+    },
+    "services/detection/src/topic-extractor/tag-list.property.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/topic-extractor/tag-list.property.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./tag-list.ts; tools/classify_red_reason.py",
+      "sha256": "7114b4bbc0783764d28472dd80d26920f8456199708d66f9fd5f6f13c76b73a9",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 2"
+    },
+    "services/detection/src/topic-extractor/topic-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/topic-extractor/topic-extractor.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./topic-extractor.ts; tools/classify_red_reason.py",
+      "sha256": "e0f66f5f6472cfd7dd9f97bae66052022159756290cff486deb9b75498df8e74",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 4 (the file fails at the import before its cases)"
+    },
+    "services/detection/src/topic-extractor/topic-extractor.schedule.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/topic-extractor/topic-extractor.schedule.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: missing module ./topic-extractor.ts; tools/classify_red_reason.py",
+      "sha256": "fe471f4260c991cab73c908919e34de892497a2f46b266d9cb096e7a1cc52207",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash, the same as on ed404170 in round 2"
+    },
+    "services/detection/src/config.topic-extractor.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/config.topic-extractor.test.ts'",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour); 23 failed, 4 passed (the absence cases hold on the base already: no Topic Extractor without MODEL_ADAPTER, and since #29 task 3 a mock-adapter configuration without TOPIC_EXTRACTOR_PROMPT_FILE loads with a Claim Extractor and no Topic Extractor, O2); tools/classify_red_reason.py",
+      "sha256": "a8f3eabb69f01f5cbf9f974fead2184b4a47efefb61a1a7c019e4bca38edd06a",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, re-recorded on 3cee025d with R3 (COMPOSE_PROJECT_NAME=lfc-td-32), two runs, same normalised hash; on ed404170 (round 4: 25 failed, 2 passed, 710577c2) six runs gave five times one hash and once the same lines where vitest printed the summary before the last error block (stdout and stderr interleaved differently, as #29 noted for claim-extractor.elements.test.ts)"
+    },
+    "services/detection/features/topic-extractor.feature": {
+      "command": "BUILDX_CONFIG=/tmp/claude-501/buildx-lfc COMPOSE_PROJECT_NAME=lfc-td-32 WS=@lfc/detection make test-integration",
+      "base": "3cee025d (week/2026-w47: #29 tasks 1, 1b, 2 and 3 implemented, task 3 merged after review) plus the frozen red tests of #32",
+      "exitCode": 2,
+      "reason": "red for the right reason: missing behaviour (no Topic Extractor in the Session), no load error; tools/classify_red_reason.py: 'failing tests, no load error (missing behaviour)'. 45 scenarios: 41 passed (all of #27, #28 and #29), 4 failed (the 4 of #32); 494 steps: 476 passed, 14 skipped, 4 failed. In every scenario of #32 'the Input ended normally' passes and the first Then step that needs the Topic Extractor fails: :41 '0 topic_extractor.call events, expected 18', :61 'found 0 tick.skipped event(s)', :82 'found []' (no topic_extractor.call with schema_failure), :100 'the Session has no tag in a Topic event' (after the two log steps :98 and :99 passed). The steps before them that #29 already serves hold on this base (throwaway probe of the Claim side, not committed: 18 claim_extractor.call events per replay, all valid, Ticks per Turn as in turn-building.feature; 2 Claim events, t-002 and t-010; 0 tick.skipped for the Claim Extractor; 3 calls for the two-Segment Turn t-001). cucumber-js --dry-run: no undefined or ambiguous step",
+      "sha256": "b12a518055e09a83fe5fe2bcfe80051e5b997d0e1730f6daf3a7b87412b6664f",
+      "sha256Normalised": true,
+      "recordedBy": "test designer, 2026-11-19, R3 (critic round 2), two runs, same normalised hash",
+      "sha256Scope": "the cucumber section only (from the line '$ cucumber-js' up to, not including, the teardown line 'LFC_SECRETS_DIR=…'), normalised as redRunHash says (the lines joined with a newline, a final newline included) and without cucumber's duration line ('<m>m <s>s (… executing your code)'), as in .claude/frozen/29.json"
+    }
+  },
+  "sha256": {
+    "packages/contracts/src/topic-event.test.ts": "2cdc7199a4d5fcbdfe6fe5fc641689b4956289edbb0b404ed69c2759e36ef7af",
+    "packages/contracts/src/detection-event.topic.test.ts": "a455b8f58ad19fd98988888b5add2a559eaa1c6751bb06d1885f56b8b1069f8c",
+    "packages/providers/src/mock/mock-topic-extractor.test.ts": "c47c255c71d68054d04e8a00a08bb8d0f884ba26bb827d17f418564b492ae586",
+    "services/detection/src/topic-extractor/tag-list.test.ts": "9776f72ffd193580286129294c3d4c407708ed3ec5eb1e22d07e88a8f8a39a31",
+    "services/detection/src/topic-extractor/tag-list.property.test.ts": "5175368f4e3572eae78ae5ea04cf6fe3e0da791482adbce4b80713ef4321a69f",
+    "services/detection/src/topic-extractor/topic-extractor.test.ts": "7353c7b5baddb8f9ca87a44f8e4c3331ca6a83a9ddfa8050fd89d8eb379ee37b",
+    "services/detection/src/topic-extractor/topic-extractor.schedule.test.ts": "f79e7fe63d0dff53b4bbcb0c8b4c9571b52d04fb06b8b5f36c378549d32d0a97",
+    "services/detection/src/config.topic-extractor.test.ts": "0f51a81d293d4202a61c2e0c9eb3b761dccf2d40d2944aef6a315ce4255a112f",
+    "services/detection/features/topic-extractor.feature": "c2ecceffec897c5b94d0964931887b6bc7f945048d780f8b5b992efbc18063c6",
+    "services/detection/features/steps/topic-extractor.steps.ts": "14aa8596af33a0b81032cf3ae6fdda7faed78e623344da9d1b089237595faf24",
+    "tests/acceptance/features/32/topic-events.feature": "e7fabed448151983e5f2a17780ad20e9ca5bb480adccd54c22e6df7690101e35",
+    "tests/acceptance/canaries/32.json": "e0edecb68a054513f481dd6ba07d7d9c4cf40ab325b26e05d6e21f8497ccecd2"
+  },
+  "ticketSha256Note": "sha256 of `gh issue view 32 --json body -q .body | shasum -a 256` on 2026-11-18, after the main session put the gate-1 body on GitHub: .owner-pakete/td32/ticket-32.md with the follow-up link #197 filled in. approvedAt holds the date only: the owner's answer carries no time.",
+  "ownerDecisions": {
+    "date": "Marco, gate 1 of #32, 2026-11-18: \"Tor 1, wie empfohlen. Komplett für 30 und für 32.\"; each answer takes the recommendation of the critic's final owner questions (.owner-pakete/td32/critic.md, round 2, 'Owner-Fragen, endgültig')",
+    "O1": "yes: the detection stream envelope goes to schemaVersion 2 for every member (claim included, the Claim event stays at 1), with an owner unlock of two frozen files of #29 (packages/contracts/src/detection-event.test.ts and services/detection/src/claim-extractor/claim-extractor.test.ts:266) and a dated addendum to ADR 0005 (question: 'Hülle auf Version 2, mit Entsperrung zweier #29-Dateien im PR von #32 und einem datierten Nachtrag in ADR 0005?'). Unlock: .owner-pakete/unlock-29-envelope-v2.sh, one owner commit on task/32-1 right after this commit, before the contract commit; addendum draft .owner-pakete/td32/adr-0005-nachtrag.md",
+    "O2": "yes: the Topic Extractor runs only when TOPIC_EXTRACTOR_PROMPT_FILE is set (question: 'Läuft der Topic Extractor nur, wenn TOPIC_EXTRACTOR_PROMPT_FILE gesetzt ist?'); one sentence under Assumptions in the ticket; config.topic-extractor.test.ts keeps only this variant, the switch O2_ANSWER is gone (critic R1)",
+    "O3": "yes: the Session id only in the envelope, a tag has 1 to 200 characters, the lists have no upper bound (question: 'Vertrag des Topic-Ereignisses: Session-Id nur in der Hülle, Tag 1 bis 200 Zeichen, Listen ohne Obergrenze?'); characters are counted in code points as zod 4 counts them (critic R2)",
+    "O4": "yes: the criteria inherited from #33 (B9: #33 AC12 'the same Claim events and Topic events' and AC14 'one call per role' for the Topic Extractor) go into one shared follow-up ticket for #30, #31 and #32, blocked by them and #33, not into #32 (question: 'Die aus #33 geerbten Kriterien (B9) kommen in ein gemeinsames Folgeticket, blockiert durch #30, #31, #32 und #33, statt als weitere Kriterien in die drei Tickets?')"
+  },
+  "followUp": [
+    "B9 (owner O4): one shared follow-up ticket for #30, #31 and #32, blocked by them and #33, carries the inherited criteria; the Topic Extractor part: the replay of #33 AC12 with the Topic Extractor on the Anthropic adapter yields the same Topic events as with the mock adapter, and the nightly probe of #33 AC14 makes one Topic Extractor call",
+    "redundancy of the stage-2a steps (report, 'Redundanz' 1 to 5; critic W5, W6): merge with the steps of #28 and #29 in one later collective unlock"
+  ]
+}

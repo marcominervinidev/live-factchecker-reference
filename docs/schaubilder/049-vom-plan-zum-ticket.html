@@ -1,0 +1,305 @@
+<!-- Quelle: https://claude.ai/artifact/BpEJk425pbC8JVVBwpus5W, exportiert 2026-10-23, Ticket #49 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vom Plan zum Ticket</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: ein Lesespalte (72ch) für Text, volle Breite nur für Diagramm und Tabellen; Fragen als nummerierte Karten mit Empfehlungszeile. */
+:root{
+  --bg:#f7f6f2; --fg:#1e2126; --muted:#5d6470; --line:#d9d6cc; --panel:#ffffff;
+  --accent:#8a4b1d; --accent-soft:#f1e3d6; --ok:#2f6b3a; --ok-soft:#e1efe3; --warn:#9a6a00; --warn-soft:#f7edd0;
+  --display:"IBM Plex Serif",Georgia,serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#171a1f; --fg:#e8e6e0; --muted:#a3a9b3; --line:#343a43; --panel:#1f242b;
+  --accent:#e0a068; --accent-soft:#3a2a1c; --ok:#8fcf9a; --ok-soft:#1f3324; --warn:#e6c25c; --warn-soft:#3a3118; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#171a1f; --fg:#e8e6e0; --muted:#a3a9b3; --line:#343a43; --panel:#1f242b;
+  --accent:#e0a068; --accent-soft:#3a2a1c; --ok:#8fcf9a; --ok-soft:#1f3324; --warn:#e6c25c; --warn-soft:#3a3118; color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+main{max-width:980px;margin:0 auto;display:grid;gap:40px}
+.prose{max-width:72ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2rem;font-weight:600}
+h2{font-size:1.35rem;font-weight:600;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0 0 10px}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.lead{color:var(--muted);font-size:1.05rem}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+td:first-child{font-weight:500;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:.74rem;padding:1px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.q{display:grid;gap:12px}
+.q article{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.q .num{font-family:var(--mono);color:var(--accent);font-weight:500;font-size:.85rem}
+.q h3{display:flex;gap:10px;align-items:baseline}
+.q ul{margin:0;padding-left:20px}
+.q li{margin:2px 0}
+.rec{border-left:3px solid var(--ok);padding:6px 10px;background:var(--ok-soft);border-radius:0 4px 4px 0}
+.rec b{color:var(--ok)}
+.mermaid{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:0}
+dt{font-weight:500}
+dd{margin:0;color:var(--muted)}
+@media (max-width:600px){dl{grid-template-columns:1fr} td:first-child{white-space:normal}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<main>
+<header class="prose">
+  <div class="eyebrow">Prozess-Map · Grilling-Ticket #49 · Entscheidungsübersicht · geschlossen 2026-10-21</div>
+  <h1>Vom Plan zum Ticket</h1>
+  <p class="lead">Wie aus den zehn ADRs und zwölf Spezifikationen der Architektur-Map Arbeit für die Agenten wird: wer schneidet, in welcher Einheit, mit welcher Vorlage, wer priorisiert, und wie Rücklauf nach dem ersten Bau läuft.</p>
+  <dl>
+    <dt>Ergebnis des Tickets</dt><dd>Ticket-Vorlage, Schnittregeln und Priorisierungsregel als Dateien in live-factchecker-v2, dazu der erste Ticket-Schnitt für Inkrement 1 als Vorschlag.</dd>
+    <dt>Stand</dt><dd>Entschieden und umgesetzt. Spezifikation <code>docs/spec/process/tickets.md</code>, Nachtrag ADR 0011; Dateien in live-factchecker-v2 auf Branch <code>process/tickets</code>: Vorlagen ticket.md und request.md, Skill cut-tickets, Regel tickets.md, Refinement-Agent, <code>tools/evidence_table.py</code> mit 16 Tests, docs/process/tickets.md; Labels angelegt. Offen in der Map bleibt nur der Lernpfad (#48).</dd>
+  </dl>
+</header>
+
+<section>
+  <h2>Datenfluss, wie er heute schon festgelegt ist</h2>
+  <p class="prose">Fett umrandet ist, was dieses Ticket entscheidet. Alles andere steht in ADR 0011 und den Spezifikationen Rollen, Agentenregeln, Testteam und PR-Format.</p>
+  <pre class="mermaid">
+flowchart LR
+  A[Architektur-Map<br/>ADR 0001–0010, docs/spec] --> S[[Schnitt<br/>Refinement Agent entwirft,<br/>Marco gibt frei]]
+  S --> T[[Ticket = GitHub Issue<br/>AC, Verträge, Blast Radius,<br/>Größe, Risiko, Tasks]]
+  T --> TD[Testdesigner + Kritiker<br/>Features, rote Tests, Kanarienvogel]
+  TD --> G1{Tor 1<br/>Marco}
+  G1 --> M[Manifest .claude/frozen/n.json<br/>eingefroren]
+  M --> O[Hauptsession = Orchestrator<br/>brief-implementer je Task]
+  O --> PR[1 Task = 1 PR<br/>Review-Kette, Abnahmelauf]
+  PR --> G2{Tor 2<br/>Marco merged}
+  G2 --> C[Ticket-Schluss durch Code<br/>alle Fälle passt]
+  C -. Richter: passt nicht .-> R[[Rücklauf / Refinement<br/>nach dem Bau]]
+  R -.-> S
+  N[[Neue Anforderung<br/>Bug, Idee, Lesson]] -.-> S
+  style S stroke-width:3px
+  style T stroke-width:3px
+  style R stroke-width:3px
+  style N stroke-width:3px
+  </pre>
+</section>
+
+<section>
+  <h2>Was schon entschieden ist und dieses Ticket nicht neu aufmacht</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Fakt</th><th>Quelle</th><th>Folge f&uuml;r #49</th></tr></thead>
+    <tbody>
+      <tr><td>Refinement Agent existiert</td><td>ADR 0011, <code>.claude/agents/refinement.md</code> (Opus 5.5, nur lesend)</td><td>Entwurf enth&auml;lt Titel, Ziel, AC (je eins testbar), Vertr&auml;ge, Blast Radius, Revertierbarkeit, Risiko, Gr&ouml;&szlig;e S/M/L, Sessiontyp, Tasks mit Pfaden und Verifikationsbefehl, offene Fragen, Quellen. Marco gibt an Tor 1 frei. Die Vorlage ist damit zu 80 % geschrieben.</td></tr>
+      <tr><td>Das Issue ist der Plan</td><td>Agentenregeln #45, Abschnitt 7</td><td>Keine Plan-Dateien; AC und Tasks im Body, Stand und Entscheidungen als Kommentare. Synthesen unter <code>docs/synthesis/</code>.</td></tr>
+      <tr><td>Ein Task je PR</td><td>PR-Format #47</td><td>Warnung &uuml;ber 400, Sperre &uuml;ber 800 Zeilen Produktionscode; keine Stapel; Squash-Merge; Branch <code>task/&lt;n&gt;-&lt;t&gt;</code> (brief-implementer).</td></tr>
+      <tr><td>Manifest je Ticket</td><td>Testteam #46, Hook <code>frozen-manifest.sh</code></td><td>Die Einheit, die eingefroren wird, ist das Issue: <code>.claude/frozen/&lt;issue&gt;.json</code>. Tags <code>@issue-n</code> und <code>@ac-k</code> ersetzen jede Tabelle &bdquo;Belegt durch&ldquo; von Hand.</td></tr>
+      <tr><td>Backend zuerst, komplett getestet, dann Frontend</td><td>Map #43 Notes, ADR 0010</td><td>Tracer Bullets durch alle Schichten (Matts Regel) gelten erst ab dem Frontend-Inkrement; im Backend endet ein Schnitt an einer beobachtbaren Naht.</td></tr>
+      <tr><td>Grilling vor jedem Schnitt; Risiko und Sessiontyp je Task</td><td>Inventar #50 (A18, A19, A20: bew&auml;hrt)</td><td>&Uuml;bernehmen. Plan-Datei-Mechanik (A17, A21) ist verworfen.</td></tr>
+      <tr><td>Triage und Scribe erst mit Anlass</td><td>Map #43, Not yet specified</td><td>Ingest neuer Anforderungen darf hier geregelt werden, ohne eine Rolle zu bauen.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Matts Skills 1.3.1 gegen unser Arbeitssystem</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Skill</th><th>Was er tut</th><th>Deckung bei uns</th><th>Vorschlag</th></tr></thead>
+    <tbody>
+      <tr><td>to-spec</td><td>Konversation zu Spezifikation im Tracker, Label ready-for-agent</td><td><span class="pill ok">gedeckt</span> Spezifikationen entstehen als <code>docs/spec/*.md</code> aus Wayfinder-Tickets</td><td>nicht nutzen</td></tr>
+      <tr><td>to-tickets</td><td>Plan oder Spec in Tracer-Bullet-Tickets mit nativen Blockierkanten, Sub-Issues des Quell-Issues, Quiz an den Nutzer vor dem Publizieren</td><td><span class="pill warn">teilweise</span> Vorlage kennt nur What to build + AC; keine Vertr&auml;ge, Risiko, Gr&ouml;&szlig;e, Tasks; <code>disable-model-invocation</code>, nur von Marco aufrufbar</td><td>Regeln (vertikal, Blockierkanten, Quiz, Sub-Issues) in eigenen Skill <code>cut-tickets</code> &uuml;bernehmen, der den Refinement Agent je Scheibe ruft</td></tr>
+      <tr><td>implement</td><td>Baut nach Spec oder Ticket mit tdd, dann code-review, committet</td><td><span class="pill ok">ersetzt</span> Orchestrator, Implementierer-Rolle, Review-Kette als Workflow</td><td>nicht nutzen</td></tr>
+      <tr><td>triage</td><td>Zustandsmaschine bug/enhancement &times; needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix; Dedup gegen Codebasis; Agent-Brief</td><td><span class="pill acc">L&uuml;cke</span> Ingest neuer Anforderungen ist bei uns ungeregelt; Labelvokabular im Planungsrepo schon definiert</td><td>f&uuml;r den Ingest &uuml;bernehmen; Brief wird Eingabe des Refinement Agents</td></tr>
+      <tr><td>handoff, ask-matt</td><td>&Uuml;bergabedokument; Router</td><td>pre-compact-Hook und Issue-Kommentare decken die &Uuml;bergabe</td><td>nicht nutzen</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Hierarchie-Kandidaten aus den Quellen</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Quelle</th><th>Ebenen</th><th>Was wir daraus brauchen</th></tr></thead>
+    <tbody>
+      <tr><td>Leitfaden (Schritte 2 und 7)</td><td>Projekt &rarr; Teilprojekt &rarr; Task mit Datei-f&uuml;r-Datei-Plan</td><td>Teilprojekt ist bei uns das Paket oder der Service (Monorepo), also der Pflicht-Scope der Commits; keine eigene Ticket-Ebene.</td></tr>
+      <tr><td>Altes Repo</td><td>Phase &rarr; Teilprojekt (TP) &rarr; Task (T6.2) mit Risiko und Sessiontyp</td><td>Risiko und Sessiontyp je Task sind bew&auml;hrt und schon im Refinement-Entwurf.</td></tr>
+      <tr><td>Factory-Schaubild</td><td>Refinement Agent, Prioritizer mit Kill Switch</td><td>Prioritizer als Agent? Die Wayfinder-Frontier-Abfrage (offen, unblockiert, unbeansprucht) leistet dasselbe deterministisch.</td></tr>
+      <tr><td>Wayfinder / to-tickets</td><td>Map- oder Quell-Issue &rarr; Sub-Issues mit nativen Blockierkanten</td><td>Native Sub-Issues und Dependencies sind in diesem Repo nachweislich aktiv (Map #1 und #43 nutzen sie).</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Fragen der Runde 1 mit den Empfehlungen, wie sie gestellt wurden</h2>
+  <p class="prose">Alle zehn wurden angenommen; Q5 mit der &Auml;nderung, dass die Belegtabelle zur&uuml;ckkehrt (von Code erzeugt) und die Playwright-Berichte verlinkt werden. Die Entscheidungen stehen in der Tabelle darunter.</p>
+  <div class="q">
+    <article><h3><span class="num">Q1</span>Drei Ebenen: Inkrement, Ticket, Task</h3>
+      <ul><li>Inkrement = Eltern-Issue mit Sub-Issues (wie eine Map), Ticket = ein Issue mit einem Manifest, Task = Abschnitt im Body und genau ein PR.</li><li>Alternativen: Tasks als eigene Sub-Issues; Inkrement als GitHub-Milestone.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> Eltern-Issue mit Sub-Issues f&uuml;r das Inkrement (Fortschrittsbalken, Frontier-Abfrage wie bei den Maps); Tasks bleiben Abschnitte, weil Manifest, Abnahme und Richter am Issue h&auml;ngen.</div></article>
+    <article><h3><span class="num">Q2</span>Schnittregel im Backend</h3>
+      <ul><li>Jedes Ticket endet an einer beobachtbaren Naht (Audio-Naht, Segment-Naht, Ereignis des Live-Vertrags, Harness-Bericht) und ist auf Stufe 3 (API) oder im Harness abnehmbar.</li><li>Reihenfolge: Abh&auml;ngigkeiten der Architektur als Blockierkanten; erstes Ticket ist das Ger&uuml;st (Walking Skeleton).</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja; keine Horizontalscheiben wie &bdquo;alle Schemas&ldquo; au&szlig;er als Expand-Contract-Refactor.</div></article>
+    <article><h3><span class="num">Q3</span>Gr&ouml;&szlig;e</h3>
+      <ul><li>S = 1 Task, M = 2 bis 3 Tasks; L wird vor Tor 1 gesplittet. Ein Ticket passt in eine Hauptsession, ein Task unter 400 Zeilen Produktionscode.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja, h&ouml;chstens drei Tasks je Ticket.</div></article>
+    <article><h3><span class="num">Q4</span>Weg und Werkzeug: Skill cut-tickets</h3>
+      <ul><li>Ablauf je Inkrement: Grilling mit Marco &rarr; Refinement Agent entwirft je Scheibe &rarr; Quiz (Granularit&auml;t, Kanten) &rarr; Hauptsession legt Sub-Issues mit nativen Kanten an.</li><li>Matts to-tickets wird nicht aufgerufen, seine Regeln werden &uuml;bernommen; to-spec und implement entfallen.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja, eigener Skill in v2.</div></article>
+    <article><h3><span class="num">Q5</span>Ticket-Vorlage</h3>
+      <ul><li>Felder = der Refinement-Entwurf (Ziel, AC nummeriert und stabil, Vertr&auml;ge, Blast Radius, Revertierbarkeit, Risiko, Gr&ouml;&szlig;e, Sessiontyp, Tasks, Quellen, offene Fragen).</li><li>Keine Tabelle &bdquo;Belegt durch&ldquo;: die Tags der Tests und der Richterbericht als Kommentar sind der Beleg.</li><li>Als <code>.github/ISSUE_TEMPLATE/ticket.md</code>, kein Issue-Form (Agenten schreiben Markdown).</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja.</div></article>
+    <article><h3><span class="num">Q6</span>Zust&auml;nde als Labels</h3>
+      <ul><li>Vorhandenes Vokabular: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix. Neu: <code>refined</code> (Entwurf steht, wartet auf Testdesign und Tor 1). ready-for-agent = Tor 1 passiert, Manifest geschrieben. In Arbeit = Assignee.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja, ein neues Label.</div></article>
+    <article><h3><span class="num">Q7</span>Priorisierung</h3>
+      <ul><li>Kein Prioritizer-Agent. Reihenfolge = Blockierkanten im Inkrement; die Hauptsession nimmt das erste Frontier-Ticket, sofern Marco keins nennt. Kill Switch = Marco schlie&szlig;t mit wontfix.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja.</div></article>
+    <article><h3><span class="num">Q8</span>Ingest neuer Anforderungen</h3>
+      <ul><li>Jede neue Anforderung (Bug, Idee, Lesson, Richterbefund au&szlig;erhalb des Tickets) wird ein Issue mit needs-triage; Marco f&auml;hrt Matts triage (Dedup, bug/enhancement, Brief); der Brief ist die Eingabe des Refinement Agents.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja, triage unver&auml;ndert &uuml;bernehmen.</div></article>
+    <article><h3><span class="num">Q9</span>Refinement nach dem ersten Bau</h3>
+      <ul><li>Richter &bdquo;passt nicht&ldquo; nach dem Merge: Ticket bleibt offen, Refinement Agent entwirft das Delta als Kommentar, neuer Task.</li><li>&Auml;nderung an AC oder Vertr&auml;gen nach Tor 1: nur durch Marco mit FROZEN_UNLOCK, als Kommentar protokolliert; Designverschiebung zuerst als ADR-Nachtrag ins Planungsrepo (Leitfaden Schritt 8), dann neuer Anlauf.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja.</div></article>
+    <article><h3><span class="num">Q10</span>Schnittstelle zu Golden Set und Messtickets</h3>
+      <ul><li>Messtickets sind normale Tickets; ihre AC lautet &bdquo;Harness-Lauf X unter Schwelle Y&ldquo;, abgenommen &uuml;ber den vorhandenen Check &bdquo;Eval-Bericht vorhanden&ldquo; in pr.yml statt &uuml;ber Gherkin.</li><li>Die Vorlage bekommt ein optionales Feld &bdquo;Messung&ldquo;.</li></ul>
+      <div class="rec"><b>Empfehlung:</b> ja.</div></article>
+  </div>
+</section>
+
+<section>
+  <h2>Entschieden in Runde 1 und 2 (Marco, 2026-10-21)</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Frage</th><th>Entscheidung</th></tr></thead>
+    <tbody>
+      <tr><td>Q1 Ebenen</td><td>Inkrement = Eltern-Issue mit Sub-Issues; Ticket = Issue mit Manifest; Task = Abschnitt im Body, genau ein PR.</td></tr>
+      <tr><td>Q2 Schnitt</td><td>Backend-Ticket endet an einer beobachtbaren Naht, abnehmbar auf Stufe 3 (API) oder im Harness; Reihenfolge als Blockierkanten; erstes Ticket ist das Ger&uuml;st.</td></tr>
+      <tr><td>Q3 Gr&ouml;&szlig;e</td><td>S = 1, M = 2 bis 3 Tasks, L wird gesplittet; Task unter 400 Zeilen Produktionscode.</td></tr>
+      <tr><td>Q4 Weg</td><td>Skill <code>cut-tickets</code> in v2: Grilling, Refinement Agent je Scheibe, Quiz, Sub-Issues mit nativen Kanten. to-spec, to-tickets, implement werden nicht aufgerufen.</td></tr>
+      <tr><td>Q5 Vorlage</td><td>Felder des Refinement-Entwurfs plus optionales Feld &bdquo;Messung&ldquo;. Belegtabelle je AC <b>von Code erzeugt</b> (Tags, letzter Lauf, Richterurteil, Bericht) als Issue-Kommentar; Playwright- und Cucumber-Berichte als Actions-Artefakte (30 Tage, nur Owner), nichts davon im Repo.</td></tr>
+      <tr><td>Q6 Labels</td><td>Vorhandenes Vokabular plus <code>refined</code>; ready-for-agent = Tor 1 passiert; in Arbeit = Assignee.</td></tr>
+      <tr><td>Q7 Priorit&auml;t</td><td>Kein Prioritizer; Frontier-Abfrage; Kill Switch = wontfix durch Marco.</td></tr>
+      <tr><td>Q8 Ingest</td><td>Neue Anforderung = Issue mit needs-triage; Matts triage; Brief ist Eingabe des Refinement Agents.</td></tr>
+      <tr><td>Q9 R&uuml;cklauf</td><td>Richter &bdquo;passt nicht&ldquo; h&auml;lt das Ticket offen, Delta als Kommentar, neuer Task; &Auml;nderung nach Tor 1 nur mit FROZEN_UNLOCK; Designverschiebung zuerst ADR-Nachtrag.</td></tr>
+      <tr><td>Q10 Messtickets</td><td>AC als Harness-Schwelle, deterministisch gegen Baseline, kein Richter, kein Kanarienvogel.</td></tr>
+      <tr><td>Q11 Inkrement 1</td><td>Ger&uuml;st der Erkennung als TypeScript-Pipeline ab der Segment-Naht bis zu den Ereignissen am Live-Vertrag, gemessen am Golden Set im Textmodus; kein Client, kein Check, keine Audio-Naht, keine Konten; Mock-Arm bis #30 den Arm liefert.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Erster Schnitt f&uuml;r Inkrement 1 (abgenommen, Q13 bis Q16)</h2>
+  <p class="prose">Neun Tickets, jedes endet an einer Naht oder einem Bericht. Pfeile sind Blockierkanten. Gestrichelt: Blocker aus der Architektur-Map, die noch offen sind. Granularit&auml;t so belassen, Splits entscheidet der Refinement Agent; T6 bleibt ohne Blocker f&uuml;r T9; die Issues entstehen in live-factchecker-v2 mit dem ersten Lauf von cut-tickets, sobald alle neun Entw&uuml;rfe vorliegen.</p>
+  <pre class="mermaid">
+flowchart LR
+  T1[T1 Ger&uuml;st: Monorepo,<br/>Service, Compose-Stack mit Kante,<br/>Stufen 0 bis 3 gr&uuml;n] --> T2[T2 Segment-Naht und Session:<br/>Vertrag, Replay-Input,<br/>simulierte Uhr, Lebenszeit]
+  T2 --> T3[T3 Turn-Bildung und Tick-Plan:<br/>reine Logik, &Uuml;berspringen,<br/>Z&auml;hler]
+  T3 --> T4[T4 Claim Extractor Stufe 1:<br/>Prompt-Aufbau, Schema, Dedup,<br/>Claim-Ereignis am Live-Vertrag]
+  T3 --> T6[T6 Topic Extractor:<br/>Tag-Liste je Tick]
+  T4 --> T5[T5 Resolver:<br/>Candidate zu Claim oder none,<br/>Timeout, Protokoll]
+  T4 --> T7[T7 Modell-Adapter:<br/>Bedrock EU, Vertex dahinter,<br/>Token und Kosten je Aufruf]
+  T5 --> T8[T8 Messweg:<br/>Pipeline als Arm des Harness,<br/>Bericht nach Messaufbau 5]
+  T7 --> T9[T9 Messticket:<br/>erste Baseline auf dem Pr&uuml;fset]
+  T8 --> T9
+  P41([#41 Eval-Harness]) -.-> T8
+  P30([#30 Vergleichsprototyp]) -.-> T7
+  P25([#25 Golden Set]) -.-> T9
+  style T1 stroke-width:3px
+  </pre>
+  <div class="scroll"><table>
+    <thead><tr><th>Ticket</th><th>Was danach existiert</th><th>Naht / Abnahme</th><th>Blocker</th><th>Gr&ouml;&szlig;e, Risiko</th></tr></thead>
+    <tbody>
+      <tr><td>T1 Ger&uuml;st</td><td>pnpm-Workspace, Service der Erkennung mit Health-Route, Compose-Stack mit Caddy und Redis, Dockerfile, Stufen 0 bis 3 mit je einem echten Szenario gr&uuml;n; das Referenz-Teilprojekt f&uuml;r <code>new-service</code>.</td><td>Stufe 3: Health &uuml;ber die Kante</td><td>keiner</td><td>M, mittel (CI, Vertr&auml;ge einweg)</td></tr>
+      <tr><td>T2 Segment-Naht und Session</td><td>Segment-Vertrag (inputs 4.1) validiert, Session mit Id und Lebenszeit 15 min nach dem letzten Segment (ADR 0009, Redis ohne Platte), Replay-Input f&uuml;r Referenz-Transkript und STT-Mitschnitt mit simulierter Uhr.</td><td>Stufe 3: Segmente rein, Session-Zustand raus</td><td>T1</td><td>M, mittel (Vertrag)</td></tr>
+      <tr><td>T3 Turn-Bildung und Tick-Plan</td><td>Turn-Regeln (Wechsel, 3 s, 3 min, Einwurf unter 2 s), Tick alle 5 s Redezeit plus Abschluss, &Uuml;berspringregel, Z&auml;hler; Eigenschaften mit fast-check.</td><td>Stufe 1 und 2a; Mitschnitt-Fixture</td><td>T2</td><td>M, niedrig</td></tr>
+      <tr><td>T4 Claim Extractor Stufe 1</td><td>Prompt-Aufbau mit Pr&auml;fix, kumulativem Turn, Setting, bisherigen Claims (Deckel 100); Ausgabeschema 4.1 validiert; Dedup &uuml;ber repeatOf; Candidates ins Protokoll; Claim-Ereignis am Live-Vertrag; Mock-Adapter.</td><td>Stufe 3: Replay rein, Claim-Ereignisse raus</td><td>T3</td><td>M, mittel</td></tr>
+      <tr><td>T5 Resolver</td><td>Ein Aufruf je Candidate, Kontext nach Modellrollen 5, Timeout 12 s, <code>none</code> und Fehler im Protokoll, Claim wie Stufe 1.</td><td>Stufe 2a und 3</td><td>T4</td><td>S, niedrig</td></tr>
+      <tr><td>T6 Topic Extractor</td><td>Tag-Liste je Session, Aufruf je Tick mit eigener &Uuml;berspringregel, Topic-Ereignis; ohne Soll-Wert (ADR 0003). Kann in Inkrement 2 rutschen.</td><td>Stufe 2a</td><td>T3</td><td>S, niedrig</td></tr>
+      <tr><td>T7 Modell-Adapter</td><td>Bedrock EU mit erzwungenem Tool f&uuml;r JSON (ADR 0006), Vertex <code>eu</code> hinter demselben Adapter, Token und Kosten je Aufruf gemeldet; Arm und Modelle aus #30.</td><td>Stufe 2a mit Mock; Stufe 5 Probe</td><td>T4, #30</td><td>M, hoch (Secrets, Kosten)</td></tr>
+      <tr><td>T8 Messweg</td><td>Die Pipeline ist ein Arm des Harness: Textmodus-Replay &uuml;ber das Golden Set durch die Segment-Naht, Funde mit Zeiten zur&uuml;ck, Bericht nach Messaufbau 5; Mock-Lauf in der CI (Regression Stufe 1).</td><td>Harness-Bericht (Mock)</td><td>T5, #41</td><td>M, mittel</td></tr>
+      <tr><td>T9 Messticket Baseline</td><td>Erster echter Lauf auf dem Pr&uuml;fset, <code>evals/reports/baseline.json</code> zeigt darauf; Schwellen aus Messaufbau 4.4 als Diagnose.</td><td>Harness-Vergleich</td><td>T7, T8, #25</td><td>S, niedrig; Budget 100 USD</td></tr>
+    </tbody>
+  </table></div>
+</section>
+</main>
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="/_runtime/mermaid-11.16.1.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>

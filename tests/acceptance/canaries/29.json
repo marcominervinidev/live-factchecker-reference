@@ -1,0 +1,5 @@
+{
+  "title": "The detection stream of a Session can be read through the edge",
+  "expected": "Wenn ich über den Eingang per HTTPS /detection/sessions/29a0c0de-0000-4000-8000-000000000002/detection abfrage, antwortet der Erkennungsdienst mit 200 und liefert die Behauptungs-Ereignisse der Session als Liste, jedes mit Satz, Sprecher und Zeitpunkt.",
+  "whyWrong": "The detection stream is internal (ADR 0005, addendum 2026-10-25: Claim events on an internal Redis stream per Session); the ticket adds no route to it, and the edge routes only GET /detection/health and /detection/ready (#25). It answers this path itself with 404 and X-Lfc-Edge: unrouted, and no Claim text leaves the backend (ADR 0009)."
+}

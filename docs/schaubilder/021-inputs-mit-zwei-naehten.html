@@ -1,0 +1,466 @@
+<!-- Quelle: https://claude.ai/artifact/VgATYcNCpHFp2ppx14gYkQ, exportiert 2026-10-23, Ticket #21 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Audio-Eingänge des Backends</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; Audio-Naht teal (wie Audiomodus), Segment-Naht bernstein (wie Textmodus), Späteres gestrichelt; dieselben Tokens wie "Messaufbau der Erkennung" und "Erkennungseinheit und Modellrollen". */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --audio:#0e7876; --text:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.a{color:var(--audio);border-color:var(--audio)} .tag.s{color:var(--text);border-color:var(--text)}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--audio);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--audio);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--audio);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:currentColor;stroke-width:1.2}
+.d .box-a{stroke:var(--audio);stroke-width:1.8}
+.d .box-s{stroke:var(--text);stroke-width:1.8}
+.d .box-muted{stroke:var(--muted);stroke-dasharray:4 3;stroke-width:1.1}
+.d .box-src{fill:var(--soft)}
+.d .seam-a{fill:var(--audio);opacity:.12}
+.d .seam-s{fill:var(--text);opacity:.12}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+.d .lab-a{fill:var(--audio)} .d .lab-s{fill:var(--text)} .d .lab-bad{fill:var(--bad)}
+.d .ln{stroke:currentColor;stroke-width:1.3;fill:none}
+.d .ln-a{stroke:var(--audio)} .d .ln-s{stroke:var(--text)} .d .ln-muted{stroke:var(--muted)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:currentColor} .d .m-a{fill:var(--audio)} .d .m-s{fill:var(--text)} .d .m-muted{fill:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 21 · Grilling · Schaubild der Entscheidung · Runde 3 · 2026-10-12</div>
+  <h1>Audio-Eingänge des Backends</h1>
+  <p class="lead">Welche Wege führen Audio oder Transkript ins Backend, welcher kommt zuerst, und wo laufen sie zusammen? Festgelegt ist schon: <strong>Backend zuerst</strong>, getestet gegen echtes Sendungs-Audio, <strong>eine Pipeline für Live und Datei</strong>, und als Spracherkennung im ersten Schritt <strong>Deepgram Nova-3 über den EU-Endpunkt</strong> (du, 2026-10-12). Zwei Runden haben Form, Formate, Verträge und Tests festgelegt; diese Seite ist das Schaubild zum Abnicken, Runde 3 klärt nur noch das Festhalten.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Datenfluss</a><a href="#optionen">Drei Formen</a><a href="#festgelegt">Festgelegt</a><a href="#mitschnitt">Mitschnitt</a><a href="#fragen">Tests</a><a href="#fakten">Fakten</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Datenfluss: zwei Nähte, eine Pipeline</h2>
+<p>So sieht es jetzt aus. Jeder Eingang dockt an genau einer von zwei Stellen an: an der <strong>Audio-Naht</strong> vor der Spracherkennung oder an der <strong>Segment-Naht</strong> dahinter. Ab der Segment-Naht ist alles eine Pipeline.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 470" role="img" aria-label="Links die Eingänge. Mikrofon und Datei liefern PCM-Audio an die Audio-Naht; Sender-Livestream ist gestrichelt als später markiert. Die Audio-Naht führt in die Streaming-Spracherkennung mit Diarisierung, die nur Echtzeit annimmt. Deren Segmente gehen an die Segment-Naht. An der Segment-Naht docken außerdem an: STT-Mitschnitt mit simulierter Uhr, Referenz-Transkript im Textmodus, Mock-STT in der CI und, später gestrichelt, Spracherkennung auf dem Gerät. Hinter der Segment-Naht folgen Turn-Bildung, Takt und die beiden Extraktoren.">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-a"/></marker>
+  <marker id="ars" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s"/></marker>
+  <marker id="arm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-muted"/></marker>
+</defs>
+
+<!-- Spalten-Ueberschriften -->
+<text x="20" y="22" class="lab">Eingänge</text>
+<text x="270" y="22" class="lab lab-a">Audio-Naht</text>
+<text x="490" y="22" class="lab lab-s">Segment-Naht</text>
+<text x="690" y="22" class="lab">eine Pipeline</text>
+
+<!-- Naht-Baender -->
+<rect x="262" y="34" width="22" height="200" rx="4" class="seam-a"/>
+<rect x="482" y="34" width="22" height="420" rx="4" class="seam-s"/>
+
+<!-- Audio-Eingaenge -->
+<rect x="20" y="40" width="200" height="50" rx="6" class="box box-a"/>
+<text x="120" y="60" text-anchor="middle" class="t">Mikrofon, live</text>
+<text x="120" y="77" text-anchor="middle" class="t2">per WebSocket · mit Frontend</text>
+
+<rect x="20" y="104" width="200" height="50" rx="6" class="box box-a"/>
+<text x="120" y="124" text-anchor="middle" class="t">Datei</text>
+<text x="120" y="141" text-anchor="middle" class="t2">Opus, MP3, WAV … · zuerst</text>
+
+<rect x="20" y="168" width="200" height="50" rx="6" class="box box-muted"/>
+<text x="120" y="188" text-anchor="middle" class="t2">Sender-Livestream</text>
+<text x="120" y="205" text-anchor="middle" class="t3">später · siehe Q5</text>
+
+<line x1="220" y1="65" x2="260" y2="110" class="ln ln-a" marker-end="url(#ara)"/>
+<line x1="220" y1="129" x2="260" y2="129" class="ln ln-a" marker-end="url(#ara)"/>
+<line x1="220" y1="193" x2="260" y2="148" class="ln ln-muted ln-dash" marker-end="url(#arm)"/>
+<text x="240" y="96" text-anchor="middle" class="t3">PCM</text>
+
+<!-- STT -->
+<rect x="300" y="96" width="160" height="66" rx="6" class="box box-a"/>
+<text x="380" y="117" text-anchor="middle" class="t">Deepgram Nova-3 EU</text>
+<text x="380" y="133" text-anchor="middle" class="t2">Streaming + Diarisierung</text>
+<text x="380" y="150" text-anchor="middle" class="t3" style="fill:var(--bad)">höchstens 1,25 × Echtzeit</text>
+<line x1="284" y1="129" x2="298" y2="129" class="ln ln-a" marker-end="url(#ara)"/>
+<line x1="460" y1="129" x2="480" y2="129" class="ln ln-a" marker-end="url(#ara)"/>
+<text x="470" y="119" text-anchor="middle" class="t3">Segmente</text>
+
+<!-- Mitschnitt-Schleife -->
+<polyline points="380,162 380,262 298,262" class="ln ln-dash" marker-end="url(#ar)"/>
+<text x="386" y="200" class="t3">einmal je Ausschnitt</text>
+<text x="386" y="213" class="t3">und STT-Version</text>
+<text x="386" y="226" class="t3">aufzeichnen</text>
+
+<!-- Segment-Eingaenge -->
+<rect x="20" y="240" width="276" height="44" rx="6" class="box box-s"/>
+<text x="158" y="258" text-anchor="middle" class="t">STT-Mitschnitt, simulierte Uhr</text>
+<text x="158" y="274" text-anchor="middle" class="t2">Audiomodus beschleunigt: Qualität, Kosten</text>
+
+<rect x="20" y="298" width="276" height="44" rx="6" class="box box-s"/>
+<text x="158" y="316" text-anchor="middle" class="t">Referenz-Transkript</text>
+<text x="158" y="332" text-anchor="middle" class="t2">Textmodus des Messaufbaus</text>
+
+<rect x="20" y="356" width="276" height="44" rx="6" class="box box-s"/>
+<text x="158" y="374" text-anchor="middle" class="t">Mock-STT</text>
+<text x="158" y="390" text-anchor="middle" class="t2">synthetisches Set in der CI</text>
+
+<rect x="20" y="414" width="276" height="44" rx="6" class="box box-muted"/>
+<text x="158" y="432" text-anchor="middle" class="t2">Spracherkennung auf dem Gerät</text>
+<text x="158" y="448" text-anchor="middle" class="t3">Gerätemodus, später · Clients (#10)</text>
+
+<line x1="296" y1="262" x2="480" y2="262" class="ln ln-s" marker-end="url(#ars)"/>
+<line x1="296" y1="320" x2="480" y2="320" class="ln ln-s" marker-end="url(#ars)"/>
+<line x1="296" y1="378" x2="480" y2="378" class="ln ln-s" marker-end="url(#ars)"/>
+<line x1="296" y1="436" x2="480" y2="436" class="ln ln-muted ln-dash" marker-end="url(#arm)"/>
+
+<!-- Pipeline -->
+<line x1="504" y1="244" x2="540" y2="244" class="ln ln-s" marker-end="url(#ars)"/>
+<text x="560" y="228" class="t3">Segment: Wörter mit Zeiten, Sprecherlabel, final</text>
+<rect x="540" y="214" width="0" height="0"/>
+<rect x="690" y="40" width="150" height="50" rx="6" class="box"/>
+<text x="765" y="60" text-anchor="middle" class="t">Turn-Bildung</text>
+<text x="765" y="77" text-anchor="middle" class="t2">Spec Modellrollen 2</text>
+<rect x="690" y="120" width="150" height="50" rx="6" class="box"/>
+<text x="765" y="140" text-anchor="middle" class="t">Takt (Tick)</text>
+<text x="765" y="157" text-anchor="middle" class="t2">5 s Redezeit + Turn-Ende</text>
+<rect x="690" y="200" width="150" height="50" rx="6" class="box"/>
+<text x="765" y="220" text-anchor="middle" class="t">Claim Extractor</text>
+<text x="765" y="237" text-anchor="middle" class="t2">+ Topic Extractor</text>
+<rect x="870" y="200" width="110" height="50" rx="6" class="box"/>
+<text x="925" y="220" text-anchor="middle" class="t">Karte</text>
+<text x="925" y="237" text-anchor="middle" class="t2">Prüfung …</text>
+
+<polyline points="540,244 600,244 600,65 688,65" class="ln ln-s" marker-end="url(#ars)"/>
+<line x1="765" y1="90" x2="765" y2="118" class="ln" marker-end="url(#ar)"/>
+<line x1="765" y1="170" x2="765" y2="198" class="ln" marker-end="url(#ar)"/>
+<line x1="840" y1="225" x2="868" y2="225" class="ln" marker-end="url(#ar)"/>
+<text x="610" y="58" class="t3">Uhr: Wanduhr</text>
+<text x="610" y="71" class="t3">oder simuliert</text>
+
+<text x="560" y="300" class="t3">Ab hier weiß die Pipeline nicht,</text>
+<text x="560" y="314" class="t3">woher die Segmente kommen.</text>
+<text x="560" y="336" class="t3">Die Uhr kommt mit dem Eingang:</text>
+<text x="560" y="350" class="t3">Echtzeit bei Live und Datei-über-STT,</text>
+<text x="560" y="364" class="t3">simuliert bei Mitschnitt, Transkript, Mock.</text>
+</svg>
+</div>
+<figcaption>Teal ist alles, was als Audio ankommt und durch die Spracherkennung muss; bernstein ist alles, was schon als Segmente ankommt. Die Farben decken sich mit Audiomodus und Textmodus aus dem Messaufbau. Gestrichelt ist, was nicht ins erste Inkrement gehört.</figcaption>
+</figure>
+
+<h2 id="optionen">2 · Drei Formen, wo die Eingänge zusammenlaufen (Q1)</h2>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 260" role="img" aria-label="Drei Zeilen. A: alles wird Audio, Datei und Transkript müssen durch die Streaming-Spracherkennung in Echtzeit; der Textmodus hat keinen Platz. B: alles wird Segment, die Datei geht durch Batch-Spracherkennung statt durch den Produktpfad. C: zwei Nähte; Datei geht wie das Mikrofon durch die Streaming-Spracherkennung, Mitschnitt, Transkript und Mock docken an der Segment-Naht an.">
+<defs>
+  <marker id="br" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="bra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-a"/></marker>
+  <marker id="brs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s"/></marker>
+</defs>
+<!-- A -->
+<text x="20" y="30" class="lab">A · nur Audio-Naht</text>
+<rect x="200" y="12" width="150" height="34" rx="6" class="box box-a"/><text x="275" y="34" text-anchor="middle" class="t2">Mikrofon · Datei</text>
+<rect x="380" y="12" width="150" height="34" rx="6" class="box box-a"/><text x="455" y="34" text-anchor="middle" class="t2">Streaming-STT, Echtzeit</text>
+<rect x="580" y="12" width="140" height="34" rx="6" class="box"/><text x="650" y="34" text-anchor="middle" class="t2">Pipeline</text>
+<line x1="350" y1="29" x2="378" y2="29" class="ln ln-a" marker-end="url(#bra)"/>
+<line x1="530" y1="29" x2="578" y2="29" class="ln" marker-end="url(#br)"/>
+<text x="736" y="25" class="t3" style="fill:var(--bad)">Messlauf dauert fast so lang wie das Audio;</text>
+<text x="736" y="39" class="t3" style="fill:var(--bad)">Textmodus und Gerät passen nicht hinein</text>
+
+<!-- B -->
+<text x="20" y="110" class="lab">B · nur Segment-Naht</text>
+<rect x="200" y="74" width="150" height="34" rx="6" class="box box-a"/><text x="275" y="96" text-anchor="middle" class="t2">Mikrofon</text>
+<rect x="200" y="118" width="150" height="34" rx="6" class="box box-a"/><text x="275" y="140" text-anchor="middle" class="t2">Datei</text>
+<rect x="380" y="74" width="150" height="34" rx="6" class="box box-a"/><text x="455" y="96" text-anchor="middle" class="t2">Streaming-STT</text>
+<rect x="380" y="118" width="150" height="34" rx="6" class="box"/><text x="455" y="140" text-anchor="middle" class="t2">Batch-STT, schnell</text>
+<rect x="580" y="96" width="140" height="34" rx="6" class="box"/><text x="650" y="118" text-anchor="middle" class="t2">Pipeline</text>
+<line x1="350" y1="91" x2="378" y2="91" class="ln ln-a" marker-end="url(#bra)"/>
+<line x1="350" y1="135" x2="378" y2="135" class="ln" marker-end="url(#br)"/>
+<line x1="530" y1="91" x2="578" y2="106" class="ln ln-s" marker-end="url(#brs)"/>
+<line x1="530" y1="135" x2="578" y2="120" class="ln ln-s" marker-end="url(#brs)"/>
+<text x="736" y="106" class="t3" style="fill:var(--bad)">Datei misst anderen Pfad als das Produkt:</text>
+<text x="736" y="120" class="t3" style="fill:var(--bad)">Batch diarisiert mit v2, Stream nur mit v1;</text>
+<text x="736" y="134" class="t3" style="fill:var(--bad)">die Zahlen wären zu gut</text>
+
+<!-- C -->
+<text x="20" y="200" class="lab lab-a">C · zwei Nähte</text>
+<text x="20" y="216" class="t3">Empfehlung</text>
+<rect x="200" y="172" width="150" height="34" rx="6" class="box box-a"/><text x="275" y="194" text-anchor="middle" class="t2">Mikrofon · Datei</text>
+<rect x="200" y="216" width="150" height="34" rx="6" class="box box-s"/><text x="275" y="238" text-anchor="middle" class="t3">Mitschnitt · Text · Mock</text>
+<rect x="380" y="172" width="150" height="34" rx="6" class="box box-a"/><text x="455" y="194" text-anchor="middle" class="t2">Streaming-STT, Echtzeit</text>
+<rect x="580" y="194" width="140" height="34" rx="6" class="box"/><text x="650" y="216" text-anchor="middle" class="t2">Pipeline</text>
+<line x1="350" y1="189" x2="378" y2="189" class="ln ln-a" marker-end="url(#bra)"/>
+<line x1="530" y1="189" x2="578" y2="204" class="ln ln-s" marker-end="url(#brs)"/>
+<polyline points="350,233 555,233 578,218" class="ln ln-s" marker-end="url(#brs)"/>
+<text x="736" y="200" class="t3">Datei geht den Produktpfad; schnelle Läufe</text>
+<text x="736" y="214" class="t3">über den Mitschnitt; Textmodus, CI und</text>
+<text x="736" y="228" class="t3">Gerätemodus brauchen keinen Sonderweg</text>
+</svg>
+</div>
+<figcaption>Der Unterschied liegt in einer Kante: ob die Datei durch dieselbe Streaming-Spracherkennung geht wie das Mikrofon (A, C) oder durch einen schnellen Batch-Pfad (B), und ob es eine zweite Andockstelle hinter der Spracherkennung gibt (B, C).</figcaption>
+</figure>
+
+<h2 id="festgelegt">3 · Festgelegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Nähte</td><td>Zwei Nähte: Audio-Naht vor der Spracherkennung, Segment-Naht dahinter. Datei geht den Produktpfad durch Deepgram; schnelle Läufe über den STT-Mitschnitt; Textmodus, Mock und später Gerätemodus docken an der Segment-Naht an.</td></tr>
+    <tr><td class="num">Q2</td><td>Datei</td><td>Im ersten Inkrement nur intern: Kommandozeile, Harness, Betreiber; Pfad statt Upload. Kundenfunktion bleibt Nebel (Datenschutzmodell #11, Clients #10).</td></tr>
+    <tr><td class="num">Q3</td><td>URL</td><td>Kein URL-Eingang im Backend. Sendungen holt <code>evals/tools/</code> (MediathekViewWeb plus ffmpeg, RSS, yt-dlp von Hand für TV-Duell und Quadrell) und legt Dateien ab.</td></tr>
+    <tr><td class="num">Q4</td><td>Glossar</td><td><strong>Input</strong> (Eingang) steht in <code>CONTEXT.md</code>; vermeiden: Source, Quelle, Feed, Recording, Aufnahme.</td></tr>
+    <tr><td class="num">Q5</td><td>Sender-Livestream</td><td>Später. Offen bleiben muss: ein Input ohne bekanntes Ende; eine Session ohne verbundenen Client, Karten auch für später dazukommende Zuschauer; Setting aus Programmdaten (wie genau: #20).</td></tr>
+    <tr><td class="num">Q6</td><td>Taktung</td><td>Datei läuft mit 1,0 × Echtzeit durch Deepgram. Ein Mitschnitt je Ausschnitt, Anbieter und STT-Konfiguration; die drei Läufe je Arm ziehen die Schwankung der Modelle, die Latenz-Läufe gehen jedes Mal live durch Deepgram.</td></tr>
+    <tr><td class="num">Q7</td><td>Format</td><td>Ein Format an der Audio-Naht: alles, was ffmpeg liest, wird PCM16 LE, 16 kHz, mono, Blöcke à 100 ms.</td></tr>
+    <tr><td class="num">Q8</td><td>Live-Vertrag</td><td>Gerüst aus ADR 0015 (alt) übernommen; <code>audio.start</code> nennt die Kodierung (<code>pcm16</code> zuerst, <code>opus</code> mit #10); feste Höchstdauer fällt, Grenzen als Kontingent (#13); gebaut mit dem Frontend.</td></tr>
+    <tr><td class="num">Q9</td><td>Segment-Vertrag</td><td>Ein Sprecher je Segment, Adapter teilt an Wortzeiten; Zeiten in Audiozeit plus <code>finalizedAt</code>; nur finale Segmente in die Pipeline; Mitschnitt speichert Rohereignisse. <strong>Segment</strong> im Glossar geschärft.</td></tr>
+    <tr><td class="num">Q10</td><td>Tests</td><td>Drei Stufen: bei jedem Push nur Mocks, Mitschnitt-Replay und Datei-Input mit Mock-STT; nachts eine echte Deepgram-Probe auf drei Ausschnitten mit Budgetdeckel; Mitschnitte des Golden Sets und Messläufe von Hand. Echte Spracherkennung und echte Modelle nie bei jedem Push.</td></tr>
+    <tr><td class="num">Q11</td><td>Anbieter</td><td>Erst Deepgram. Ein Vergleich mit AssemblyAI ist kein Teil dieses Tickets; er bleibt Option für "Anbieterentscheidungen" (#12).</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="mitschnitt">4 · Was ein STT-Mitschnitt festhält</h2>
+<p>Die Grundlage für Q6 und Q9. Deepgram liefert finale Ergebnisse in Blöcken; ein Block kann zwei Sprecher enthalten (Realtest im alten Repo: Blöcke bis 13,6 s). Der Mitschnitt hält jedes Ereignis mit seiner Ankunftszeit fest; die Segment-Naht bekommt daraus Segmente mit genau einem Sprecher.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 300" role="img" aria-label="Oben die Audiozeit von null bis zwanzig Sekunden mit Wörtern von Sprecher A bis elf Sekunden und Sprecher B ab elf Sekunden. Darunter kommt bei Sekunde vierzehn ein finaler Deepgram-Block an, der beide Sprecher enthält. Der Mitschnitt speichert das Rohereignis mit Ankunftszeit vierzehn Sekunden. Beim Abspielen teilt der Adapter den Block an den Wortzeiten in Segment A von null bis elf und Segment B von elf bis dreizehn; beide tragen finalisiert bei vierzehn Sekunden. Die simulierte Uhr gibt sie zu diesem Zeitpunkt an die Pipeline.">
+<defs>
+  <marker id="cr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="crs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s"/></marker>
+</defs>
+<!-- Achse: x = 140 + 38*s, 0..20 s -->
+<text x="20" y="44" class="lab lab-a">Audiozeit</text>
+<rect x="140" y="28" width="418" height="24" rx="4" class="box box-a"/>
+<text x="349" y="45" text-anchor="middle" class="t2">Sprecher A · "die Mieten sind seit 2015 um 40 Prozent …"</text>
+<rect x="558" y="28" width="76" height="24" rx="4" class="box box-a"/>
+<text x="596" y="45" text-anchor="middle" class="t2">B</text>
+<line x1="140" y1="64" x2="900" y2="64" class="ln ln-muted"/>
+<g class="t3">
+<text x="140" y="78" text-anchor="middle">0 s</text>
+<text x="330" y="78" text-anchor="middle">5</text>
+<text x="520" y="78" text-anchor="middle">10</text>
+<text x="710" y="78" text-anchor="middle">15</text>
+<text x="900" y="78" text-anchor="middle">20 s</text>
+</g>
+<line x1="672" y1="58" x2="672" y2="104" class="ln ln-bad ln-dash"/>
+<text x="678" y="98" class="t3" style="fill:var(--bad)">Block kommt an: 14,0 s</text>
+
+<text x="20" y="132" class="lab">Deepgram</text>
+<rect x="140" y="114" width="494" height="30" rx="4" class="box"/>
+<text x="387" y="134" text-anchor="middle" class="t2">ein finaler Block, Wörter 0 bis 13 s, Sprecher je Wort: A … A, B, B</text>
+
+<text x="20" y="182" class="lab">Mitschnitt</text>
+<rect x="140" y="164" width="494" height="30" rx="4" class="box box-src"/>
+<text x="387" y="184" text-anchor="middle" class="t2">Rohereignis + Ankunftszeit 14,0 s + STT-Version</text>
+<line x1="387" y1="144" x2="387" y2="162" class="ln" marker-end="url(#cr)"/>
+
+<text x="20" y="236" class="lab lab-s">Segment-Naht</text>
+<rect x="140" y="216" width="418" height="30" rx="4" class="box box-s"/>
+<text x="349" y="236" text-anchor="middle" class="t2">Segment · Sprecher A · 0,0 bis 11,0 s · final bei 14,0 s</text>
+<rect x="558" y="216" width="76" height="30" rx="4" class="box box-s"/>
+<text x="596" y="230" text-anchor="middle" class="t3">Segment · B</text>
+<text x="596" y="241" text-anchor="middle" class="t3">11 bis 13 s</text>
+<line x1="387" y1="194" x2="387" y2="214" class="ln ln-s" marker-end="url(#crs)"/>
+<text x="395" y="208" class="t3">Adapter teilt an Wortzeiten und Sprecherwechsel</text>
+
+<text x="140" y="276" class="t3">Live: die Pipeline bekommt beide Segmente bei Wanduhr 14,0 s. Replay: bei simulierter Uhr 14,0 s, nach einigen Millisekunden echter Zeit.</text>
+<text x="140" y="292" class="t3">Latenz zur Karte zählt in beiden Fällen ab 11,0 s (letztes Wort von A), sodass 3 s schon vor dem ersten Takt verbraucht sind.</text>
+</svg>
+</div>
+<figcaption>Weil der Mitschnitt das Rohereignis samt Ankunftszeit speichert, lässt sich der Adapter später ändern, ohne neu aufzunehmen; Takt und Latenz bleiben im Replay dieselben wie live.</figcaption>
+</figure>
+
+<h2 id="fragen">5 · Tests je Input (Q10)</h2>
+
+<h3>Worum es geht</h3>
+<p>Die <strong>CI</strong> (Continuous Integration) ist der automatische Prüflauf, den GitHub Actions bei jedem Push und jedem Pull Request in <code>live-factchecker-v2</code> startet. Ist er rot, wird nicht gemergt. Damit das trägt, müssen die Tests dort drei Dinge sein: <strong>schnell</strong> (Minuten), <strong>kostenlos</strong> und <strong>bei gleichem Code immer gleich</strong>.</p>
+<p>Echte Spracherkennung und echte Modelle erfüllen keins davon:</p>
+<ul>
+  <li><strong>Geld je Push:</strong> jeder Commit würde Deepgram- und Modellkosten auslösen.</li>
+  <li><strong>Schlüssel in der CI:</strong> der API-Schlüssel müsste als Secret in GitHub liegen und bei jedem Lauf ins Netz.</li>
+  <li><strong>Wackelnde Ergebnisse:</strong> Deepgram und Modelle antworten nicht immer gleich; ein Test würde rot, ohne dass sich am Code etwas geändert hat.</li>
+  <li><strong>Wartezeit:</strong> Audio läuft in Echtzeit, ein Ausschnitt von 4 Minuten blockiert 4 Minuten.</li>
+</ul>
+<p>Deshalb drei Stufen: was billig und deterministisch ist, bei jedem Push; was echte Dienste braucht, nachts mit Budgetdeckel; was teuer und selten ist, von Hand.</p>
+
+<div class="tbl"><table>
+  <thead><tr><th>Stufe</th><th>Test</th><th>Was hineingeht</th><th>Was geprüft wird</th><th>Fängt zum Beispiel</th><th>Kosten, Dauer</th></tr></thead>
+  <tbody>
+    <tr><td><span class="tag s">1 · jeder Push</span></td><td>Segment-Naht, synthetisches Set</td><td>Mock-STT gibt die Segmente aus dem Skript aus; Mock-Extraktoren erkennen die eingebauten Behauptungen</td><td>Turn-Bildung, Takt, Dedup, Zuschreibung, Bericht (ADR 0003)</td><td>ein Einwurf beendet fälschlich den Turn; ein Takt läuft doppelt</td><td class="num">0 USD, Sekunden</td></tr>
+    <tr><td><span class="tag s">1 · jeder Push</span></td><td>Segment-Naht, Mitschnitt im Repo</td><td>ein kurzer echter Deepgram-Mitschnitt (30 bis 60 s) eines synthetischen Dialogs mit Sprecherwechsel mitten im Block; Replay mit simulierter Uhr</td><td>Adapter teilt Blöcke an Sprecherwechseln, <code>finalizedAt</code> und Uhr stimmen</td><td>ein Segment mit zwei Sprechern; falsch berechnete Latenz</td><td class="num">0 USD, Sekunden</td></tr>
+    <tr><td><span class="tag a">1 · jeder Push</span></td><td>Audio-Naht, Datei</td><td>je eine kurze WAV- und Opus-Datei (5 s) in den Datei-Input; Mock-STT zählt nur Bytes; simulierte Uhr, damit der Test nicht 5 s wartet</td><td>PCM16, 16 kHz, mono; 3.200 Bytes je 100 ms; Takt 1,0 ×; Stopp bei Rückstau</td><td>falsche Abtastrate, Deepgram liefert dann Unsinn; Datei geht auf einmal raus statt im Takt</td><td class="num">0 USD, Sekunden</td></tr>
+    <tr><td><span class="tag">2 · nachts, Budgetdeckel</span></td><td>Deepgram-Probe</td><td>die drei festen Latenz-Ausschnitte live durch Deepgram</td><td>Latenz bis final; Segmente gegen den letzten Mitschnitt</td><td>Deepgram ändert Format oder Modell; Latenz driftet; Schlüssel abgelaufen</td><td class="num">etwa 13 min Audio, 0,09 USD je Nacht, unter 3 USD im Monat</td></tr>
+    <tr><td><span class="tag">3 · von Hand</span></td><td>Mitschnitte und Messläufe</td><td>ganzes Golden Set durch Deepgram; Messläufe mit echten Modellen (#30)</td><td>alle Zahlen aus ADR 0003</td><td>Qualität, nicht Mechanik</td><td class="num">0,65 USD je Mitschnitt-Satz, 95 min</td></tr>
+  </tbody>
+</table></div>
+<p class="muted">Der Mitschnitt für Stufe 1 kommt aus TTS-Audio des synthetischen Sets statt aus einer Sendung: kein Urheberrecht, und der Sprecherwechsel liegt genau dort, wo der Test ihn braucht.</p>
+
+<h2 id="fakten">6 · Die Fakten auf dem Tisch</h2>
+<h3>Spracherkennung und Tempo</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Fakt</th><th>Wert</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Deepgram Streaming, Höchsttempo</td><td>"Deepgram allows audio to be streamed at a maximum of 1.25x realtime"; ein großer Puffer führt dazu, dass "the stream may wind up being significantly delayed"</td><td>Deepgram-Doku "Recovering From Connection Errors &amp; Timeouts When Live Streaming", Abruf 2026-10-12</td></tr>
+    <tr><td>Deepgram Pre-recorded für Dateien</td><td>schnell, aber "not expected to be real time"; anderer Pfad als live</td><td>Deepgram-Community, Discussion #751</td></tr>
+    <tr><td>Deepgram Nova-3 Deutsch, Streaming mit Diarisierung, EU</td><td class="num">0,0048 + 0,0020 = 0,0068 USD/min (Aktionspreis); Pre-recorded 0,0043, Diarisierung dort inklusive</td><td>Research #34</td></tr>
+    <tr><td>Diarisierung Streaming gegen Batch</td><td>im Stream nur Diarizer v1 ohne <code>speaker_confidence</code>, v2 nur Batch</td><td>Research #34</td></tr>
+    <tr><td>Aufbewahrung bei Deepgram</td><td>Primärseite lieferte 404, Privacy Policy nennt US-Server und Vertragsregelung; offen für das Datenschutzmodell</td><td>Research #34</td></tr>
+    <tr><td>Realtest im alten Repo</td><td>19 s, zwei synthetische Stimmen: Stimmen getrennt, letzter Satz 0,6 bis 1,0 s nach Sprechende final, Finalisierung in Blöcken</td><td>altes Repo, ADR 0016</td></tr>
+    <tr><td>Golden Set Version 1</td><td class="num">19 Ausschnitte, 95 min (Alltag 54,7 · Talkshow 29,9 · Debatte 10,5), Opus mono 24 kbit/s</td><td>Stand #25, 2026-10-12</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Was das für die Messläufe heißt</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Weg</th><th>Wanduhr je Lauf über Version 1</th><th>Läufe bis zur ersten Vergleichsrunde</th><th>STT-Kosten</th></tr></thead>
+  <tbody>
+    <tr><td>Jeder Audiomodus-Lauf live durch Deepgram</td><td class="num">mindestens 76 min (bei 1,25 ×)</td><td class="num">7 Konfigurationen × 3 Läufe = 21, also mindestens 27 Stunden</td><td class="num">etwa 13,60 USD</td></tr>
+    <tr><td>STT-Mitschnitt einmal, danach Replay</td><td class="num">76 bis 95 min einmal, danach Minuten</td><td class="num">21 Replays plus Latenz-Läufe auf drei Ausschnitten</td><td class="num">etwa 0,65 USD je STT-Version</td></tr>
+  </tbody>
+</table></div>
+<p class="muted">Der Preis des Mitschnitts: Die Schwankung der STT selbst wird nur einmal gezogen. Nach Q6 reicht ein Mitschnitt; die Schwankung der STT zeigen die Latenz-Läufe, die jedes Mal live durch Deepgram gehen.</p>
+
+<h3>Was es aus dem alten Repo gibt</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Baustein</th><th>Inhalt</th><th>Brauchbar für</th></tr></thead>
+  <tbody>
+    <tr><td>ADR 0015 Audio-Pfad</td><td>WebSocket v2: <code>audio.start</code>, Binärframes PCM16 LE mono 16 kHz in 100 ms, <code>audio.stop</code>; kein Puffern, bei 64 KiB Rückstau Stopp mit <code>overloaded</code>; Höchstdauer 60 min; Audio nie auf Platte</td><td>Format der Audio-Naht, Live-Vertrag (Runde 2)</td></tr>
+    <tr><td><code>services/transcription/src/probe.ts</code></td><td>spielt eine WAV in Echtzeit durch die STT und misst die Latenz je Segment (<code>make stt-probe</code>)</td><td>Datei-Eingang in Echtzeit</td></tr>
+    <tr><td>Brief Abschnitt 10</td><td>Mock-Adapter spielt eine WAV-Datei oder ein Skript mit vorgegebenen Segmenten ab</td><td>Mock-STT an der Segment-Naht</td></tr>
+    <tr><td>Golden-Set-Werkzeuge in v2</td><td><code>evals/tools/</code>: MediathekViewWeb, ffmpeg-Schnitt per HTTP-Range, RSS, Untertitel-Parser</td><td>Abruf außerhalb des Backends (Q3)</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Rechtslage, soweit sie die Eingänge trifft</h3>
+<ul>
+  <li>YouTube-Download verstößt gegen die Nutzungsbedingungen Nr. 1 und 3; für interne Tests hast du das in Kenntnis akzeptiert (2026-10-07).</li>
+  <li>Im Produkt ist Mithören per Mikrofon wie Fernsehen zu behandeln (§§ 44a, 44b, 51 UrhG); Audio nicht speichern, Transkript nur so lange wie nötig.</li>
+  <li>Private Gespräche: Einwilligung aller Sprecher vor jeder Aufnahme (§ 201 StGB), auch für eine hochgeladene Datei.</li>
+</ul>
+
+<h2 id="wohin">7 · Was wo liegt, und Runde 3</h2>
+<p>So würde ich das Ticket festhalten. Runde 3 hat nur zwei Fragen: ob die Form stimmt und ob die Weitergaben vollständig sind.</p>
+<div class="two">
+  <div class="card"><h3>live-factchecker-plan (dieses Repo)</h3><ul>
+    <li><strong>ADR 0005 "Inputs mit zwei Nähten"</strong>: Audio-Naht und Segment-Naht, Datei über den Produktpfad in Echtzeit, STT-Mitschnitt für schnelle Läufe, kein URL-Eingang, Datei nur intern; die verworfenen Formen A und B</li>
+    <li><strong><code>docs/spec/inputs.md</code></strong>: Input-Matrix mit Reihenfolge, Format der Audio-Naht, Live-Vertrag, Segment-Vertrag, Mitschnitt und Uhr, Teststufen, Anforderungen für den Sender-Livestream</li>
+    <li><strong><code>CONTEXT.md</code></strong>: Input neu, Segment geschärft (schon erledigt)</li>
+  </ul></div>
+  <div class="card"><h3>Kommentare an andere Tickets</h3><ul>
+    <li><strong>Clients (#10):</strong> Upload-Endpunkt und Opus im Live-Vertrag; Gerätemodus dockt an der Segment-Naht an</li>
+    <li><strong>Datenschutzmodell (#11):</strong> Datei-Upload als Kundenfunktion (Einwilligung, § 87 UrhG); Deepgram-Aufbewahrung unbelegt</li>
+    <li><strong>Anbieterentscheidungen (#12):</strong> Deepgram Nova-3 EU im ersten Schritt; AssemblyAI-Vergleich per zweitem Mitschnitt als Option; Aufbewahrung klären</li>
+    <li><strong>Konten (#13):</strong> Kontingent statt fester Höchstdauer</li>
+    <li><strong>Betriebsmodell (#15):</strong> Session ohne verbundenen Client; nächtliche Deepgram-Probe mit Budgetdeckel</li>
+    <li><strong>Sprecher benennen (#20):</strong> Setting aus Programmdaten; Segment hat immer genau ein Sitzungslabel</li>
+    <li><strong>Testkorpus (#25):</strong> Transkript-Entwürfe mit Deepgram Streaming, als erster Mitschnitt aufgenommen</li>
+    <li><strong>Vergleichsprototyp (#30):</strong> Audiomodus über Mitschnitt-Replay, Latenz-Läufe live</li>
+  </ul></div>
+  <div class="card"><h3>Map</h3><ul>
+    <li>Decisions so far: eine Zeile mit Link auf dieses Ticket und dieses Schaubild</li>
+    <li>Nebel neu: Datei-Upload als Kundenfunktion; Sender-Livestream mit den drei Anforderungen aus Q5</li>
+    <li>Nebel geändert: Gerätemodus dockt an der Segment-Naht an</li>
+  </ul></div>
+  <div class="card"><h3>Noch offen, nicht hier</h3><ul>
+    <li>Ob Deepgram Audio oder Transkripte speichert</li>
+    <li>Wann Opus statt PCM16 kommt</li>
+    <li>Wie das Setting aus Programmdaten entsteht</li>
+    <li>Wie gut Deepgram deutsche Gespräche diarisiert: erst der STT-Verlust im Audiomodus zeigt es</li>
+  </ul></div>
+</div>
+
+<div class="qs">
+<div class="q">
+  <h3><span class="n">Q12</span>ADR plus Spezifikation?</h3>
+  <div class="rec"><div class="lbl">Empfehlung: ja, ADR 0005 und <code>docs/spec/inputs.md</code></div>
+  <ul>
+    <li>Schwer umkehrbar: der Segment-Vertrag wird öffentlich, sobald der Gerätemodus kommt.</li>
+    <li>Ohne Kontext überraschend: warum eine Datei in Echtzeit durch die Spracherkennung läuft, statt schnell per Batch.</li>
+    <li>Echte Abwägung: drei Formen, zwei verworfen.</li>
+  </ul></div>
+</div>
+<div class="q">
+  <h3><span class="n">Q13</span>Sind die Weitergaben vollständig?</h3>
+  <div class="rec"><div class="lbl">Empfehlung: so wie oben</div>
+  <ul>
+    <li>Danach schließe ich das Ticket mit einem Kommentar, der auf ADR, Spezifikation und dieses Schaubild verweist.</li>
+  </ul></div>
+</div>
+</div>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Input (Eingang)</dt><dd>Im Glossar seit Runde 1 (Q4): der Weg, auf dem Audio oder Transkript eines Gesprächs ins Produkt kommt.</dd>
+  <dt>Audio-Naht</dt><dd>Die Stelle vor der Spracherkennung, an der Audio als PCM-Blöcke ankommt, egal ob vom Mikrofon oder aus einer Datei.</dd>
+  <dt>Segment-Naht</dt><dd>Die Stelle hinter der Spracherkennung, an der Segmente mit Wortzeiten und Sprecherlabel ankommen. Ab hier ist alles eine Pipeline.</dd>
+  <dt>STT</dt><dd>Speech to text, die Spracherkennung. Streaming-STT bekommt Audio laufend und liefert Segmente laufend; Batch-STT bekommt eine ganze Datei und liefert am Ende.</dd>
+  <dt>Diarisierung</dt><dd>Die STT teilt das Audio nach Stimmen auf und vergibt Sitzungslabels (A, B). Keine Stimmprofile, kein Name aus der Stimme.</dd>
+  <dt>STT-Mitschnitt</dt><dd>Die einmal in Echtzeit aufgezeichnete Ausgabe der STT für einen Ausschnitt, mit den Zeiten, zu denen jedes Segment final wurde; lässt sich danach beliebig schnell abspielen.</dd>
+  <dt>Simulierte Uhr</dt><dd>Die Pipeline rechnet mit den Zeitstempeln aus dem Mitschnitt statt mit der Wanduhr; Takt und Latenz bleiben so berechenbar, der Lauf dauert aber nur Minuten.</dd>
+  <dt>PCM16</dt><dd>Unkomprimiertes Audio, 16 Bit je Abtastwert; bei 16 kHz mono 32 KB je Sekunde.</dd>
+  <dt>Mock-STT</dt><dd>Ein Ersatz der Spracherkennung, der vorgegebene Segmente ausgibt; für die CI ohne echte Anbieter.</dd>
+</dl>
+</div>
+
+</body></html>

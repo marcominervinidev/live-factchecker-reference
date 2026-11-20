@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#55 Konten und Mandanten – Runde 1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout wie die Serie in docs/schaubilder: eine Lesespalte, Schaubild in voller Breite, Faktentabelle, Fragen mit Empfehlung. Drei Zonen von links nach rechts (Gerät und Dienste, Backend EU, Kontodatenbank EU); offene Punkte dieser Runde bernsteinfarben, Entschiedenes teal. Dieselben Tokens wie 011-datenschutzmodell.html. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td q,li q{font-style:italic}
+.src{font-family:var(--font-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .ask{font-size:16px;margin:0 0 6px;max-width:80ch}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:8px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.later li{margin:3px 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px} .src{white-space:normal}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8;stroke-dasharray:5 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .tq{fill:var(--warn);font-family:var(--font-mono);font-size:11px;font-weight:500}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;fill:currentColor}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 55 · Grilling · Briefing Runde 1 · 2026-11-03</div>
+  <h1>#55 Konten und Mandanten – Runde 1</h1>
+  <p class="lead">Die Frage des Tickets lautet: <q>Wie werden aus Sessions mit Gateway-Token zahlende Kunden?</q> Runde 1 klärt nur die fünf Grundentscheidungen, an denen alles andere hängt: was ein Mandant ist, wo das Backend ihn kennt, wer die Anmeldung führt, wie das Web-Abo kassiert wird und was das Kontingent zählt. Token-Modell der Store-App, Gäste, Haushalt, Dienstanmeldung der Ingestion und das Verhalten nach <code>quota_exceeded</code> kommen in Runde 2. Jede Frage ist so gestellt, dass „ja“ die Empfehlung annimmt.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#heute">Heute</a><a href="#bild">Schaubild</a><a href="#fest">Schon fest</a><a href="#fakten">Fakten</a><a href="#fragen">Fragen</a><a href="#spaeter">Runde 2</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="heute">1 · Was es heute gibt</h2>
+<div class="two">
+  <div class="card">
+    <h3>Altes Repo live-factcheck</h3>
+    <ul>
+      <li><b>Ein geteiltes Token für alle.</b> Research #73 (Produktlücke): <q>Ein geteiltes <code>GATEWAY_TOKEN</code> für REST (<code>Authorization: Bearer</code>) und WebSocket (erste Nachricht <code>auth</code>), im Browser in <code>localStorage</code></q>.</li>
+      <li><b>Session ohne Besitzer.</b> Ebenda: <q>heute erzeugt <code>sessions.create()</code> eine UUID ohne Besitzer</q>.</li>
+      <li><b>Ein Tageszähler in USD.</b> Ebenda: <q>Ein Tagesbudget in USD für alle Worker auf einem Redis-Schlüssel pro UTC-Tag (<code>budget:v1:cloud:&lt;date&gt;</code>)</q>; Standard 2 USD, nach Redis-Neustart wieder bei null.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Neues Repo live-factchecker-v2</h3>
+    <ul>
+      <li><b>Noch kein Gateway, keine Konten.</b> Unter <code>services/</code> liegt nur <code>detection</code>; der Segment-Vertrag steht seit #136 (<q>segment contract, schemaVersion 1, in Zod</q>).</li>
+      <li><b>Vorgriff aufs Kontingent ist geplant.</b> <code>docs/spec/process/tickets.md</code>: <q>Token und Kosten je Modellaufruf als Log-Ereignis und als Metrik, dazu ein Zähler je Session als Vorgriff auf das Kontingent (ADR 0005)</q>.</li>
+      <li><b>Die Architektur lässt die Lücke offen.</b> <code>docs/architecture.md</code>: <q>Konten, Mandanten, Kontingent je Konto, Abrechnung, Token-Modell beider Clients, Dienstanmeldung der Ingestion</q> stehen bei #55.</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="bild">2 · Schaubild: Konto, Mandant, Session, Kontingent</h2>
+<p>Links Gerät und fremde Dienste, in der Mitte das Backend in der EU, rechts die Kontodatenbank aus ADR 0009. Teal ist schon entschieden, bernsteinfarben gestrichelt ist offen in dieser Runde (Q1 bis Q5). Gezeichnet ist der Stand, wenn du alle fünf Empfehlungen annimmst.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 580" role="img" aria-label="Drei Zonen. Links Gerät und Dienste: die Web-App meldet sich beim Identitätsanbieter an (Frage 3) und bekommt ein Token; der Zahlungsdienst für das Web-Abo (Frage 4) meldet den Abo-Status per Webhook an das Konto. Mitte Backend EU: der Rand prüft das Token und trägt die Konto-ID als Besitzer in die Session ein (Frage 2); die Session lebt 15 Minuten in Redis ohne Platte; Erkennung und Prüfung arbeiten nur mit der Session-Id, ohne Konto in den Events; zwei Zählpunkte, der Audio-Eingang für Minuten und die Prüfung für Prüfungen (Frage 5), schreiben in den Nutzungszähler. Rechts Kontodatenbank Postgres EU mit vier Tabellen: Konto, das zugleich der Mandant ist (Frage 1), mit Abo-Status; Consent Record; Nutzungszähler; Verlauf auf Wunsch. Rechnungen und Zahlungsdaten liegen getrennt beim Zahlungsdienst.">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m"/></marker>
+    <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m-warn"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m-ok"/></marker>
+  </defs>
+
+  <!-- Zonen -->
+  <rect class="zone" x="10" y="40" width="240" height="530" rx="10"/>
+  <rect class="zone" x="265" y="40" width="380" height="530" rx="10"/>
+  <rect class="zone" x="660" y="40" width="330" height="530" rx="10"/>
+  <text class="lab" x="20" y="28">Gerät und fremde Dienste</text>
+  <text class="lab" x="275" y="28">Backend, EU-Hosting</text>
+  <text class="lab" x="670" y="28">Kontodatenbank Postgres EU (ADR 0009)</text>
+
+  <!-- Links: Web-App -->
+  <rect class="box box-ok" x="22" y="60" width="216" height="70" rx="6"/>
+  <text class="t" x="32" y="81">Web-App im Browser</text>
+  <text class="t2" x="32" y="99">Inkrement 1, kein Store (ADR 0010)</text>
+  <text class="t2" x="32" y="116">hält nur Anmeldung, Einstellungen</text>
+
+  <!-- Links: IdP -->
+  <rect class="box box-warn" x="22" y="190" width="216" height="84" rx="6"/>
+  <text class="t" x="32" y="211">Identitätsanbieter, EU-Region</text>
+  <text class="tq" x="32" y="229">Q3</text>
+  <text class="t2" x="56" y="229">Empfehlung Cognito Frankfurt</text>
+  <text class="t2" x="32" y="246">Passkey oder E-Mail-Code,</text>
+  <text class="t2" x="32" y="263">kein Social Login</text>
+
+  <!-- Links: Zahlung -->
+  <rect class="box box-warn" x="22" y="360" width="216" height="100" rx="6"/>
+  <text class="t" x="32" y="381">Zahlung Web-Abo</text>
+  <text class="tq" x="32" y="399">Q4</text>
+  <text class="t2" x="56" y="399">Empfehlung Stripe Managed</text>
+  <text class="t2" x="32" y="416">Payments als Verkäufer (MoR)</text>
+  <text class="t2" x="32" y="433">hält Rechnungen, Zahlungsdaten,</text>
+  <text class="t2" x="32" y="450">Umsatzsteuer</text>
+
+  <!-- Pfeile links -->
+  <path class="ln ln-warn" d="M110 130 V188" marker-end="url(#aw)"/>
+  <path class="ln ln-warn" d="M150 188 V132" marker-end="url(#aw)"/>
+  <text class="t3" x="20" y="162">Anmeldung</text>
+  <text class="t3" x="156" y="162">Token (OIDC)</text>
+
+  <!-- Mitte: Rand -->
+  <rect class="box box-warn" x="280" y="60" width="350" height="70" rx="6"/>
+  <text class="t" x="290" y="81">Rand des Backends</text>
+  <text class="tq" x="290" y="99">Q2</text>
+  <text class="t2" x="314" y="99">prüft das Token, trägt die Konto-ID als</text>
+  <text class="t2" x="290" y="116">Besitzer in die Session, prüft den Abo-Status</text>
+  <path class="ln" d="M238 95 H278" marker-end="url(#a)"/>
+  <text class="t3" x="242" y="88">Token</text>
+
+  <!-- Mitte: Session -->
+  <rect class="box box-ok" x="280" y="160" width="350" height="62" rx="6"/>
+  <text class="t" x="290" y="181">Session (Conversation)</text>
+  <text class="t2" x="290" y="199">Redis ohne Platte, 15 min nach dem letzten Segment</text>
+  <text class="t2" x="290" y="215">Besitzer: Konto-ID, nur hier</text>
+  <path class="ln" d="M455 130 V158" marker-end="url(#a)"/>
+
+  <!-- Mitte: Pipeline -->
+  <rect class="box box-ok" x="280" y="252" width="350" height="62" rx="6"/>
+  <text class="t" x="290" y="273">Erkennung und Prüfung</text>
+  <text class="t2" x="290" y="291">Events und Prompts tragen die Session-Id,</text>
+  <text class="t2" x="290" y="307">keine Konto-ID (Q2)</text>
+  <path class="ln" d="M455 222 V250" marker-end="url(#a)"/>
+
+  <!-- Mitte: Zählpunkte -->
+  <rect class="box box-warn" x="280" y="350" width="168" height="110" rx="6"/>
+  <text class="t" x="290" y="371">Audio-Eingang</text>
+  <text class="tq" x="290" y="389">Q5</text>
+  <text class="t2" x="314" y="389">zählt Minuten,</text>
+  <text class="t2" x="290" y="406">harte Grenze: Stopp mit</text>
+  <text class="t2" x="290" y="423"><tspan font-family="JetBrains Mono, monospace">quota_exceeded</tspan></text>
+  <text class="t3" x="290" y="446">(inputs.md 3, ADR 0005)</text>
+
+  <rect class="box box-warn" x="462" y="350" width="168" height="110" rx="6"/>
+  <text class="t" x="472" y="371">Prüfung</text>
+  <text class="tq" x="472" y="389">Q5</text>
+  <text class="t2" x="496" y="389">zählt Prüfungen,</text>
+  <text class="t2" x="472" y="406">weiche Grenze: danach</text>
+  <text class="t3" x="472" y="423">Einschätzung statt Urteil</text>
+  <text class="t3" x="472" y="446">(Kostenmodell #119)</text>
+  <path class="ln" d="M364 314 V348" marker-end="url(#a)"/>
+  <path class="ln" d="M546 314 V348" marker-end="url(#a)"/>
+
+  <text class="t3" x="280" y="496">Beide Zählpunkte schlagen den Besitzer über die</text>
+  <text class="t3" x="280" y="512">Session-Id nach und buchen zentral in Postgres,</text>
+  <text class="t3" x="280" y="528">nicht je Replica und nicht in Redis.</text>
+
+  <!-- Rechts: Tabellen -->
+  <rect class="box box-warn" x="675" y="60" width="300" height="92" rx="6"/>
+  <text class="t" x="685" y="81">Konto = Mandant</text>
+  <text class="tq" x="800" y="81">Q1</text>
+  <text class="t2" x="685" y="99">Kennung vom Identitätsanbieter (sub),</text>
+  <text class="t2" x="685" y="116">Abo-Status und Kunden-Id beim</text>
+  <text class="t2" x="685" y="133">Zahlungsdienst; eine Person je Konto</text>
+
+  <rect class="box box-ok" x="675" y="175" width="300" height="58" rx="6"/>
+  <text class="t" x="685" y="196">Consent Record</text>
+  <text class="t2" x="685" y="214">ohne Inhalt, 3 Jahre (ADR 0009)</text>
+
+  <rect class="box box-ok" x="675" y="256" width="300" height="74" rx="6"/>
+  <text class="t" x="685" y="277">Nutzungszähler</text>
+  <text class="t2" x="685" y="295">Minuten, Prüfungen je Konto und</text>
+  <text class="t2" x="685" y="312">Abrechnungszeitraum, + 1 Jahr</text>
+
+  <rect class="box box-ok" x="675" y="353" width="300" height="58" rx="6"/>
+  <text class="t" x="685" y="374">Verlauf</text>
+  <text class="t2" x="685" y="392">nur auf Wunsch je Gespräch</text>
+
+  <text class="t3" x="675" y="440">Rechnungen und Zahlungsdaten: getrennt,</text>
+  <text class="t3" x="675" y="456">10 Jahre (§ 147 AO); beim MoR liegen sie</text>
+  <text class="t3" x="675" y="472">dort, nicht in dieser Datenbank.</text>
+
+  <!-- Verbindungen nach rechts -->
+  <path class="ln" d="M630 95 H673" marker-end="url(#a)"/>
+  <text class="t3" x="633" y="88">liest</text>
+  <path class="ln ln-ok" d="M630 405 H650 V293 H673" marker-end="url(#ao)"/>
+  <path class="ln ln-ok" d="M364 460 V476 H650 V405"/>
+  <path class="ln ln-warn ln-dash" d="M238 410 Q258 410 258 544 H662 V140 H673" marker-end="url(#aw)"/>
+  <text class="t3" x="520" y="560">Webhook: Abo-Status</text>
+</svg>
+</div>
+<figcaption>Die Kontodatenbank hat nach ADR 0009 genau vier Tabellen mit Personenbezug; Q1 bis Q5 ändern daran nichts. Die Pipeline in der Mitte bleibt, wie sie ist: Sie sieht die Session-Id, nicht das Konto.</figcaption>
+</figure>
+
+<h2 id="fest">3 · Was schon fest ist</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Festlegung</th><th>Wortlaut</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Kontingent ersetzt die feste Höchstdauer</td><td><q>An ihre Stelle tritt ein Kontingent je Konto; der Live-Vertrag beendet einen Input mit dem Grund <code>quota_exceeded</code> … Wie das Kontingent bemessen wird, entscheidet dieses Ticket.</q></td><td class="src">#85, ADR 0005; Kommentar in #55</td></tr>
+    <tr><td>Vier Tabellen je Konto</td><td><q>Die Kontodatenbank (Postgres, EU) bekommt genau vier Tabellen mit Personenbezug: Konto, Einwilligungsereignis, Nutzungszähler, Verlauf. … Konten (#13) führen Konto, Zähler und Rechnungen getrennt.</q> (#13 ist heute #55)</td><td class="src">#79, ADR 0009</td></tr>
+    <tr><td>Zähler: was und wie lange</td><td><q>Nutzungszähler (Minuten, Prüfungen je Konto und Abrechnungszeitraum) | Kontingent, Abrechnung | Kontodatenbank | laufender Abrechnungszeitraum + 1 Jahr</q></td><td class="src">docs/spec/datenschutz.md 2</td></tr>
+    <tr><td>Erst Web-Abo, Store später</td><td><q>Konten (#13) kann mit dem Web-Abo anfangen; Store-Abos kommen mit dem zweiten Inkrement, dann gilt Apples 3.1.3(b) (Web-Abo nur neben IAP).</q></td><td class="src">#78, ADR 0010</td></tr>
+    <tr><td>Ingestion ohne Nutzerkonto</td><td><q>Die Ingestion braucht eine Dienstanmeldung statt eines Nutzerkontos.</q></td><td class="src">#78, ADR 0010</td></tr>
+    <tr><td>Gateway-Token fällt</td><td><q>Verwerfen: … „ein Gerät, kein Konto“ samt Gateway-Token</q>; neu: <q>Identität, Mandanten, Persistenz, Abo (#55)</q></td><td class="src">#81, ADR 0001</td></tr>
+    <tr><td>AWS ist schon Auftragsverarbeiter</td><td><q>Claude über Bedrock EU (Profil <code>eu.</code>, null Aufbewahrung, Schema per erzwungenem Tool) als Standard</q>; Konten, die das Produkt braucht: <q>AWS (Bedrock, Konto-Region Frankfurt, Profil <code>eu.</code>)</q></td><td class="src">#80, ADR 0006; Kommentar in #56</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">4 · Fakten auf dem Tisch</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Thema</th><th>Fakt mit Wortlaut</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Reihenfolge der Lücken</td><td><q>Die drei strukturellen Lücken hängen zusammen: Kontingente, Support und Verlauf brauchen Identität, dann Mandant, dann Postgres, in dieser Reihenfolge.</q></td><td class="src">#73, produktluecke.md</td></tr>
+    <tr><td>Mandant am Rand oder im Event</td><td><q>Zugriffstrennung geht am Gateway allein (Session → Besitzer, Prüfung vor dem Publish). Sobald Worker den Mandanten kennen müssen (Kontingent, Aufbewahrung, Persistenz), bekommen alle fünf Event-Payloads ein neues Feld, also ADR, <code>schemaVersion</code>-Bump und Vertragstests.</q></td><td class="src">#73, produktluecke.md</td></tr>
+    <tr><td>Zähler muss dauerhaft sein</td><td><q>der Zähler darf nicht mehr bei Redis-Neustart verfallen</q>; und <q>drei Replicas können je einen Check über die Grenze buchen</q></td><td class="src">#73 produktluecke.md; #76 kosten-pro-minute</td></tr>
+    <tr><td>Statisches Token reicht nicht</td><td><q>Gateway ist ein statisches geteiltes Token (ASVS 7.2.2 schließt das als Session-Mechanismus aus)</q></td><td class="src">#99, Map #54</td></tr>
+    <tr><td>Identität: EU-Datenort</td><td><q>Clerk (nur US) und Google Identity Platform („exclusively in the United States“) scheiden aus; Auth0 (Europe), Zitadel Cloud (EU/CH), Ory Network, Supabase (Frankfurt), Cognito (eu-central-1), Entra External ID (EMEA) und Logto (Niederlande) bieten EU-Datenhaltung.</q></td><td class="src">#100, identitaet-zahlung-eu.md</td></tr>
+    <tr><td>Identität: Preis</td><td><q>Der Preisunterschied liegt erst bei 100.000 MAU, davor entscheidet Betriebsaufwand gegen Lock-in.</q> Cognito: <q>Lite und Essentials: 10.000 MAU frei</q>, bei 100.000 MAU <q>1.350 USD Essentials</q>; Zitadel Cloud Pro <q>100 USD/Monat</q>; Selbsthosting <q>0 Lizenz plus etwa 20 bis 36 EUR VM und Betriebsaufwand</q>.</td><td class="src">#100, identitaet-zahlung-eu.md 3, 4</td></tr>
+    <tr><td>Identität: Funktionen</td><td>Cognito: <q>Passkeys und Managed Login erst ab Essentials</q>, Magic Link <q>nein; E-Mail-OTP als passwortloser Weg</q>, Mandanten <q>keine Organisationen</q>. Supabase: <q>Passkey support is experimental.</q> Keycloak: <q>Apple fehlt</q>.</td><td class="src">#100, identitaet-zahlung-eu.md 2, 3</td></tr>
+    <tr><td>Social Login und Apple</td><td><q>Praktisch: entweder kein Social Login (E-Mail, Passkey, Magic Link) oder Apple und Google zusammen.</q></td><td class="src">#100, Guideline 4.8</td></tr>
+    <tr><td>Web-Abo: eigener Zahlungsdienst</td><td><q>Web-Abo per Zahlungsdienstleister ist am günstigsten (Stripe Karte plus Billing plus Tax etwa 0,52 EUR …), macht den Betreiber aber zum Steuerschuldner: … OSS-Quartalsmeldung beim BZSt, Kündigungsbutton nach § 312k BGB</q></td><td class="src">#100</td></tr>
+    <tr><td>Web-Abo: Verkäufer ist der Dienst (MoR)</td><td><q>Stripe Managed Payments +3,5 % (Deutschland ausdrücklich zugelassen, etwa 0,82 EUR je Abo), Paddle 5 % + 0,50 USD (etwa 1,00 EUR)</q>; der MoR <q>nimmt dem Solo-Betreiber OSS, Rechnung und Chargebacks ab</q>; <q>SEPA für Abos nur bei Stripe MP und FastSpring, nicht bei Paddle/Lemon Squeezy</q></td><td class="src">#100, identitaet-zahlung-eu.md 10</td></tr>
+    <tr><td>Erlös je 9,99-EUR-Abo</td><td><q>Nettoerlös 9,99 EUR: Store 7,14 EUR (8,00 USD), Web über Stripe 7,92 EUR (8,87 USD)</q></td><td class="src">#119, kostenmodell-abonnent.md</td></tr>
+    <tr><td>Kontingent: Modelle</td><td><q>Kombination, die rechnerisch zu 9,99 EUR passt (keine Entscheidung): Minuten je Abo als harte Grenze gegen den Fixanteil, Karten als weiche Grenze mit Assessment</q></td><td class="src">#119, kostenmodell-abonnent.md</td></tr>
+    <tr><td>Warum Minuten allein nicht reichen</td><td><q>120 min Sendung tragen nicht, solange der Deckungsbeitrag negativ ist</q>; <q>STT plus Erkennung allein 5,26 USD kosten (66 % des Store-Erlöses)</q></td><td class="src">#119</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">5 · Fragen der Runde 1</h2>
+<div class="qs">
+
+<div class="q">
+  <h3><span class="n">Q1</span>Was ist ein Mandant?</h3>
+  <p class="ask"><b>Ist ein Konto genau ein Mandant, also eine Person, und kommen Haushalt und geteilte Gespräche erst später?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Konto = Mandant:</b> eine Person, ein Konto, ein Abo, ein Zähler; Haushalt und Team in den Nebel.</li>
+    <li>b) Haushalt: ein zahlendes Konto mit mehreren Mitgliedern, gemeinsamer Zähler.</li>
+    <li>c) Organisation (B2B): Mandant über Konten, Rollen je Mitglied.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>ADR 0009 bindet alles an das Konto: <q>je Konto bleiben nur das Einwilligungsereignis ohne Inhalt (drei Jahre), Nutzungszähler, …</q></li>
+    <li>Research #100: <q>die Mandantenspalte in der Matrix meint die Fähigkeit, Nutzer in Organisationen zu gruppieren (B2B-Erweiterung später), nicht die Trennung der Gesprächsdaten</q>.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Alle entschiedenen Specs zählen schon „je Konto“, und ein Haushalt lässt sich später als Gruppe über Konten legen, ohne die vier Tabellen umzubauen.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q2</span>Wo kennt das Backend den Mandanten?</h3>
+  <p class="ask"><b>Kennt nur der Rand des Backends das Konto (Besitzer der Session), während Events und Prompts der Pipeline ohne Konto-ID bleiben?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Nur am Rand:</b> der Rand prüft das Token und schreibt die Konto-ID in die Session; die Zählpunkte schlagen über die Session-Id nach.</li>
+    <li>b) Im Event: jede Event-Payload bekommt ein Feld für das Konto.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Research #73: <q>Sobald Worker den Mandanten kennen müssen (Kontingent, Aufbewahrung, Persistenz), bekommen alle fünf Event-Payloads ein neues Feld, also ADR, <code>schemaVersion</code>-Bump und Vertragstests.</q></li>
+    <li><code>docs/architecture.md</code> zeichnet schon: <q>Prompts ohne Konto und Session-Id</q> (Erkennung und Prüfung zu Bedrock).</li>
+    <li>Aufbewahrung braucht kein Konto im Event: Sie ist nach ADR 0009 für alle Sessions gleich (15 Minuten).</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Nur zwei Stellen zählen (Audio-Eingang und Prüfung), dafür reicht ein Nachschlagen; die Verträge bleiben stabil und das Konto wandert nicht durch die ganze Pipeline.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q3</span>Wer führt die Anmeldung?</h3>
+  <p class="ask"><b>Führt Amazon Cognito in Frankfurt (Stufe Essentials) die Anmeldung, mit Passkey und E-Mail-Code und ohne Social Login?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Cognito eu-central-1, Essentials:</b> 0 USD bis 10.000 aktive Nutzer, Passkeys, E-Mail-Code; AWS ist schon unter Vertrag.</li>
+    <li>b) Zitadel Cloud, EU oder Schweiz: 100 USD im Monat, EU-Firma, Organisationen eingebaut, Passkeys.</li>
+    <li>c) Selbst gehostet (Keycloak oder Zitadel) auf eigener VM: 20 bis 36 EUR, Updates, Backups und SMTP selbst.</li>
+    <li>d) Auth0, Region Europe: frei bis 25.000 aktive Nutzer, Magic Link; ein weiterer US-Anbieter mit eigenem AVV.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Research #100: <q>Der Preisunterschied liegt erst bei 100.000 MAU, davor entscheidet Betriebsaufwand gegen Lock-in.</q> Selbsthosting heißt laut Matrix Betriebsaufwand <q>hoch</q>.</li>
+    <li>Cognito: <q>Passkeys und Managed Login erst ab Essentials</q>; Magic Link <q>nein; E-Mail-OTP als passwortloser Weg</q>; bei 100.000 aktiven Nutzern <q>1.350 USD (Essentials)</q>.</li>
+    <li>Apple 4.8: <q>entweder kein Social Login (E-Mail, Passkey, Magic Link) oder Apple und Google zusammen</q>.</li>
+    <li>ADR 0006: <q>Claude über Bedrock EU … als Standard</q>; AWS mit Konto-Region Frankfurt ist also schon Auftragsverarbeiter.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Kein neuer Auftragsverarbeiter, kein eigener Betrieb und bis 10.000 aktive Nutzer kostenlos; Zitadel Cloud ist der Ausweichweg, falls du eine EU-Firma für die Anmeldung willst.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q4</span>Wie wird das Web-Abo kassiert?</h3>
+  <p class="ask"><b>Läuft das Web-Abo in Inkrement 1 über Stripe Managed Payments als Verkäufer (Merchant of Record), und das Konto speichert nur Abo-Status und Kunden-Id?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Stripe Managed Payments (MoR):</b> etwa 0,82 EUR je 9,99-EUR-Abo; Stripe ist Verkäufer, rechnet Umsatzsteuer ab, SEPA geht.</li>
+    <li>b) Stripe Billing mit Stripe Tax (eigener Zahlungsdienst): etwa 0,52 EUR; du bist Steuerschuldner, OSS-Meldung, eigene Belege.</li>
+    <li>c) Paddle (MoR): etwa 1,00 EUR, keine SEPA-Abos.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Research #100: Zahlungsdienst <q>macht den Betreiber aber zum Steuerschuldner: Leistungsort beim Kunden ab 10.000 EUR EU-Ausland, OSS-Quartalsmeldung beim BZSt, Kündigungsbutton nach § 312k BGB</q>; der MoR <q>nimmt dem Solo-Betreiber OSS, Rechnung und Chargebacks ab</q>.</li>
+    <li>Den Kündigungsbutton nach § 312k BGB braucht das Web-Abo in jeder Variante (Matrix: <q>eigener Button (Lesart)</q> auch beim MoR).</li>
+    <li>ADR 0009: Rechnungen und Zahlungsdaten <q>getrennt</q>, 10 Jahre nach § 147 AO; beim MoR liegen sie beim Verkäufer.</li>
+    <li>Der Unterschied a zu b ist etwa 0,30 EUR je Abo und Monat.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Für eine Person sind Steuerschuld, OSS-Meldung und Belege teurer als 0,30 EUR je Abo; Store-Abos kommen in Inkrement 2 über denselben Abo-Status dazu.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q5</span>Was zählt das Kontingent?</h3>
+  <p class="ask"><b>Zählt das Kontingent je Konto und Abrechnungszeitraum zwei Dinge: Minuten als harte Grenze (Stopp mit <code>quota_exceeded</code>) und Prüfungen als weiche Grenze (danach Einschätzung statt Urteil), zentral in Postgres?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Minuten hart, Prüfungen weich:</b> zwei Zähler, die Zahlen stehen im Tarif, nicht in der Architektur.</li>
+    <li>b) Nur Minuten: einfach, deckt aber die Prüfkosten dichter Sendungen nicht.</li>
+    <li>c) Nur Prüfungen: die Minutenkosten (Spracherkennung, Erkennung) bleiben offen.</li>
+    <li>d) Fair Use: beide Zähler plus Perzentil über alle Konten, Drosselung in Stufen.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Research #119: <q>Minuten je Abo als harte Grenze gegen den Fixanteil, Karten als weiche Grenze mit Assessment</q> passt rechnerisch zu 9,99 EUR (dort ausdrücklich <q>keine Entscheidung</q>).</li>
+    <li>Research #119 zu Minuten allein: <q>begrenzt STT und Erkennung (den Fixanteil), nicht die Karten</q>.</li>
+    <li>Research #73: <q>der Zähler darf nicht mehr bei Redis-Neustart verfallen</q>; Research #76: <q>drei Replicas können je einen Check über die Grenze buchen</q>.</li>
+    <li>Die Spec hat beide Zähler schon: <q>Nutzungszähler (Minuten, Prüfungen je Konto und Abrechnungszeitraum)</q>.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Die Minuten decken den festen Anteil, die weiche Prüfgrenze deckt dichte Sendungen, ohne die Aufnahme abzubrechen; der alte USD-Tageszähler bleibt nur als Notbremse des Betreibers.</div>
+</div>
+
+</div>
+
+<h2 id="spaeter">6 · Runde 2 (nicht heute)</h2>
+<div class="later">
+  <ul>
+    <li><b>Token-Modell beider Clients:</b> ADR 0010: <q>die Store-App hält die Anmeldung nicht im <code>localStorage</code>-Modell des alten ADR 0011; das Token-Modell muss beide Clients tragen.</q></li>
+    <li><b>Dienstanmeldung der Ingestion:</b> ADR 0010: <q>Die Ingestion braucht eine Dienstanmeldung statt eines Nutzerkontos.</q></li>
+    <li><b>Gäste eines Gesprächs:</b> aus #55: <q>Wie Gastteilnehmer eines Gesprächs behandelt werden.</q> Der Widerspruch läuft schon über „Sprecher ausnehmen“ (#79, ADR 0009).</li>
+    <li><b>Nach <code>quota_exceeded</code>:</b> <code>docs/architecture.md</code>: <q>ob nach <code>quota_exceeded</code> ein „Weiter“ möglich ist (Konten #55)</q>.</li>
+    <li><b>Store-Abos und Abgleich</b> mit Inkrement 2: Research #100 nennt RevenueCat <q>frei bis 2.500 USD Monatsumsatz, dann 1 %</q>.</li>
+    <li><b>Probezeit, Tarife, Konto löschen</b> mit laufendem Abo (ADR 0009: <q>Konto löschen: Verlauf und Zähler sofort</q>).</li>
+  </ul>
+</div>
+
+<h2 id="begriffe">7 · Begriffe</h2>
+<dl class="gl">
+  <dt>Konto</dt><dd>Eine angemeldete Person mit Abo-Status; in ADR 0009 die erste der vier Tabellen.</dd>
+  <dt>Mandant</dt><dd>Die Einheit, gegen die Daten getrennt und Kontingente gezählt werden. Empfehlung Q1: dasselbe wie das Konto.</dd>
+  <dt>Kontingent</dt><dd>Was ein Konto je Abrechnungszeitraum verbrauchen darf; ersetzt die feste Höchstdauer von 60 Minuten (ADR 0005).</dd>
+  <dt>MoR</dt><dd>Merchant of Record: der Zahlungsdienst ist rechtlich Verkäufer, stellt Belege aus und führt die Umsatzsteuer ab.</dd>
+  <dt>OSS</dt><dd>One-Stop-Shop: vierteljährliche Umsatzsteuermeldung beim Bundeszentralamt für Steuern für Verkäufe ins EU-Ausland.</dd>
+  <dt>MAU</dt><dd>Monatlich aktive Nutzer; danach rechnen die meisten Identitätsanbieter ab.</dd>
+  <dt>Einschätzung</dt><dd>Assessment: Karte mit Einordnung ohne Belegsuche, billiger als die Prüfung mit Urteil.</dd>
+</dl>
+
+<p class="muted" style="margin-top:32px">Quellen: Issues #55, #73, #76, #77, #78, #79, #80, #81, #100, #119 und #56 (Stand 2026-11-03); <code>docs/adr/0005</code>, <code>0006</code>, <code>0009</code>, <code>0010</code>; <code>docs/research/produktluecke.md</code>, <code>identitaet-zahlung-eu.md</code> (Preise abgerufen 2026-10-09), <code>kostenmodell-abonnent.md</code> (2026-10-23); <code>docs/spec/datenschutz.md</code>, <code>docs/architecture.md</code>. Keine Rechts- oder Steuerberatung: § 312k BGB und OSS sind Lesarten der Research.</p>
+</div>
+</body>
+</html>

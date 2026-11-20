@@ -1,0 +1,8 @@
+# Trivy exceptions for the PR gate on third-party images (pr.yml, job third-party-images). Owner decision per entry;
+# every entry carries an expiry, after which the finding fails the gate again. The nightly full scan ignores nothing.
+
+# brotli-libs 1.2.0-r0 in caddy:2.11.7-alpine (edge), fixed in Alpine 1.2.1-r0, no rebuilt Caddy image yet.
+# Caddy is a static Go binary; brotli-libs comes in only through libcurl, which the edge does not call with
+# untrusted input. Owner decision 2026-11-02 (PR #131).
+# Remove when compose.yml pins a Caddy image with brotli-libs >= 1.2.1-r0.
+CVE-2026-111497 exp:2026-11-16

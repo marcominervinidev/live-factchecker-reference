@@ -1,0 +1,35 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["evals/**", "tests/fixtures/**"],
+  "ignoreWorkspaces": ["evals", "evals/*"],
+  "ignoreExportsUsedInFile": true,
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/**/*.ts", "tools/**/*.mjs"],
+      "project": ["scripts/**/*.ts", "tools/**/*.mjs"]
+    },
+    "apps/*": {
+      "entry": ["src/main.{ts,tsx}", "src/index.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}", "tests/**/*.ts"],
+      "vitest": { "entry": ["src/**/*.test.{ts,tsx}"] },
+      "playwright": { "entry": ["tests/**/*.ts"] },
+      "cucumber": { "entry": ["tests/features/**/*.ts", "tests/steps/**/*.ts", "tests/support/**/*.ts"] }
+    },
+    "services/*": {
+      "entry": ["src/main.ts", "src/index.ts"],
+      "project": ["src/**/*.ts"],
+      "vitest": { "entry": ["src/**/*.test.ts"] }
+    },
+    "packages/*": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"],
+      "vitest": { "entry": ["src/**/*.test.ts"] }
+    },
+    "tests/*": {
+      "entry": ["features/**/*.ts", "steps/**/*.ts", "support/**/*.ts", "pages/**/*.ts"],
+      "project": ["**/*.ts"],
+      "cucumber": { "entry": ["features/**/*.ts", "steps/**/*.ts", "support/**/*.ts"] },
+      "playwright": { "entry": ["steps/**/*.ts", "pages/**/*.ts"] }
+    }
+  }
+}

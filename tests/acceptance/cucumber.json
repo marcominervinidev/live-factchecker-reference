@@ -1,0 +1,7 @@
+{
+  "default": {
+    "import": ["steps/**/*.ts", "../api/steps/**/*.ts", "support/**/*.ts"],
+    "format": ["progress"],
+    "strict": true
+  }
+}

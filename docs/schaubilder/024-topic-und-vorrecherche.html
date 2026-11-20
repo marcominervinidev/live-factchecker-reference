@@ -1,0 +1,316 @@
+<!-- Quelle: https://claude.ai/artifact/NXuV18tJRjXgptqdqJBbkt, exportiert 2026-10-23, Ticket #24 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Topic und Vorrecherche</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; Vorab (Prefetch) teal, Live je Behauptung bernstein, Offenes gestrichelt; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --pre:#0e7876; --live:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --pre:#4fc3c0; --live:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --pre:#4fc3c0; --live:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.pre{color:var(--pre);border-color:var(--pre)} .tag.live{color:var(--live);border-color:var(--live)}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--pre);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--pre);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--pre);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-pre{stroke:var(--pre);stroke-width:1.8}
+.d .box-live{stroke:var(--live);stroke-width:1.8}
+.d .box-muted{stroke:var(--muted);stroke-dasharray:4 3;stroke-width:1.1}
+.d .box-src{fill:var(--soft)}
+.d .zone-pre{fill:var(--pre);opacity:.08}
+.d .zone-live{fill:var(--live);opacity:.10}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-pre{fill:var(--pre)} .d .lab-live{fill:var(--live)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-pre{stroke:var(--pre)} .d .ln-live{stroke:var(--live)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-pre{fill:var(--pre)} .d .m-live{fill:var(--live)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 24 · Grilling · Schaubild der Entscheidung · 2026-10-12</div>
+  <h1>Topic und Vorrecherche</h1>
+  <p class="lead">Wie viel recherchiert das System <strong>vorab</strong>, wodurch ausgelöst, aus welchen Quellen, und wohin? Fest ist schon: Der Topic Extractor erkennt Themenwechsel im Tick und hält eine Tag-Liste (ADR 0002, 0004); das Setting ist Glossarbegriff; Anbieter und Suchdienste stehen (ADR 0006). Entschieden sind Setting, Auslöser, Quellenklassen, Ablage, Sichtbarkeit, Budget, Abruf, Messung und Festhalten. Diese Seite ist das Schaubild zum Abnicken.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Datenfluss</a><a href="#klassen">Quellenklassen</a><a href="#festgelegt">Festgelegt</a><a href="#budget">Budget</a><a href="#fakten">Fakten</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Datenfluss: vorab und live</h2>
+<p>So ist es seit Runde 1 festgelegt. Teal ist, was <strong>vor</strong> einer Behauptung passiert, ausgelöst vom Setting und von jedem neuen Topic. Bernstein ist, was eine Prüfung <strong>je Behauptung</strong> noch live holt. Ziel: Die Prüfung findet ihre Belege zuerst im Belegspeicher und braucht die langsamen Wege nur, wenn dort nichts liegt.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 520" role="img" aria-label="Oben links das Setting mit Sprechern und Anfangs-Topic, darunter der Topic Extractor mit seiner Tag-Liste. Beide lösen die Vorrecherche aus. Die Vorrecherche lädt aus speicherbaren Quellen: ClaimReview-Index, amtliche Statistik, Parlament je Sprecher, Wikipedia und Wikidata. Alles landet getaggt im Belegspeicher der Session. Rechts die Prüfung einer Behauptung: sie liest zuerst den Belegspeicher nach Topic-Tags, dann live Google Fact Check und Eurostat, zuletzt die Websuche über Brave. Presse und Websuche gestrichelt als nie vorab.">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="arp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-pre"/></marker>
+  <marker id="arl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-live"/></marker>
+</defs>
+<rect x="10" y="10" width="640" height="500" rx="8" class="zone-pre"/>
+<text x="24" y="32" class="lab lab-pre">Vorab: ausgelöst von Setting und Topic</text>
+<rect x="670" y="10" width="320" height="500" rx="8" class="zone-live"/>
+<text x="684" y="32" class="lab lab-live">Live: je Behauptung, unter 30 s</text>
+
+<!-- Ausloeser -->
+<rect x="30" y="56" width="180" height="60" rx="6" class="box"/>
+<text x="120" y="78" text-anchor="middle" class="t">Setting · Q1 fest</text>
+<text x="120" y="94" text-anchor="middle" class="t2">Sprecher mit Rolle, öffentlich?</text>
+<text x="120" y="108" text-anchor="middle" class="t2">Anfangs-Topic, Modus</text>
+
+<rect x="30" y="140" width="180" height="60" rx="6" class="box"/>
+<text x="120" y="162" text-anchor="middle" class="t">Topic Extractor</text>
+<text x="120" y="178" text-anchor="middle" class="t2">Tag-Liste: neu · weiter · zurück</text>
+<text x="120" y="192" text-anchor="middle" class="t2">im Tick (ADR 0004)</text>
+
+<rect x="250" y="90" width="170" height="70" rx="6" class="box box-pre"/>
+<text x="335" y="114" text-anchor="middle" class="t">Vorrecherche</text>
+<text x="335" y="130" text-anchor="middle" class="t2">je Topic ein Auftrag · Q2</text>
+<text x="335" y="146" text-anchor="middle" class="t2">Budget je Topic · Q6 fest</text>
+<line x1="210" y1="86" x2="248" y2="110" class="ln ln-pre" marker-end="url(#arp)"/>
+<text x="222" y="80" class="t3">Start</text>
+<line x1="210" y1="170" x2="248" y2="140" class="ln ln-pre" marker-end="url(#arp)"/>
+<text x="214" y="186" class="t3">Tag "neu"</text>
+
+<!-- Quellen -->
+<rect x="250" y="200" width="170" height="40" rx="6" class="box box-src"/>
+<text x="335" y="216" text-anchor="middle" class="t2">ClaimReview-Index</text>
+<text x="335" y="231" text-anchor="middle" class="t3">Feed CC BY + RSS, eigener Index</text>
+<rect x="250" y="250" width="170" height="40" rx="6" class="box box-src"/>
+<text x="335" y="266" text-anchor="middle" class="t2">Amtliche Statistik</text>
+<text x="335" y="281" text-anchor="middle" class="t3">Eurostat, GENESIS, Bundesbank</text>
+<rect x="250" y="300" width="170" height="40" rx="6" class="box box-src"/>
+<text x="335" y="316" text-anchor="middle" class="t2">Parlament je Sprecher</text>
+<text x="335" y="331" text-anchor="middle" class="t3">DIP, abgeordnetenwatch</text>
+<rect x="250" y="350" width="170" height="40" rx="6" class="box box-src"/>
+<text x="335" y="366" text-anchor="middle" class="t2">Wikipedia, Wikidata</text>
+<text x="335" y="381" text-anchor="middle" class="t3">Artikel und Entitäten je Topic</text>
+<rect x="250" y="410" width="170" height="40" rx="6" class="box box-muted"/>
+<text x="335" y="426" text-anchor="middle" class="t2">Presse, Websuche</text>
+<text x="335" y="441" text-anchor="middle" class="t3">nie vorab · Q3</text>
+<line x1="335" y1="160" x2="335" y2="198" class="ln ln-pre" marker-end="url(#arp)"/>
+<text x="345" y="184" class="t3">lädt, taggt</text>
+
+<!-- Belegspeicher -->
+<rect x="470" y="200" width="160" height="190" rx="6" class="box box-pre"/>
+<text x="550" y="226" text-anchor="middle" class="t">Belegspeicher</text>
+<text x="550" y="244" text-anchor="middle" class="t2">je Session · Q4</text>
+<text x="550" y="266" text-anchor="middle" class="t3">Beleg = Quelle, Auszug,</text>
+<text x="550" y="280" text-anchor="middle" class="t3">Topic-Tags, Abrufzeit</text>
+<text x="550" y="302" text-anchor="middle" class="t3">Lebensdauer: Session</text>
+<text x="550" y="316" text-anchor="middle" class="t3">plus kurze Frist</text>
+<text x="550" y="340" text-anchor="middle" class="t3">Gemeinsamer Index:</text>
+<text x="550" y="354" text-anchor="middle" class="t3">ClaimReview, amtliche</text>
+<text x="550" y="368" text-anchor="middle" class="t3">Tabellen, dauerhaft</text>
+<line x1="420" y1="220" x2="468" y2="240" class="ln ln-pre" marker-end="url(#arp)"/>
+<line x1="420" y1="270" x2="468" y2="270" class="ln ln-pre" marker-end="url(#arp)"/>
+<line x1="420" y1="320" x2="468" y2="300" class="ln ln-pre" marker-end="url(#arp)"/>
+<line x1="420" y1="370" x2="468" y2="330" class="ln ln-pre" marker-end="url(#arp)"/>
+
+<!-- Pruefung -->
+<rect x="700" y="56" width="260" height="60" rx="6" class="box box-live"/>
+<text x="830" y="78" text-anchor="middle" class="t">Behauptung mit Topic-Tag</text>
+<text x="830" y="94" text-anchor="middle" class="t2">Karte sofort · Topic sichtbar (Q5)</text>
+<text x="830" y="108" text-anchor="middle" class="t2">Prüfung startet</text>
+
+<rect x="700" y="150" width="260" height="56" rx="6" class="box box-live"/>
+<text x="830" y="170" text-anchor="middle" class="t">1 · Belegspeicher lesen</text>
+<text x="830" y="188" text-anchor="middle" class="t2">Tags und Stichworte · Q7 fest</text>
+<rect x="700" y="236" width="260" height="56" rx="6" class="box box-live"/>
+<text x="830" y="256" text-anchor="middle" class="t">2 · Live-Quellen</text>
+<text x="830" y="274" text-anchor="middle" class="t2">Google Fact Check, Eurostat, Wikimedia</text>
+<rect x="700" y="322" width="260" height="56" rx="6" class="box box-live"/>
+<text x="830" y="342" text-anchor="middle" class="t">3 · Websuche Brave</text>
+<text x="830" y="360" text-anchor="middle" class="t2">maskierter Satz, 1 bis 3 Anfragen</text>
+<rect x="700" y="408" width="260" height="56" rx="6" class="box"/>
+<text x="830" y="428" text-anchor="middle" class="t">Urteil auf die Karte</text>
+<text x="830" y="446" text-anchor="middle" class="t2">mit Belegen, spätestens nach 30 s</text>
+<line x1="830" y1="116" x2="830" y2="148" class="ln ln-live" marker-end="url(#arl)"/>
+<line x1="830" y1="206" x2="830" y2="234" class="ln ln-live" marker-end="url(#arl)"/>
+<line x1="830" y1="292" x2="830" y2="320" class="ln ln-live" marker-end="url(#arl)"/>
+<line x1="830" y1="378" x2="830" y2="406" class="ln ln-live" marker-end="url(#arl)"/>
+<text x="842" y="226" class="t3">wenn nicht genug</text>
+<text x="842" y="312" class="t3">wenn nicht genug</text>
+<polyline points="630,250 660,250 660,178 698,178" class="ln ln-pre" marker-end="url(#arp)"/>
+<text x="664" y="166" class="t3">liest</text>
+
+<text x="30" y="470" class="t3">Jeder Beleg, der nach außen geht, trägt nur den maskierten Satz (ADR 0002, 0006). Nichts aus Presse wird vorab gespeichert (§ 44b, § 87g UrhG).</text>
+<text x="30" y="488" class="t3">Was die Prüfung aus dem Belegspeicher nutzt, wird gezählt: die Prefetch-Trefferquote ist die Zahl, an der sich die Vorrecherche messen lässt (Runde 2).</text>
+</svg>
+</div>
+<figcaption>Die Vorrecherche füllt den Belegspeicher aus speicherbaren Quellen; die Prüfung liest ihn zuerst und holt live nur nach, was fehlt. Presse und Websuche laufen nur je Behauptung, weil ihre Lizenzen das Speichern nicht erlauben.</figcaption>
+</figure>
+
+<h2 id="klassen">2 · Quellenklassen: was vorab darf, was nur live</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Klasse</th><th>Quellen</th><th>Speichern erlaubt</th><th>Vorab</th><th>Live</th><th>Deckt die Claim-Klasse</th></tr></thead>
+  <tbody>
+    <tr><td>Faktencheck-Index</td><td>Data-Commons-Feed (CC BY), RSS CORRECTIV und Mimikama (Titel, Link, Auszug)</td><td><span class="tag ok">ja</span> Feed; RSS nur Titel und Link</td><td><span class="tag pre">dauerhaft, nicht je Topic</span></td><td>eigener Index in Millisekunden; Google Claim Search zusätzlich</td><td>wiederkehrende falsche Behauptungen</td></tr>
+    <tr><td>Amtliche Statistik</td><td>Eurostat (ohne Schlüssel, CC BY 4.0), GENESIS (Konto, Token), Bundesbank</td><td><span class="tag ok">ja</span> mit Quellenvermerk</td><td><span class="tag pre">Tabellen je Topic</span></td><td>Eurostat synchron</td><td>Zahlen: Arbeitslosigkeit, Inflation, Migration, Schulden</td></tr>
+    <tr><td>Parlament</td><td>DIP (Reden, Anträge, Protokolle), abgeordnetenwatch (CC0: Mandate, Abstimmungen)</td><td><span class="tag ok">ja</span></td><td><span class="tag pre">je Sprecher aus dem Setting</span></td><td>zu eng: 25 parallel, 30 je Minute</td><td>"X hat gesagt, gestimmt, gefordert"</td></tr>
+    <tr><td>Referenz</td><td>Wikipedia (CC BY-SA), Wikidata (CC0)</td><td><span class="tag ok">ja</span></td><td><span class="tag pre">Artikel und Entitäten je Topic</span></td><td>mit User-Agent und Budget</td><td>Daten, Personen, Begriffe</td></tr>
+    <tr><td>Presse</td><td>GDELT (nur URLs), Verlage, Mediatheken</td><td><span class="tag bad">nein</span> § 44b, § 87g</td><td>nie</td><td>nur über Websuche und flüchtigen Abruf</td><td>Aktuelles</td></tr>
+    <tr><td>Websuche</td><td>Brave (5 USD je 1.000)</td><td><span class="tag bad">nein</span> ohne Speicherplan</td><td>nie</td><td>je Behauptung, maskierter Satz</td><td>alles andere</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="festgelegt">3 · Festgelegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Setting</td><td>Felder: Modus (Sendung oder Gespräch), Sprecher mit Rolle und "öffentliche Person", Anfangs-Topic, optional Sendung und Datum. <strong>Modus ist Pflicht</strong>, der Rest freiwillig mit Standardwerten (Label A, B; Vorrecherche ab dem ersten erkannten Topic). Was die Modi im Einzelnen bedeuten, klärt die neue Research "Modi Sendung und Gespräch" (#40) für das Datenschutzmodell (#11).</td></tr>
+    <tr><td class="num">Q2</td><td>Auslöser</td><td>Setting (Sprecher-Prefetch je öffentlichem Sprecher, Topic-Prefetch für das Anfangs-Topic) und jedes <code>new</code> des Topic Extractors; Unter-Topics erben; <code>returned</code> prüft nur die Abrufzeit.</td></tr>
+    <tr><td class="num">Q3</td><td>Quellenklassen</td><td>Nur speicherbare Quellen vorab: Faktencheck-Index, amtliche Statistik, Parlament je Sprecher, Wikipedia und Wikidata. <strong>Websuche und Presse nie vorab.</strong></td></tr>
+    <tr><td class="num">Q4</td><td>Ablage</td><td>Belegspeicher je Session in Redis (Lebensdauer Session plus 15 Minuten); gemeinsamer Index (ClaimReview, amtliche Tabellen) dauerhaft; ein zeitgesteuerter Job außerhalb des Live-Pfads holt die Quellen neu (nachts Feed und Tabellen, stündlich RSS), keine Conversation wartet darauf; Ablage folgt dem Datenmodell. Belege tragen nie Transkripttext.</td></tr>
+    <tr><td class="num">Q5</td><td>Sichtbarkeit</td><td>Topic sichtbar als Tag auf der Karte und Kapitel in der Zeitleiste; Bearbeiten entscheidet der Prototyp Live-Ansicht (#16).</td></tr>
+    <tr><td class="num">Q6</td><td>Budget</td><td>Je Topic 3 Wikipedia-Artikel, 5 Entitäten, 3 Tabellen, Top 20 aus dem Faktencheck-Index, ein Modellaufruf; je öffentlichem Sprecher einmal die Parlamentshistorie; je Session höchstens 30 Topics, Abkühlzeit 10 Minuten; zentrales Wikimedia-Budget, Prüfung vor Prefetch. Alles Parameter.</td></tr>
+    <tr><td class="num">Q7</td><td>Abruf</td><td><strong>Version 1 mit Tags plus Stichwortsuche</strong>, keine Embeddings, kein Vektorspeicher; "Stichwort gegen Embeddings" wird Variable im Messaufbau der Prüfung (#39).</td></tr>
+    <tr><td class="num">Q8</td><td>Messung</td><td><strong>Prefetch-Trefferquote</strong> und Zeit bis zum ersten Beleg, mit und ohne Vorrecherche, als Arm in #39; Golden Set Version 2 bekommt je Ausschnitt eine Topic-Liste mit Minutenangabe. Kein Vortor für Themenwechsel.</td></tr>
+    <tr><td class="num">Q9</td><td>Festhalten</td><td>Glossar: Prefetch, Evidence Store, Shared Index; Setting und Topic ergänzt. <strong>ADR 0007</strong> und <code>docs/spec/topic-vorrecherche.md</code>.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="budget">4 · Was ein Topic-Prefetch kostet</h2>
+<p>Startwerte aus Q6. Alles vorab Geladene ist kostenlos, bis auf Betrieb; die Grenze setzen die Rate-Limits, vor allem Wikimedia mit 200 Anfragen je Minute über alle Sessions hinweg. Ein Themenwechsel in einer Talkshow kommt grob alle 5 bis 10 Minuten; bei zehn gleichzeitigen Sessions sind das ein bis zwei Prefetch-Aufträge je Minute.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Schritt je neuem Topic</th><th>Vorschlag Startwert</th><th>Anfragen</th><th>Wovon begrenzt</th></tr></thead>
+  <tbody>
+    <tr><td>Faktencheck-Index abfragen</td><td>Volltextsuche im eigenen Index, Top 20 Einträge taggen</td><td class="num">0 nach außen</td><td>–</td></tr>
+    <tr><td>Wikipedia</td><td>Suche plus 3 Artikel, je Artikel Einleitung und bis 20 Absätze</td><td class="num">4</td><td>200 je Minute gesamt</td></tr>
+    <tr><td>Wikidata</td><td>bis 5 Entitäten (Personen, Orte, Begriffe aus dem Topic)</td><td class="num">1 bis 2</td><td>5 parallel</td></tr>
+    <tr><td>Eurostat</td><td>Zuordnung Topic zu Tabellen per Modell (eine Liste von etwa 50 Tabellen im Prompt), bis 3 Tabellen</td><td class="num">3</td><td>Zellen-Schwellen</td></tr>
+    <tr><td>GENESIS, Bundesbank</td><td>wie Eurostat, aus dem gemeinsamen Index statt live</td><td class="num">0 live</td><td>nächtliche Nachführung</td></tr>
+    <tr><td>Parlament je öffentlichem Sprecher</td><td>einmal je Session beim Setting: letzte 20 Reden und Abstimmungen aus DIP und abgeordnetenwatch</td><td class="num">2 bis 4 je Sprecher</td><td>DIP 25 parallel, abgeordnetenwatch 30 je Minute</td></tr>
+    <tr><td>Modellaufruf</td><td>ein Aufruf Haiku-Klasse je Topic: Suchbegriffe, Entitäten, Tabellen-Zuordnung</td><td class="num">1</td><td>etwa 0,002 USD</td></tr>
+  </tbody>
+</table></div>
+<p class="muted">Je Session: Höchstzahl Topics mit Prefetch (Startwert 30), danach nur noch live; Abkühlzeit je Topic 10 Minuten, damit ein flackernder Themenwechsel nicht zweimal lädt. Zentrales Wikimedia-Budget im Backend, das Prefetch und Prüfung teilen, Prüfung hat Vorrang.</p>
+
+<h2 id="fakten">5 · Die Fakten auf dem Tisch</h2>
+<h3>Grenzen und Kosten je Quelle</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Quelle</th><th>Limit</th><th>Kosten</th><th>Latenz</th><th>Quelle der Angabe</th></tr></thead>
+  <tbody>
+    <tr><td>Wikipedia REST</td><td class="num">10 je min ohne User-Agent, 200 mit, 2.000 mit Anmeldung</td><td class="num">0</td><td>Sekundenbruchteile</td><td>Research #23</td></tr>
+    <tr><td>Wikidata SPARQL</td><td class="num">5 parallel, 60 s Rechenzeit je Minute</td><td class="num">0</td><td>bis Sekunden</td><td>Research #23</td></tr>
+    <tr><td>Eurostat</td><td class="num">synchron bis 500.000 Zellen</td><td class="num">0</td><td>Sekunden</td><td>Research #23</td></tr>
+    <tr><td>GENESIS (Destatis)</td><td class="num">Parallelität nicht genannt, Konto und Token</td><td class="num">0</td><td>Sekunden</td><td>Research #23</td></tr>
+    <tr><td>DIP (Bundestag)</td><td class="num">25 parallel</td><td class="num">0</td><td>Sekunden</td><td>Research #23</td></tr>
+    <tr><td>abgeordnetenwatch</td><td class="num">30 je Minute je IP</td><td class="num">0</td><td>Sekunden</td><td>Research #23</td></tr>
+    <tr><td>Google Claim Search</td><td class="num">Quota nicht öffentlich</td><td class="num">0</td><td>unter 1 s</td><td>Research #23</td></tr>
+    <tr><td>Brave Search</td><td class="num">50 je Sekunde</td><td class="num">0,005 USD je Anfrage</td><td>Sekunden</td><td>ADR 0023 alt, Research #23</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Was sonst feststeht</h3>
+<ul>
+  <li><strong>Topic Extractor:</strong> läuft im Tick, Eingabe Tag-Liste plus Fenster 60 s plus Neues, Ausgabe <code>current</code>, <code>new</code>, <code>returned</code>, <code>ended</code> (Spezifikation Modellrollen, Abschnitt 6). In Version 1 des Messaufbaus nur mitgeschrieben, ohne Soll-Wert.</li>
+  <li><strong>Themenwechsel per Klassifikator:</strong> kein belegtes Echtzeitverfahren für Deutsch, kein deutscher Dialog-Topic-Korpus; die LLM-Frage ist der einzige belegte Weg (Research #32).</li>
+  <li><strong>Prüfung:</strong> spätestens 30 Sekunden nach der Karte; alter Messwert 0,049 USD je Prüfung mit drei Opus-Aufrufen und bis zu drei Brave-Anfragen (Research #8).</li>
+  <li><strong>Rechtslage:</strong> TDM-Kopien nach § 44b sind zu löschen, wenn nicht mehr nötig; Presse-Snippets nur "sehr kurze Auszüge" (§ 87g); amtliche und parlamentarische Daten frei mit Quellenvermerk; bundestag.de-Bedingungen für ein Bezahlprodukt sind Anwaltsfrage.</li>
+  <li><strong>CORRECTIV</strong> seit 2026-04-02 nicht mehr in ClaimReview; RSS liefert 9 von 100 Items als Faktenchecks, Auszüge ohne erkennbare Lizenz.</li>
+  <li><strong>Altes Repo:</strong> <code>topic-tracker</code> war Phase 4, nie gebaut; <code>packages/research</code> hat Quellenabruf, Chunking und Safe Fetch mit SSRF-Schutz; <code>config/source-tiers.yaml</code> gewichtet faktencheck 1,0, amtlich 0,9, referenz 0,8, presse 0,6.</li>
+</ul>
+
+<h2 id="wohin">6 · Was wo liegt</h2>
+<div class="two">
+  <div class="card"><h3>live-factchecker-plan</h3><ul>
+    <li><strong>ADR 0007</strong> "Vorrecherche nur aus speicherbaren Quellen, Belegspeicher je Session, gemeinsamer Index": Entscheidung, neun verworfene Wege, Folgen</li>
+    <li><strong><code>docs/spec/topic-vorrecherche.md</code></strong>: Setting-Felder, Auslöser, Quellen je Klasse, Beleg-Schema, Belegspeicher und Index mit Nachführung, Abruf durch die Prüfung, Parameter, Messung</li>
+    <li><strong><code>CONTEXT.md</code></strong>: Prefetch, Evidence Store, Shared Index neu; Setting (Modus Pflicht) und Topic ergänzt</li>
+  </ul></div>
+  <div class="card"><h3>Kommentare an andere Tickets</h3><ul>
+    <li><strong>Datenschutzmodell (#11):</strong> Modus als Pflichtfeld, Regeln je Modus, Research #40 liefert die Fakten</li>
+    <li><strong>Live-Ansicht (#16):</strong> Topic als Tag auf der Karte und Kapitel in der Zeitleiste</li>
+    <li><strong>Sprecher benennen (#20):</strong> Markierung "öffentliche Person" löst den Sprecher-Prefetch aus</li>
+    <li><strong>Testkorpus (#25):</strong> Topic-Labels in Version 2, Liste mit Minutenangabe</li>
+    <li><strong>Messaufbau der Prüfung (#39):</strong> Arm mit und ohne Vorrecherche, Prefetch-Trefferquote, Variable Stichwort gegen Embeddings</li>
+  </ul></div>
+  <div class="card"><h3>Map</h3><ul>
+    <li>Decisions so far: eine Zeile mit Link auf dieses Ticket und dieses Schaubild</li>
+    <li>Nebel: "Messung des Themen-Extraktors" ist aufgelöst (Topic-Labels Version 2, Prefetch-Trefferquote in #39); "Quellenstrategie pro Claim-Klasse" ist zu zwei Dritteln entschieden, der Rest (Fetch-Pfad gegen Cloudflare und § 44b für die Live-Websuche) wandert in den Messaufbau der Prüfung</li>
+    <li>Datenmodell-Nebel bekommt den gemeinsamen Index als ersten dauerhaften Datenbestand</li>
+  </ul></div>
+  <div class="card"><h3>Noch offen, nicht hier</h3><ul>
+    <li>Regeln je Modus und Einwilligungsfluss (#11, Research #40 läuft)</li>
+    <li>bundestag.de-Bedingungen für ein Bezahlprodukt (Anwalt)</li>
+    <li>Ablage des gemeinsamen Index (Datenmodell)</li>
+  </ul></div>
+</div>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Vorrecherche (Prefetch)</dt><dd>Glossarbegriff seit Q9: Belege zu einem Topic laden, bevor eine Behauptung dazu fällt; ausgelöst vom Setting und von jedem neuen Topic.</dd>
+  <dt>Belegspeicher (Evidence Store)</dt><dd>Glossarbegriff seit Q9: wo vorab geladene Belege einer Conversation liegen, getaggt nach Topic, mit Abrufzeit; lebt so lange wie die Session, nie mit Transkripttext.</dd>
+  <dt>Gemeinsamer Index (Shared Index)</dt><dd>Glossarbegriff seit Q9: dauerhaft gepflegte, speicherbare Quellen für alle Sessions: ClaimReview-Feed, RSS der Faktenchecker, amtliche Tabellen.</dd>
+  <dt>Tag-Liste</dt><dd>Die Topics und Unter-Topics eines Gesprächs mit Status, vom Topic Extractor fortgeschrieben (ADR 0004).</dd>
+  <dt>ClaimReview</dt><dd>Auszeichnungsformat, mit dem Faktenchecker ihre Prüfungen maschinenlesbar machen; der Data-Commons-Feed sammelt sie, Google Claim Search durchsucht sie.</dd>
+  <dt>TDM, § 44b</dt><dd>Text und Data Mining: Kopien zur automatisierten Analyse sind erlaubt, wenn kein Vorbehalt gesetzt ist, und sind zu löschen, sobald sie nicht mehr gebraucht werden.</dd>
+  <dt>Embeddings</dt><dd>Zahlenvektoren für Texte, um ähnliche Belege zu finden; für den Abruf aus dem Belegspeicher eine Option, keine Pflicht.</dd>
+  <dt>Namensmaske</dt><dd>Vor jedem Aufruf nach außen werden Namen privater Personen ersetzt (ADR 0002).</dd>
+</dl>
+</div>
+
+</body></html>

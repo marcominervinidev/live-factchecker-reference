@@ -1,0 +1,19 @@
+# Paths the owner reads with extra care at gate 2 (docs/process/pr-format.md, "Gate 2: how the owner reads").
+# Not a required review: the owner authors every PR (agents push under his account), and GitHub never lets an
+# author approve his own PR. The review guide must name every changed path below under "Hier genau hinschauen".
+/packages/contracts/   @marcominervinidev
+/.github/              @marcominervinidev
+/.claude/              @marcominervinidev
+/deploy/               @marcominervinidev
+/scripts/ci/           @marcominervinidev
+/Makefile              @marcominervinidev
+/lefthook.yml          @marcominervinidev
+/commitlint.config.mjs @marcominervinidev
+/sonar-project.properties @marcominervinidev
+/.semgrepignore        @marcominervinidev
+/.gitleaks.toml        @marcominervinidev
+/.trivyignore          @marcominervinidev
+/.fallowrc.json        @marcominervinidev
+/compose*.yml          @marcominervinidev
+/scripts/secrets-init.sh @marcominervinidev
+/scripts/tb            @marcominervinidev

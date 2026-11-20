@@ -1,0 +1,23 @@
+{
+  "name": "@lfc/service-kit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Runtime every Node service shares: JSON log lines, configuration from the environment, /health and /ready, SIGTERM drain.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/probe-body.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test:unit": "vitest run",
+    "test:mutation": "stryker run"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "10.1.1",
+    "@types/node": "24.19.2",
+    "fast-check": "4.10.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

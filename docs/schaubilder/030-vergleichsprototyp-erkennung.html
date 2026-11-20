@@ -1,0 +1,222 @@
+<!-- Quelle: https://claude.ai/artifact/2LA7AHedFkSC6v6gy315So, exportiert 2026-10-23, Ticket #30 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vergleichsprototyp Erkennung</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f6f8; --card:#ffffff; --fg:#1d3d5c; --muted:#4d6479; --line:#d3dde5;
+  --teal:#0f766e; --teal-soft:#d9efec; --amber:#b45309; --amber-soft:#fbe9d2; --rose:#9f1239; --rose-soft:#fbe0e6;
+  --display:"Archivo",system-ui,sans-serif; --body:"Atkinson Hyperlegible",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1a24; --card:#16232f; --fg:#d8e4ee; --muted:#a3b6c6; --line:#2b3c4c;
+  --teal:#2dd4bf; --teal-soft:#123a38; --amber:#f5b041; --amber-soft:#3d2a0e; --rose:#fb7185; --rose-soft:#3f1420; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1a24; --card:#16232f; --fg:#d8e4ee; --muted:#a3b6c6; --line:#2b3c4c;
+  --teal:#2dd4bf; --teal-soft:#123a38; --amber:#f5b041; --amber-soft:#3d2a0e; --rose:#fb7185; --rose-soft:#3f1420; color-scheme:dark }
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55;padding:28px 16px 64px}
+.wrap{max-width:980px;margin:0 auto}
+header{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:22px;margin:40px 0 12px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:17px;margin:20px 0 8px}
+p{max-width:72ch;margin:0 0 12px}
+.lead{font-size:19px;max-width:72ch}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pill{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.pill.ok{background:var(--teal-soft);border-color:transparent}
+.pill.wait{background:var(--amber-soft);border-color:transparent}
+.pill.stop{background:var(--rose-soft);border-color:transparent}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15.5px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:14.5px}
+tr.new td{background:var(--teal-soft)}
+code,.mono{font-family:var(--mono);font-size:.92em}
+.q{border-left:4px solid var(--teal);padding:10px 16px;margin:14px 0;background:var(--card);border-radius:0 10px 10px 0}
+.q h3{margin:0 0 6px}
+.q ul{margin:6px 0 0 18px;padding:0}
+.q li{margin:4px 0}
+.rec{font-weight:700;color:var(--teal)}
+ul.plain{margin:0 0 12px 20px;padding:0;max-width:72ch}
+ul.plain li{margin:5px 0}
+ol.check{margin:0 0 12px 22px;padding:0;max-width:72ch}
+ol.check li{margin:8px 0}
+.note{font-size:15px;color:var(--muted);max-width:72ch}
+pre{font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;max-width:100%}
+dl.gloss{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;max-width:72ch;margin:0}
+dl.gloss dt{font-family:var(--display);font-weight:600}
+dl.gloss dd{margin:0}
+@media (max-width:600px){ dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} body{font-size:16px} }
+</style></head><body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket #30 · Stand 2026-10-21 · Prüfstufe gemessen, Stufe B fertig</div>
+  <h1>Vergleichsprototyp Erkennung</h1>
+  <p class="lead">Neu seit Stufe B: eine Prüfstufe nach dem Extraktor. Haiku 5.5 findet, Sonnet 5.5 prüft je Behauptung, ob eine Karte erscheint. Nach einem Pipeline-Fix erfüllt das Debatte, Alltag, Kosten und Dubletten. Offen sind Talkshow-Recall, Talkshow-Precision und Latenz. Stufe B davor: kein Schalter löst das Precision-Problem, „Liste je Turn“ senkt die Latenz.</p>
+  <div class="pills">
+    <span class="pill ok">Gemini-Richter 49 von 50</span>
+    <span class="pill ok">Zweitlabel α 0,615</span>
+    <span class="pill ok">Prüfstufe Sonnet: Alltag 1,6 FA/10 min, 0,020 USD/min</span>
+    <span class="pill stop">Latenz 22,7 s, Ziel 15</span>
+    <span class="pill wait">Stufe B mit Opus gerichtet, Gemini-Nachrichten offen</span>
+  </div>
+</header>
+
+<h2>00. Prüfstufe, 21.10.</h2>
+<p>Haiku 5.5 mit Prompt v2 findet, eine Prüfstufe entscheidet je Behauptung, ob eine Karte erscheint. Gemini-Richter (kalibriert 49 von 50), ein Durchlauf je Arm, Branch <code>evals/pruefstufe</code>.</p>
+<div class="tablewrap"><table>
+<tr><th>Arm</th><th class="num">Recall T / D</th><th class="num">Precision T / D</th><th class="num">FA Alltag</th><th class="num">Latenz p95</th><th class="num">Dubletten</th><th class="num">USD/min</th></tr>
+<tr><td>ohne Prüfstufe</td><td class="num">0,78 / 0,89</td><td class="num">0,45 / 0,49</td><td class="num">37,1</td><td class="num">18,6 s</td><td class="num">0,084</td><td class="num">0,007</td></tr>
+<tr><td>Prüfstufe Jev</td><td class="num">0,60 / 0,69</td><td class="num">0,65 / 0,58</td><td class="num">2,7</td><td class="num">28,4 s</td><td class="num">0,153</td><td class="num">0,006</td></tr>
+<tr><td>Prüfstufe Sonnet, erste Fassung</td><td class="num">0,62 / 0,89</td><td class="num">0,61 / 0,79</td><td class="num">0,9</td><td class="num">24,9 s</td><td class="num">0,223</td><td class="num">0,019</td></tr>
+<tr class="new"><td><b>Prüfstufe Sonnet, nach Fix</b></td><td class="num">0,70 / <b>0,81</b></td><td class="num">0,72 / <b>0,81</b></td><td class="num"><b>1,6</b></td><td class="num">22,7 s</td><td class="num"><b>0,091</b></td><td class="num"><b>0,020</b></td></tr>
+<tr class="new"><td><b>Prüfstufe Sonnet, 3 Wiederholungen (Stufe C, 23.10.)</b><br><span class="note">Median, Spanne darunter</span></td><td class="num">0,69 / 0,81<br><span class="note">0,65–0,70 / 0,81–0,89</span></td><td class="num">0,68 / 0,81<br><span class="note">0,64–0,72 / 0,78–0,92</span></td><td class="num">1,6<br><span class="note">1,1–1,6</span></td><td class="num">17,8 s<br><span class="note">16,6–22,7</span></td><td class="num">0,098<br><span class="note">0,091–0,117</span></td><td class="num">0,020</td></tr>
+<tr><td>Prüfstufe Sonnet + Prompt v3 gegen Nachholen (23.10., 1 Lauf)</td><td class="num">0,72 / 0,85</td><td class="num">0,71 / 0,85</td><td class="num">0,7</td><td class="num">18,9 s</td><td class="num">0,101</td><td class="num">0,021</td></tr>
+<tr><td>Prüfstufe Sonnet + Liste je Turn (22.10.)</td><td class="num">0,57 / 0,89</td><td class="num">0,68 / 0,79</td><td class="num">1,6</td><td class="num"><b>15,8 s</b></td><td class="num">0,106</td><td class="num">0,017</td></tr>
+<tr><td>Sonnet als Extraktor</td><td class="num">0,83 / 0,92</td><td class="num">0,58 / 0,80</td><td class="num">40,1</td><td class="num"><b>11,3 s</b></td><td class="num">0,099</td><td class="num">0,104</td></tr>
+</table></div>
+<ul class="plain" style="margin-top:12px">
+<li><b>Nach dem Fix erfüllt die Sonnet-Prüfstufe Debatte, Alltag, Kosten, Dubletten und Zuschreibung.</b> Offen: Talkshow Recall 0,70 (Ziel 0,75), Talkshow Precision 0,72 (0,80; ohne Dubletten im Nenner 0,81) und Latenz 22,7 s (15 s).</li>
+<li><b>Der Fix:</b> Behauptungen in Prüfung und verworfene fehlten in der Liste des Extraktors; er lieferte sie erneut. Das erzeugte Dubletten und späte Nachholer.</li>
+<li><b>Jev taugt für Deutsch nicht als hartes Tor</b>: auch klare Zahlenbehauptungen bekommen nur p ≈ 0,35.</li>
+<li><b>F9 entschieden:</b> Meinung mit Tatsachenkern bleibt hoch; der Prüfprompt entscheidet über den Kern.</li>
+<li><b>„Liste je Turn“ dazu (22.10.): Latenz 15,8 s, aber Talkshow-Recall fällt auf 0,57.</b> Zu teuer erkauft, der Schalter bleibt verworfen. Am Prüfset (6 Ausschnitte) schwankt derselbe Arm stark: Recall 0,69, Latenz 27,6 s. Ein einzelner Lauf ist zu wenig für die Latenzfrage.</li>
+<li><b>Golden Set 1.1</b> (Lückenprüfung, 18 Entscheidungen, 308 Labels): Die Kandidaten werden gerade dagegen nachgerichtet; die 14 Lücken zählen dann nicht mehr als Fehlalarm.</li>
+</ul>
+
+<h2>0. Stufe B, 20.10.</h2>
+<p>Neue Baseline nach F8: Claim und Topic Extractor auf Haiku 5.5, Prompt v2, Resolver Sonnet 5.5, drei Wiederholungen. Jeder Arm legt genau einen Schalter um und läuft einmal. Vorläufiger Opus-Richter, Textmodus, alle 19 Ausschnitte.</p>
+<div class="tablewrap"><table>
+<tr><th>Arm</th><th class="num">Recall nur hoch</th><th class="num">Recall alle</th><th class="num">Precision</th><th class="num">Fehlalarme / 10 min</th><th class="num">Latenz p95</th><th class="num">Resolver USD</th></tr>
+<tr><td><b>baseline-v2</b> (Spanne über 3)</td><td class="num">0,800<br><span class="note">0,800–0,824</span></td><td class="num">0,779</td><td class="num">0,286<br><span class="note">0,272–0,312</span></td><td class="num">30,5<br><span class="note">27,2–32,7</span></td><td class="num">18,0 s<br><span class="note">17,1–19,8</span></td><td class="num">1,40</td></tr>
+<tr class="new"><td>Liste je Turn</td><td class="num"><b>0,733</b></td><td class="num"><b>0,696</b></td><td class="num"><b>0,362</b></td><td class="num"><b>18,8</b></td><td class="num"><b>14,3 s</b></td><td class="num">0,96</td></tr>
+<tr><td>Eskalation aus</td><td class="num"><b>0,830</b></td><td class="num">0,779</td><td class="num">0,302</td><td class="num">29,7</td><td class="num"><b>22,6 s</b></td><td class="num">0</td></tr>
+<tr><td>Einheit Segment</td><td class="num">0,806</td><td class="num">0,764</td><td class="num"><b>0,334</b></td><td class="num"><b>24,4</b></td><td class="num"><b>31,2 s</b></td><td class="num">0,87</td></tr>
+<tr><td>Resolver Opus</td><td class="num">0,806</td><td class="num">0,764</td><td class="num">0,291</td><td class="num">30,4</td><td class="num"><b>15,8 s</b></td><td class="num">2,48</td></tr>
+<tr><td>Kontext 1</td><td class="num">0,782</td><td class="num">0,768</td><td class="num">0,262</td><td class="num">34,2</td><td class="num">17,2 s</td><td class="num">1,44</td></tr>
+<tr><td>Kontext 4</td><td class="num">0,788</td><td class="num">0,757</td><td class="num">0,278</td><td class="num">32,2</td><td class="num">18,7 s</td><td class="num">1,16</td></tr>
+</table></div>
+<p class="note" style="margin-top:8px">Fett: außerhalb der Baseline-Spanne. Ein Arm mit nur einer Wiederholung zählt erst als Effekt, wenn er klar außerhalb liegt. „Recall nur hoch“ ist die Zusatzzahl aus F7. Resolver-Kosten über 95 Minuten; beide Extraktoren zusammen kosten 0,0065 USD je Minute, der Resolver 0,015.</p>
+<ul class="plain">
+<li><b>Precision bleibt das Kernproblem.</b> Talkshow 0,45, Debatte 0,48, Alltag 0,05. Kein Arm verschiebt sie um mehr als +0,08. Der Hebel liegt im Prompt, nicht in diesen Schaltern.</li>
+<li><b>Liste je Turn</b> ist der einzige klare Gewinn: Talkshow-Precision 0,53 statt 0,45, 39 % weniger Fehlalarme, Latenz unter 15 s. Dafür sinkt der Recall in Talkshows auf 0,73, unter die Schwelle 0,75.</li>
+<li><b>Der Resolver bringt wenig.</b> Aus rund 200 Candidates macht er 30 Karten; ohne ihn bleibt der Recall gleich. Er kostet aber mehr als beide Extraktoren zusammen. Die höhere Latenz ohne ihn ist mit einem Lauf nicht von Rauschen zu trennen.</li>
+<li><b>Verwerfen:</b> Resolver auf Opus (kein Gewinn, +77 % Kosten), Einheit Segment (+13 s Latenz). Kontext 1 und 4 liegen im Rauschen; Kontext 2 bleibt.</li>
+</ul>
+<h3>Prüfset für die Regression</h3>
+<p>Gesucht wurden alle 825 Sechser mit zwei Talkshow-, zwei Alltags- und beiden Debatten-Ausschnitten. Gewählt ist der Sechser, der die Abstände aller Arme zur Baseline am besten nachbildet: <code>maischberger-a</code>, <code>miosga-a</code>, <code>realitaetsabgleich-c</code>, <code>realitaetsabgleich-f</code>, <code>phoenix-a</code>, <code>phoenix-b</code>, zusammen 30 Minuten. Er trifft die Richtung aller sechs deutlichen Abstände. Ein Lauf kostet mit Opus-Richter etwa 2,80 USD, mit der Batch-API etwa die Hälfte. Recall springt hier je Label um rund 0,035; deshalb gilt die Prüfset-Schwelle 0,05.</p>
+
+<h2>1. Stufe A: Baseline mit Richter, alle Teile</h2>
+<p>Richter ist vorläufig Claude Opus 5.5, kalibriert mit blind 37 von 50, nach deiner Nachprüfung 50 von 50. Textmodus, ein Durchlauf, darum ohne Spanne.</p>
+<div class="tablewrap"><table>
+<tr><th>Zahl</th><th class="num">Talkshow</th><th class="num">Debatte</th><th class="num">Alltag</th><th>Schwelle</th></tr>
+<tr><td>Recall nur hoch</td><td class="num">0,664</td><td class="num">0,692</td><td class="num">0,571</td><td>≥ 0,75 (Talkshow, Debatte)</td></tr>
+<tr><td>Precision, Zählregel hoch</td><td class="num">0,439</td><td class="num">0,720</td><td class="num">0,042</td><td>≥ 0,80 (Talkshow, Debatte)</td></tr>
+<tr><td>Fehlalarme je 10 Minuten</td><td class="num">27,4</td><td class="num">5,7</td><td class="num">32,7</td><td>≤ 2 (Alltag)</td></tr>
+<tr><td>Zuschreibung</td><td class="num">0,989</td><td class="num">1,000</td><td class="num">1,000</td><td>≥ 0,95 · <b>erfüllt</b></td></tr>
+<tr><td>Latenz p95 nur Treffer</td><td class="num">17,7 s</td><td class="num">25,7 s</td><td class="num">17,5 s</td><td>≤ 15 s</td></tr>
+<tr><td>Kosten beider Extraktoren je Minute</td><td class="num">0,078</td><td class="num">0,052</td><td class="num">0,076</td><td>≤ 0,063 USD</td></tr>
+<tr><td>Dubletten</td><td class="num">0,128</td><td class="num">0,036</td><td class="num">0,134</td><td>≤ 0,10</td></tr>
+</table></div>
+<ul class="plain" style="margin-top:12px">
+<li><b>Das größte Problem sind Fehlalarme.</b> 507 Karten, davon 267 ohne Treffer. Im Alltag zeigt das System etwa alle 20 Sekunden eine Karte, erlaubt ist eine alle fünf Minuten.</li>
+<li><b>Ein Drittel der Behauptungen fehlt.</b> In Talkshows trifft die Baseline zwei von drei hohen Labels.</li>
+<li><b>Die Zuschreibung stimmt.</b> Wird eine Behauptung gefunden, stimmt fast immer auch der Sprecher.</li>
+</ul>
+
+<h2>2. Stufe A: fünf Arme ohne Richter</h2>
+<div class="tablewrap"><table>
+<tr><th>Arm</th><th class="num">USD je Min.</th><th class="num">Latenz p95 alle Karten</th><th class="num">Karten</th><th class="num">Schema-Fehler</th><th class="num">Cache</th><th class="num">USD Lauf</th></tr>
+<tr><td><code>baseline</code></td><td class="num">0,074</td><td class="num">24,2 s</td><td class="num">507</td><td class="num">2,8 %</td><td class="num">28 %</td><td class="num">13,67*</td></tr>
+<tr><td><code>modell-haiku55</code></td><td class="num"><b>0,006</b></td><td class="num">23,7 s</td><td class="num">613</td><td class="num">9,4 %</td><td class="num">84 %</td><td class="num">3,18</td></tr>
+<tr><td><code>modell-sonnet</code></td><td class="num">0,105</td><td class="num">17,5 s</td><td class="num">575</td><td class="num">1,5 %</td><td class="num">84 %</td><td class="num">10,43</td></tr>
+<tr><td><code>eskalation-aus</code></td><td class="num">0,075</td><td class="num">25,6 s</td><td class="num">539</td><td class="num">2,9 %</td><td class="num">27 %</td><td class="num">7,14</td></tr>
+<tr><td><code>einheit-segment</code></td><td class="num">0,094</td><td class="num"><b>13,7 s</b></td><td class="num">425</td><td class="num">1,6 %</td><td class="num">5 %</td><td class="num">9,35</td></tr>
+</table></div>
+<p class="note" style="margin-top:8px">* davon 6,09 USD für den Opus-Richter.</p>
+
+<h2>2a. Was hinter den Zahlen steckt, Auswertung vom 18.10.</h2>
+<h3>Fehlalarme, 267 Karten</h3>
+<div class="tablewrap"><table>
+<tr><th>Gruppe</th><th class="num">Talkshow</th><th class="num">Debatte</th><th class="num">Alltag</th><th class="num">Gesamt</th></tr>
+<tr><td>Keine Behauptung (Wertung, Befinden, Prognose, Erzählung …)</td><td class="num">69</td><td class="num">3</td><td class="num">133</td><td class="num"><b>205</b></td></tr>
+<tr><td>Teilkarte eines schon getroffenen Labels</td><td class="num">5</td><td class="num">0</td><td class="num">28</td><td class="num">33</td></tr>
+<tr><td>Lücke im Golden Set</td><td class="num">3</td><td class="num">2</td><td class="num">13</td><td class="num">18</td></tr>
+<tr><td>Satz verfehlt den Kern, davon 1 echter Richterfehler</td><td class="num">5</td><td class="num">1</td><td class="num">3</td><td class="num">9</td></tr>
+<tr><td>Zeitfenster verfehlt</td><td class="num">0</td><td class="num">0</td><td class="num">2</td><td class="num">2</td></tr>
+</table></div>
+<ul class="plain" style="margin-top:12px">
+<li><b>Fast alles liegt am Extraktor.</b> Golden Set, Richter und Filter sind belastbar.</li>
+<li><b>Der Alltag ist ein Anzeigeproblem.</b> Zeigt man nur Karten mit <i>hoch</i>, fällt der Alltag von 32,7 auf 1,6 Fehlalarme je 10 Minuten.</li>
+<li><b>Latenz kommt vom Nachholen.</b> Das Modell gibt eine Behauptung oft erst einen Aufruf später aus.</li>
+</ul>
+
+<h2>2b. Gemini-Richter, offizielle Zahlen Stufe A und Runde 3</h2>
+<p>Gemini 3.8 Flash ist kalibriert: 49 von 50 nach der Nachprüfung. Diese Zahlen zählen offiziell. Zweitlabel über die API: Krippendorffs α 0,615 über 16 von 19 Ausschnitten, über 0,6, die Richtlinie muss nicht nachgeschärft werden.</p>
+<div class="tablewrap"><table>
+<tr><th>Arm</th><th class="num">Recall T</th><th class="num">Recall D</th><th class="num">Precision T</th><th class="num">Precision D</th><th class="num">Latenz p95</th><th class="num">USD/min</th></tr>
+<tr><td>Baseline Haiku 4.5</td><td class="num">0,64</td><td class="num">0,69</td><td class="num">0,42</td><td class="num">0,72</td><td class="num">19,5 s</td><td class="num">0,074</td></tr>
+<tr><td><b>Sonnet 5.5</b></td><td class="num"><b>0,83</b></td><td class="num"><b>0,92</b></td><td class="num"><b>0,58</b></td><td class="num"><b>0,80</b></td><td class="num"><b>11,3 s</b></td><td class="num">0,104</td></tr>
+<tr><td>Eskalation aus</td><td class="num">0,69</td><td class="num">0,50</td><td class="num">0,42</td><td class="num">0,81</td><td class="num">20,7 s</td><td class="num">0,075</td></tr>
+<tr><td>Segment-Einheit</td><td class="num">0,62</td><td class="num">0,62</td><td class="num">0,42</td><td class="num">0,80</td><td class="num">13,8 s</td><td class="num">0,094</td></tr>
+<tr><td>Haiku 5.5</td><td class="num">0,79</td><td class="num">0,81</td><td class="num">0,41</td><td class="num">0,54</td><td class="num">15,9 s</td><td class="num"><b>0,006</b></td></tr>
+<tr><td>Haiku 5.5 + Prompt v2</td><td class="num">0,78</td><td class="num">0,89</td><td class="num">0,45</td><td class="num">0,49</td><td class="num">18,6 s</td><td class="num"><b>0,007</b></td></tr>
+</table></div>
+<p class="note" style="margin-top:8px">T Talkshow, D Debatte. Sonnet 5.5 ist qualitativ der beste Extraktor, kostet aber 65 % über der Schwelle.</p>
+
+<h2>3. Entschieden</h2>
+<div class="tablewrap"><table>
+<tr><th>Entscheidung</th><th>Festgehalten</th></tr>
+<tr><td>F1: gestufter Plan</td><td>#30</td></tr>
+<tr><td>F2: Richtlinie 1.0 freigegeben</td><td>v2 <code>evals/golden/RICHTLINIE.md</code></td></tr>
+<tr><td>F3: Opus richtet vorläufig, kalibriert 50 von 50</td><td>v2 <code>evals/reports/kalibrierung-2026-10-18/</code></td></tr>
+<tr><td>F6: Prompt v2 bleibt als Arm</td><td>#30</td></tr>
+<tr><td>F7: „nur hoch“ als Zusatzzahl in jedem Bericht</td><td>#30, Stufe B</td></tr>
+<tr><td>F8: Haiku 5.5 mit Prompt v2 ist die neue Baseline</td><td>v2 <code>evals/configs/baseline-v2.json</code></td></tr>
+<tr><td>F9: Meinung mit Tatsachenkern bleibt hoch</td><td>#30, 2026-10-21</td></tr>
+<tr><td>Gemini 3.8 Flash ist der Richter, kalibriert 49 von 50</td><td>Branch <code>evals/pruefstufe</code>, <code>reports/gemini-2026-10-20/</code></td></tr>
+<tr><td>Prüfset: sechs Ausschnitte, Schwelle 0,05, Batch-API, Max-Guthaben</td><td>v2 <code>evals/configs/pruefset.json</code>, Testteam Abschnitt 13</td></tr>
+</table></div>
+
+<h2>4. Vorschlag für den nächsten Schritt</h2>
+<div class="q">
+<h3>Stufe C auf der Prüfstufe Sonnet, Latenz getrennt angehen</h3>
+<ul>
+<li><b>Stufe C erledigt (23.10.):</b> drei Wiederholungen, Median gesamt Latenz p95 17,8 s, Talkshow 19,7 s (14,2–22,7), Debatte 13,3 s. Talkshow Recall 0,69 und Precision 0,68 bleiben unter den Schwellen, die Spannen überlappen sie nicht. Alles andere ist erfüllt.</li>
+<li><b>Prompt v3 gegen Nachholen (23.10.):</b> Latenz 18,9 s, 25 von 188 Karten über 15 s. Das Nachholen lässt sich bei Haiku per Prompt nicht abstellen. Qualität leicht besser, aber innerhalb der Spanne; ohne Wiederholungen kein Effekt nachweisbar. Letzter bezahlter Lauf für #30.</li>
+<li><b>F10 · Latenzschwelle:</b> <span class="rec">p95 ≤ 20 s</span> deckt den Median gesamt (17,8) und der Talkshow (19,7), nicht aber den schlechtesten Lauf (22,7). <b>25 s</b> deckt alle drei Läufe. Nachtrag in ADR 0003 und Messaufbau §4.4 mit Begründung „Nachholen des Extraktors, nur Sonnet als Extraktor erreicht 15 s“.</li>
+<li><b>Latenzzerlegung (22.10.):</b> Die Prüfstufe kostet nur 2,1 s je Karte, kein Stau. Alle 12 Treffer über 15 s sind <i>nachgeholt</i>: Haiku gibt die Behauptung erst in einem späteren Aufruf aus, 8 von 20 hatte es zuerst als „Meinung“ verworfen. Ohne Nachholen läge p95 bei 10,8 s. Prüfstufe parallel, Resolver aus oder 3-s-Takt ändern fast nichts (22,4 bis 22,7 s). Nur unsichere Karten prüfen senkt p50 auf 4 s und halbiert die Prüfkosten, nicht aber p95.</li>
+<li><b>Grundsatzfrage für die Map:</b> Unter 15 s kommt nur, wer das Nachholen beseitigt. Gemessen schafft das nur Sonnet als Extraktor (11,7 s, mit Prüfstufe etwa 13,8 s), für 0,104 bis 0,116 USD je Minute statt 0,063. Alternativen: ein letzter Prompt-Versuch gegen das Nachholen bei Haiku (etwa 4 USD, Ausgang offen), die Latenzschwelle lockern, oder der PoC endet mit „Erkennung machbar, Latenzziel nur mit Sonnet“.</li>
+<li>Stufe B mit dem Gemini-Richter nachrichten, damit die Zahlen offiziell zählen (etwa 1,50 USD je Lauf).</li>
+<li>Die Branches <code>evals/golden-v1</code> und <code>evals/pruefstufe</code> zusammenführen, sobald keine Läufe mehr auf alten Checkpoints fortgesetzt werden müssen.</li>
+</ul>
+</div>
+
+<h2>5. Was du tun musst</h2>
+<ol class="check">
+<li>Push von v2 (Stufe B ist Commit <code>c64fee1</code>):
+<pre>git -C ~/dev/live-factchecker-v2 push origin evals/golden-v1</pre></li>
+<li>Ein Wort zum nächsten Schritt in Abschnitt 4.</li>
+<li>Lückenprüfung: erledigt, Golden Set 1.1 auf Branch <code>evals/golden-1.1</code>.</li>
+</ol>
+
+<h2>6. Begriffe</h2>
+<dl class="gloss">
+<dt>Arm</dt><dd>Eine Konfiguration des Harness, die gegenüber der Baseline genau einen Schalter umlegt.</dd>
+<dt>Prüfstufe</dt><dd>Ein zweites Modell prüft jede gefundene Behauptung, bevor eine Karte erscheint. Im Zweifel oder bei Fehlern lässt sie die Karte durch.</dd>
+<dt>Spanne</dt><dd>Kleinster bis größter Wert über die Wiederholungen der Baseline. Was darin liegt, ist Rauschen.</dd>
+<dt>Prüfset</dt><dd>Sechs Ausschnitte, die die Abstände der Arme wie der volle Korpus zeigen. Für schnelle, billige Regressionsläufe.</dd>
+<dt>Liste je Turn</dt><dd>Der Extraktor sieht die bisherigen Behauptungen nur des laufenden Redebeitrags statt des ganzen Gesprächs.</dd>
+<dt>Eskalation</dt><dd>Ein unsicherer Fund geht als Candidate an den Resolver, ein größeres Modell, das entscheidet, ob es eine Behauptung ist.</dd>
+<dt>Richter</dt><dd>Das Modell, das entscheidet, ob eine Karte ein Label trifft.</dd>
+<dt>p95</dt><dd>Der Wert, den 95 von 100 Karten unterschreiten.</dd>
+</dl>
+</div>
+</body></html>
+
+</body></html>

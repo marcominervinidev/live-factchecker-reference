@@ -1,0 +1,11 @@
+.secrets/
+.env*
+**/.env*
+.git
+node_modules
+**/node_modules
+# Build output and run artefacts never enter an image: the build stage bundles from the sources.
+**/dist
+**/reports
+**/coverage
+**/.stryker-tmp

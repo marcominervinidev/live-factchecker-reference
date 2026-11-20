@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#55 Konten und Mandanten – Runde 3</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout und Tokens wie Runde 1 (und 011-datenschutzmodell.html): eine Lesespalte, Schaubild in voller Breite, Faktentabelle, Fragen mit Empfehlung. Vier Zonen von links nach rechts (Clients, Cognito, Rand des Backends, Zustand in der EU); offene Punkte dieser Runde bernsteinfarben gestrichelt, Entschiedenes teal. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td q,li q{font-style:italic}
+.src{font-family:var(--font-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .ask{font-size:16px;margin:0 0 6px;max-width:80ch}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:8px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.later li{margin:3px 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px} .src{white-space:normal}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8;stroke-dasharray:5 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .tq{fill:var(--warn);font-family:var(--font-mono);font-size:11px;font-weight:500}
+.d .tw{fill:var(--warn);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;fill:currentColor}
+.d .mono{font-family:var(--font-mono);font-size:10.5px}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 55 · Grilling · Briefing Runde 3 · 2026-11-05</div>
+  <h1>#55 Konten und Mandanten – Runde 3</h1>
+  <p class="lead">Runde 2 ist entschieden (Marco, 2026-11-05, <q>q6 a … q7a, q8a, q9a, q10a</q>), mit einem Vorbehalt: <q>warum ist der refresh token 30 tage gültig ist das nciht viel zu lange?</q> Diese Frage steht hier als Q11 vorn. Der Rest der Runde räumt ab, was noch an den Entscheidungen hängt, und trennt, was Inkrement 1 braucht, von dem, was in den Nebel geht. Mit Q17 endet das Grilling und der ADR-Entwurf beginnt. Jede Frage ist so gestellt, dass „ja“ die Empfehlung annimmt.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fest">Runde 2</a><a href="#fakten">Fakten</a><a href="#fragen">Fragen</a><a href="#nebel">Nebel</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fest">1 · Runde 2, entschieden</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Q</th><th>Entscheidung</th><th>Was daraus folgt</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q6</td><td>a: <q>Bearer-Token in beiden Clients</q>, Authorization Code mit PKCE, Access-Token 60 Minuten nur im Speicher, Token als erste WebSocket-Nachricht</td><td>Laufzeit des Refresh-Tokens offen <span class="tag warn">Q11</span></td></tr>
+    <tr><td class="num">Q7</td><td>a: <q>Cognito Client Credentials</q>, Sessions gehören <q>einer Dienst-Id statt einem Konto</q></td><td>Kontingent der Partner-Sessions <span class="tag warn">Q13</span></td></tr>
+    <tr><td class="num">Q8</td><td>a: <q>Harter Stopp</q>, <q>zeigt die App den Rest vor jedem Start</q>, <q>in Inkrement 1 keinen Nachkauf</q></td><td>Warnung vor dem Stopp <span class="tag warn">Q14</span></td></tr>
+    <tr><td class="num">Q9</td><td>a: <q>Gast = Sprecher</q>, <q>kein Konto, keine Anmeldung, nichts gespeichert, was ihn identifiziert</q></td><td>Mitlesen per Link bleibt bei #57 <span class="tag">Nebel</span></td></tr>
+    <tr><td class="num">Q10</td><td>a: <q>Ein Tarif, Probezeit mit Zahlungsmittel, Löschen kündigt</q></td><td>Kündigungsbutton <span class="tag warn">Q15</span>, Probe zweimal <span class="tag warn">Q16</span></td></tr>
+  </tbody>
+</table></div>
+<p class="muted" style="font-size:14px">Quelle: Kommentar „Runde 2 entschieden“ in #55, 2026-11-05.</p>
+
+<h2 id="fakten">2 · Fakten auf dem Tisch</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Thema</th><th>Fakt mit Wortlaut</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Laufzeit ist je App-Client wählbar</td><td><q lang="en">By default, the refresh token expires 30 days after your application user signs into your user pool. … any value between 60 minutes and 10 years.</q> Die 30 Tage waren also nur der Standard von Cognito, keine Vorgabe.</td><td class="src">AWS Cognito, Refresh tokens, 2026-11-05</td></tr>
+    <tr><td>Rotation verlängert nichts</td><td><q lang="en">Rotation reissues a refresh token within the same fixed validity window. It doesn't extend the window.</q> Die Laufzeit ist damit die längste Zeit zwischen zwei Anmeldungen, auch bei täglicher Nutzung.</td><td class="src">AWS Cognito, Refresh tokens</td></tr>
+    <tr><td>Web: jedes Skript kann das Token lesen</td><td><q>Die App hält das Token in <code>localStorage</code>; jedes Skript auf der Origin könnte es lesen. Deshalb ist die CSP eine Sicherheitskontrolle: <code>script-src 'self'</code>, kein <code>eval</code> …, keine Fremdskripte, Belege immer als Text gerendert.</q></td><td class="src">#99 sicherheits-inventar 1.8</td></tr>
+    <tr><td>App: andere Ablage</td><td><q>Token-Ablage wird plattformabhängig (Keychain/Keystore statt <code>localStorage</code>)</q></td><td class="src">#99, 2.2</td></tr>
+    <tr><td>Anmelden ist billig</td><td>Runde 1, Q3: <q>mit Passkey und E-Mail-Code und ohne Social Login</q>. Eine neue Anmeldung ist mit Passkey eine Bestätigung am Gerät.</td><td class="src">#55, Runde 1</td></tr>
+    <tr><td>Sperre wirkt unabhängig vom Token</td><td><q lang="en">revoked tokens will still be valid if they are verified using any JWT library that verifies the signature and expiration of the token.</q> Deshalb prüft der Rand die Konto-Zeile bei jedem Aufbau und bei jedem <code>audio.start</code> (Runde 2).</td><td class="src">AWS Cognito, Token revocation; #55, Runde 2</td></tr>
+    <tr><td>Store-Abgleich: zwei Wege</td><td><q>Eigenbau über App Store Server Notifications V2 und Play RTDN … oder RevenueCat (Free bis 2.500 USD MTR, dann 1 %; Web ohne Aufpreis, Engines Stripe/Paddle)</q>; Eigenbau: <q>Entitlement-Tabelle je Konto (IdP-<code>sub</code>); … Web-Abo-Webhooks (Stripe/MoR) in dieselbe Tabelle</q></td><td class="src">#100 identitaet-zahlung-eu, 8</td></tr>
+    <tr><td>RevenueCat: Datenort ungeprüft</td><td><q>RevenueCat (US), Stripe (Stripe Payments Europe, Verarbeitung teils US) … wurden nicht auf AVV und Transfermechanismus geprüft</q></td><td class="src">#100, Offene Punkte 7</td></tr>
+    <tr><td>Store-Abo erst mit Inkrement 2</td><td><q>Konten (#13) kann mit dem Web-Abo anfangen; Store-Abos kommen mit dem zweiten Inkrement, dann gilt Apples 3.1.3(b) (Web-Abo nur neben IAP).</q></td><td class="src">ADR 0010</td></tr>
+    <tr><td>Partner-Session</td><td><q>Eine Session kann ohne verbundenen Client laufen, vom Server gestartet; Karten gehen auch an Zuschauer, die später dazukommen (Betriebsmodell #15).</q>; Server-Ingestion <q>später, mit dem ersten Partner</q></td><td class="src">inputs.md 8; clients.md 1</td></tr>
+    <tr><td>Live-Vertrag gehört zum Frontend</td><td><q>Session-Zustandsautomat, Verhalten nach <code>quota_exceeded</code>, Live-Vertrag jenseits der Audio-Nachrichten | kein Ticket; der Live-Vertrag wird mit dem Frontend gebaut (ADR 0005)</q></td><td class="src">architecture.md 5</td></tr>
+    <tr><td>Kündigungsbutton</td><td>§ 312k BGB verlangt eine Schaltfläche <q>„Verträge hier kündigen" (oder gleichwertig)</q>, die <q>zu einer Bestätigungsseite führt</q>; <q>fehlt der Button, kann der Verbraucher <b>jederzeit ohne Frist</b> kündigen</q>. Folge laut Research: <q>Web-Abo (PSP oder MoR) → eigener Kündigungsbutton auf der Website Pflicht; weder Stripe Customer Portal noch MoR-Portale ersetzen ihn ohne eigene Bestätigungsseite (Lesart).</q></td><td class="src">#100, 7</td></tr>
+    <tr><td>Löschen heißt löschen</td><td><q>Konto löschen | Verlauf und Zähler sofort; Consent Records und Rechnungen bleiben für ihre Fristen ohne Verbindung zu Inhalten</q></td><td class="src">datenschutz.md 8</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">3 · Fragen der Runde 3</h2>
+<div class="qs">
+
+<div class="q">
+  <h3><span class="n">Q11</span>Wie lange hält eine Anmeldung?</h3>
+  <p class="ask"><b>Gilt das Refresh-Token in der Web-App 7 Tage und in der Store-App 30 Tage, in beiden rotierend, und widerruft „Abmelden“ es bei Cognito?</b></p>
+  <div class="lbl">Deine Frage: sind 30 Tage zu lang?</div>
+  <ul>
+    <li>Im Web ja, in der Store-App nein. Die 30 Tage waren der Standard von Cognito, den ich in Q6 ungeprüft für beide Clients übernommen hatte.</li>
+    <li>Der Unterschied liegt in der Ablage. Im Browser liegt das Token in <code>localStorage</code>, und <q>jedes Skript auf der Origin könnte es lesen</q>. Wer es durch eine Lücke in der Seite erbeutet, kann sich bis zum Ende der Laufzeit neue Access-Token holen. Im Keychain oder Keystore kommt eine andere App nicht an das Token.</li>
+    <li>Der Preis einer kurzen Laufzeit ist eine neue Anmeldung. Mit Passkey ist das eine Bestätigung am Gerät, mit E-Mail-Code ein Wechsel ins Postfach.</li>
+    <li>Was die Laufzeit nicht regelt: Ein gesperrtes oder gelöschtes Konto kommt schon beim nächsten Aufbau nicht mehr durch, weil der Rand die Konto-Zeile prüft.</li>
+  </ul>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Web 7 Tage, Store-App 30 Tage:</b> wer die Web-App wöchentlich nutzt, meldet sich einmal je Woche neu an; ein gestohlenes Web-Token ist höchstens 7 Tage brauchbar.</li>
+    <li>b) Beide 30 Tage (Standard): am bequemsten, im Web das längste Fenster.</li>
+    <li>c) Web 1 Tag: kleinstes Fenster, aber Anmeldung an jedem Nutzungstag; mit E-Mail-Code lästig.</li>
+    <li>d) Kein Refresh-Token im Web: nach 60 Minuten neu anmelden; bricht nicht die laufende Session (der Rand prüft nur bei Aufbau und <code>audio.start</code>), aber jede Unterbrechung nach einer Stunde verlangt eine Anmeldung.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Q6 hat je Plattform einen eigenen App-Client festgelegt, die Laufzeit lässt sich also getrennt setzen und später ohne Code ändern. 7 Tage halten das Fenster im Web klein, ohne dass die Anmeldung zum täglichen Schritt wird. Die CSP bleibt die eigentliche Kontrolle; die Laufzeit begrenzt nur den Schaden, wenn sie versagt.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q12</span>Wie steht der Abo-Status im Konto, damit der Store später andocken kann?</h3>
+  <p class="ask"><b>Führt Postgres je Konto genau eine Berechtigung (Status, Zeitraum, Quelle), die in Inkrement 1 nur Stripe-Webhooks schreiben, und bleibt die Wahl zwischen Eigenbau und RevenueCat für den Store-Abgleich bis Inkrement 2 offen?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Eine Berechtigung mit Feld „Quelle“, Store-Weg später:</b> das Kontingent liest nur diese Zeile; Stripe ist heute die einzige Quelle, Apple und Google kommen als weitere Schreiber dazu.</li>
+    <li>b) RevenueCat schon jetzt als Schicht vor Stripe: ein Modell für alle Kaufwege von Anfang an, aber ein weiterer Dienst in den USA, dessen Datenort <q>nicht auf AVV und Transfermechanismus geprüft</q> ist, für einen einzigen Kaufweg.</li>
+    <li>c) Stripe-Status direkt im Konto ohne eigene Berechtigung: am wenigsten Code, aber der Store-Abgleich müsste das Modell später umbauen.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Runde 1, Q4: <q>das Konto speichert nur Abo-Status und Kunden-Id</q>. Option a hält das ein und benennt nur die Form.</li>
+    <li>Research #100: Eigenbau führt <q>Web-Abo-Webhooks (Stripe/MoR) in dieselbe Tabelle</q>; RevenueCat kann Stripe Managed Payments einbinden (<q lang="en">Stripe can be merchant of record when using Managed Payments</q>). Beide Wege passen später auf a.</li>
+    <li>Offen für Inkrement 2: wer im Web und im Store zugleich abonniert, zahlt doppelt; das löst erst der Abgleich.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Die Zeile kostet heute fast nichts und hält beide Store-Wege offen. Die Wahl des Abgleichs braucht die Prüfung von RevenueCat (Datenort, Vertrag) und gehört in ein eigenes Wayfinder-Ticket zu Inkrement 2.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q13</span>Wem gehören Partner-Sessions, und was begrenzt sie?</h3>
+  <p class="ask"><b>Gehört eine Session der Ingestion ihrer Dienst-Id, bekommt jede Dienst-Id ein vom Betreiber gesetztes Minuten-Kontingent ohne Stripe, und wird beides erst mit dem ersten Partner gebaut?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Dienst-Id als Besitzer, Kontingent vom Betreiber:</b> dieselbe Zählung wie beim Konto, nur ohne Abo; die Abrechnung mit dem Partner läuft über einen Vertrag außerhalb des Produkts.</li>
+    <li>b) Partner als Konto mit Stripe-Abo: ein Modell für alle, bricht aber <q>eine Person, ein Konto</q> aus Runde 1.</li>
+    <li>c) Kein Kontingent für Dienste: nur die Notbremse des Betreibers (<q>der alte USD-Tageszähler bleibt nur als Notbremse des Betreibers</q>).</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Runde 2, Q7: Sessions gehören <q>einer Dienst-Id statt einem Konto</q>; clients.md 1: <q>später, mit dem ersten Partner</q>.</li>
+    <li>Runde 1, Q2: <q>die Zählpunkte schlagen den Besitzer über die Session-Id nach</q>. Der Besitzer ist dann Konto oder Dienst-Id; die Pipeline merkt davon nichts.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Heute legt die Antwort nur fest, dass „Besitzer einer Session“ zwei Arten kennt. Gebaut wird nichts davon in Inkrement 1.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q14</span>Warnt die App vor dem Stopp?</h3>
+  <p class="ask"><b>Soll das Frontend-Ticket des Live-Vertrags eine Warnung bei wenigen Restminuten vorsehen, während der Nachkauf im Nebel bleibt, bis #60 Tarifzahlen liefert?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Warnung als Anforderung an den Live-Vertrag, Nachkauf später:</b> #55 hält nur fest, dass der Rand den Rest kennt und ihn dem Client vor dem Ende mitteilen kann; Name und Form der Nachricht entscheidet das Frontend-Ticket.</li>
+    <li>b) Keine Warnung: der Rest steht vor dem Start, das Gespräch endet ohne Ankündigung.</li>
+    <li>c) Warnung und Nachkauf jetzt entwerfen: zwei Kaufwege (Web und Store) ohne Preis.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Runde 2, Q8: <q>zeigt die App den Rest vor jedem Start</q>. Ein Gespräch von 90 Minuten mit 40 Restminuten endet trotzdem mittendrin.</li>
+    <li>architecture.md 5: <q>der Live-Vertrag wird mit dem Frontend gebaut (ADR 0005)</q>. Die Nachricht selbst gehört deshalb nicht in das ADR zu Konten.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Ein Stopp ohne Ankündigung mitten im Gespräch ist der ärgerlichste Moment des Produkts; die Warnung kostet eine Nachricht. Der Nachkauf braucht Preise, die es erst nach #60 gibt.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q15</span>Wo kündigt der Kunde?</h3>
+  <p class="ask"><b>Bekommt die Web-App eine eigene Schaltfläche „Verträge hier kündigen“ mit Bestätigungsseite, die das Abo bei Stripe beendet, und geht die Frage, ob beim Verkäufermodell ein Verweis auf Stripe genügt hätte, an den Anwalt (#61)?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Eigener Button mit Bestätigungsseite:</b> die strenge Lesart; der Rand beendet das Abo bei Stripe und speichert Zeitpunkt und Bestätigung.</li>
+    <li>b) Nur Verweis auf die Abo-Verwaltung bei Stripe (Link): kein eigener Code, aber nach Research #100 ersetzt das den Button nicht <q>ohne eigene Bestätigungsseite (Lesart)</q>.</li>
+    <li>c) Erst den Anwalt fragen, dann bauen.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Folge bei fehlendem Button: der Verbraucher kann <q><b>jederzeit ohne Frist</b> kündigen</q>.</li>
+    <li>Runde 2, Q10: „Konto löschen“ kündigt ohnehin <q>zuerst das Abo sofort</q>. Den Weg zu Stripe gibt es also schon; der Button ist derselbe Aufruf ohne Löschen.</li>
+    <li>Nicht geprüft: ob Stripe Managed Payments eine Kündigung über die API durch den Händler zulässt oder nur über Link. Das kläre ich vor dem ADR; falls nicht, führt die Bestätigungsseite zu Link.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Der Button nutzt, was „Konto löschen“ sowieso braucht, und die strenge Lesart kostet wenig. Die Rechtsfrage bleibt bei #61, ändert aber höchstens, ob die Bestätigungsseite entfallen dürfte.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q16</span>Probe zweimal</h3>
+  <p class="ask"><b>Nimmt Inkrement 1 hin, dass jemand nach „Konto löschen“ mit neuem Konto eine zweite Probezeit bekommt, ohne dass das Produkt dafür etwas über gelöschte Konten aufbewahrt?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Hinnehmen:</b> das Zahlungsmittel ist die einzige Bremse; nichts überlebt die Löschung außer Consent Records und Belegen.</li>
+    <li>b) Hash der E-Mail-Adresse aufbewahren: erkennt die Wiederkehr, hält aber ein personenbezogenes Merkmal über die Löschung hinaus und braucht eine eigene Frist in der Datenschutz-Spezifikation.</li>
+    <li>c) Stripe prüfen lassen, ob das Zahlungsmittel schon eine Probe hatte: ungeprüft, ob Managed Payments das anbietet.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>datenschutz.md 8: <q>Konto löschen | Verlauf und Zähler sofort</q>. Option b wäre eine Ausnahme davon.</li>
+    <li>Runde 2, Q10: Probe <q>mit hinterlegtem Zahlungsmittel und kleinerem Kontingent</q>; der Schaden je zweiter Probe ist das kleine Kontingent.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Der Schaden ist klein und begrenzt, die Zusage „Löschen heißt löschen“ ist mehr wert. Ob es ein Problem wird, zeigt der Betrieb; dann ist c der erste Kandidat.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q17</span>Ist #55 damit entschieden?</h3>
+  <p class="ask"><b>Schreibe ich aus Q1 bis Q16 den ADR-Entwurf „Konten, Mandanten und Kontingent“ als PR, mit den Nachträgen zu <code>docs/spec/clients.md</code> 3 und <code>docs/architecture.md</code> 3 und 5, und lege für den Nebel die Tickets unten an?</b></p>
+  <div class="lbl">Was das ADR festhält</div>
+  <ul>
+    <li>Konto = Mandant = eine Person; nur der Rand kennt das Konto (Q1, Q2).</li>
+    <li>Cognito Frankfurt, PKCE, Bearer-Token in beiden Clients, Laufzeiten nach Q11, Prüfung der Konto-Zeile am Rand (Q3, Q6, Q11).</li>
+    <li>Stripe Managed Payments, eine Berechtigung je Konto mit Quelle (Q4, Q12), ein Tarif mit Probezeit, Löschen kündigt, eigener Kündigungsbutton (Q10, Q15, Q16).</li>
+    <li>Kontingent: Minuten hart, Prüfungen weich, harter Stopp, Warnung als Anforderung (Q5, Q8, Q14).</li>
+    <li>Dienste: Client Credentials, Dienst-Id als Besitzer, gebaut mit dem ersten Partner (Q7, Q13). Gast = Sprecher (Q9).</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>ja. Nach dieser Runde ist keine Frage mehr offen, die das Konten- und Mandantenmodell selbst betrifft; alles Weitere hängt an Inkrement 2, an #60 oder am Anwalt. Du liest das ADR am Tor 2 wie jeden PR.</div>
+</div>
+
+</div>
+
+<h2 id="nebel">4 · In den Nebel (Tickets, wenn Q17 ja)</h2>
+<div class="later">
+  <ul>
+    <li><b>Store-Abos und Abgleich</b> (Inkrement 2): Eigenbau oder RevenueCat, Datenort und Vertrag von RevenueCat, doppeltes Abo in Web und Store; ADR 0010: <q>dann gilt Apples 3.1.3(b) (Web-Abo nur neben IAP).</q></li>
+    <li><b>Tarifzahlen und Nachkauf</b> (nach #60): Minuten, Prüfungen, Probe-Kontingent und -Dauer; Einmalkauf im Web, eigener In-App-Kauf im Store.</li>
+    <li><b>Gäste lesen mit</b> per Link: beim Teilen in der Live-Ansicht (#57), kein neues Ticket.</li>
+    <li><b>Rechtsfragen an #61</b> als Kommentar: anteilige Erstattung beim Löschen mit laufendem Abo; Research #100: <q>Reicht beim MoR ein Button, der zur MoR-Kündigung führt, oder braucht es die eigene Bestätigungsseite?</q></li>
+    <li><b>Haushalt und Team</b>: Runde 1 hat <q>Haushalt und Team in den Nebel</q> gelegt; bleibt dort ohne Ticket, bis es einen Anlass gibt.</li>
+  </ul>
+</div>
+
+<h2 id="begriffe">5 · Begriffe</h2>
+<dl class="gl">
+  <dt>Refresh-Token</dt><dd>Langlebiger Nachweis, mit dem der Client neue Access-Token holt, ohne dass sich die Person neu anmeldet. Seine Laufzeit ist die längste Zeit zwischen zwei Anmeldungen.</dd>
+  <dt>Rotation</dt><dd>Bei jedem Abruf gibt es ein neues Refresh-Token, das alte verfällt. Die Laufzeit zählt weiter ab der Anmeldung.</dd>
+  <dt>CSP</dt><dd>Content Security Policy: Regel des Browsers, welche Skripte eine Seite ausführen darf. Sie verhindert, dass fremder Code das Token aus <code>localStorage</code> liest.</dd>
+  <dt>Berechtigung</dt><dd>Englisch Entitlement: die eine Zeile je Konto, die sagt, ob und bis wann ein Abo gilt und aus welcher Quelle (Stripe, später Apple oder Google) das stammt.</dd>
+  <dt>Verkäufermodell (MoR)</dt><dd>Merchant of Record: Stripe ist der Verkäufer, stellt die Rechnung und führt die Umsatzsteuer ab.</dd>
+  <dt>RevenueCat</dt><dd>Dienst, der Käufe aus App Store, Play Store und Web unter einer Nutzer-Id zusammenführt.</dd>
+  <dt>§ 312k BGB</dt><dd>Pflicht zur Kündigungsschaltfläche für Abos, die Verbraucher über eine Website abschließen können.</dd>
+</dl>
+
+<p class="muted" style="margin-top:32px">Quellen: Issue #55 mit den Kommentaren zu Runde 1 und Runde 2 (2026-11-05); <code>docs/adr/0009</code>, <code>0010</code>; <code>docs/spec/inputs.md</code>, <code>clients.md</code>, <code>datenschutz.md</code>; <code>docs/architecture.md</code>; <code>docs/research/sicherheits-inventar.md</code> (#99), <code>identitaet-zahlung-eu.md</code> (#100, Preise abgerufen 2026-10-09); alles auf origin/main. Web, abgerufen 2026-11-05 für Runde 2: <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-refresh-token.html">Cognito Refresh tokens</a>, <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/token-revocation.html">Token revocation</a>. Für Runde 3 wurde nichts neu abgerufen; zwei Punkte sind deshalb als ungeprüft markiert (Q15, Q16). Keine Rechts- oder Steuerberatung.</p>
+</div>
+</body>
+</html>

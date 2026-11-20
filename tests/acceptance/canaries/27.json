@@ -1,0 +1,5 @@
+{
+  "title": "A request for the Sessions through the edge is answered by the detection service with 404",
+  "expected": "Wenn ich über den Eingang per HTTPS /detection/sessions abfrage, kommt die Anfrage beim Erkennungsdienst an, und er antwortet selbst mit 404, weil er keine Liste der Sessions anbietet; die Antwort trägt deshalb nicht das Kennzeichen des Eingangs.",
+  "whyWrong": "The status 404 is right, the reason is not: the edge does not route the Session paths (ticket #27, AC13 and Assumptions), so it writes the 404 itself and marks it with X-Lfc-Edge: unrouted; the request never reaches the detection service."
+}

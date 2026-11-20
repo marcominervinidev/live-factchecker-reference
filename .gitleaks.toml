@@ -1,0 +1,15 @@
+# gitleaks configuration (ci.yml, repository checks: full-history scan).
+# Only narrow allowlists with a reason; a real secret is never allowlisted, it is rotated.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Dummy Deepgram key `dg-test-…` in the STT recorder tests (evals/tools/test_stt_record.py); not a credential"
+paths = ['''^evals/tools/test_stt_record\.py$''']
+regexes = ['''dg-test-''']
+
+[[allowlists]]
+description = "Dummy Redis passwords `pw-25-…` and `hunter-25-…` in the frozen tests of #25 (service kit and detection service); not credentials. Owner approval 2026-10-27."
+condition = "AND"
+paths = ['''^(services|packages)/[^/]+/(src/.*\.test\.ts|features/steps/.*\.ts)$''']
+regexes = ['''(pw|hunter)-25-''']

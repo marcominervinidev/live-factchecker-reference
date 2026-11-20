@@ -1,0 +1,292 @@
+# Stage 5, 02:23 daily (docs/process/test-strategy.md): Stryker on packages changed since the last green
+# nightly (all on Sundays), E2E in one extra browser per weekday with repeat-each=3, Lighthouse, Trivy full,
+# Golden Set mock run, Fallow audit, Knip, Deepgram probe with a budget cap; one trend comment on the nightly issue.
+# A scheduled night from Monday to Saturday runs only when main moved since the last green nightly; Sundays (the full
+# run) and manual dispatches always run (ticket #68 AC4). The Trivy full scan runs every night: an unchanged image
+# meets new CVEs (review round 2, N1).
+name: nightly
+
+on:
+  schedule:
+    - cron: '23 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: what tonight covers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      run: ${{ steps.pick.outputs.run }}
+      browser: ${{ steps.pick.outputs.browser }}
+      all_packages: ${{ steps.pick.outputs.all_packages }}
+      has_code: ${{ steps.pick.outputs.has_code }}
+      images: ${{ steps.images.outputs.images }}
+      third_party: ${{ steps.images.outputs.third_party }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          day=$(date -u +%u)
+          case "$day" in
+            1|4|7) b=webkit-iphone ;;
+            2|5)   b=firefox-desktop ;;
+            *)     b=chromium-desktop ;;
+          esac
+          echo "browser=$b" >> "$GITHUB_OUTPUT"
+          [ "$day" = 7 ] && echo "all_packages=true" >> "$GITHUB_OUTPUT" || echo "all_packages=false" >> "$GITHUB_OUTPUT"
+          if [ -f pnpm-lock.yaml ]; then echo "has_code=true" >> "$GITHUB_OUTPUT"; else echo "has_code=false" >> "$GITHUB_OUTPUT"; fi
+          # Skip only a scheduled weekday night whose commit is the last green nightly's of this branch; no answer
+          # from the API means run.
+          run=true
+          if [ "$EVENT" = schedule ] && [ "$day" != 7 ]; then
+            last=$(gh run list -R "$GITHUB_REPOSITORY" --workflow nightly --branch "$GITHUB_REF_NAME" --status success \
+              --limit 1 --json headSha --jq '.[0].headSha // empty') || last=
+            if [ -n "$last" ] && [ "$last" = "$GITHUB_SHA" ]; then
+              run=false
+              echo "main is unchanged since the last green nightly ($last): nothing runs tonight"
+            fi
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - id: images
+        run: |
+          if [ -f scripts/ci/images.ts ]; then node scripts/ci/images.ts; else echo "images=[]" >> "$GITHUB_OUTPUT"; fi
+
+  mutation:
+    name: mutation testing
+    needs: plan
+    if: needs.plan.outputs.run == 'true' && needs.plan.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    # Command runner, two small packages in increment 1: about 15 minutes for all of them on Sundays.
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: packages changed since the last green nightly (all on Sundays)
+        env:
+          ALL: ${{ needs.plan.outputs.all_packages }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$ALL" = true ]; then
+            pnpm -r --if-present run test:mutation
+          else
+            # Only green nightlies of this branch count; a dispatch on a since-deleted task branch leaves a
+            # commit main never had (squash merge), so an unknown commit falls back to HEAD~1.
+            last=$(gh run list --workflow nightly --branch "$GITHUB_REF_NAME" --status success --limit 1 --json headSha --jq '.[0].headSha // empty')
+            git cat-file -e "${last:-HEAD~1}^{commit}" 2>/dev/null || last=
+            pnpm -r --if-present --filter "...[${last:-HEAD~1}]" run test:mutation
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: mutation-reports
+          path: '**/reports/mutation/mutation.json'
+          if-no-files-found: ignore
+
+  stack:
+    name: E2E in ${{ needs.plan.outputs.browser }} ×3 + Lighthouse
+    needs: plan
+    if: needs.plan.outputs.run == 'true' && needs.plan.outputs.has_code == 'true'
+    uses: ./.github/workflows/stack-tests.yml
+    permissions:
+      contents: read
+      checks: write
+      packages: read
+    with:
+      registry: ghcr.io/${{ github.repository }}
+      tag: main
+      shards: '[1, 2]'
+      e2e-args: --project=${{ needs.plan.outputs.browser }}
+      repeat-all: true
+      lighthouse: true
+
+  scan:
+    name: trivy full · ${{ matrix.image.name }}
+    needs: plan
+    # Every night, also when main is unchanged (`run` false): the vulnerability database is not.
+    if: needs.plan.outputs.images != '[]' && needs.plan.outputs.images != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.plan.outputs.images) }}
+    steps:
+      - name: trivy (HIGH and CRITICAL including unfixed; report only)
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}/${{ matrix.image.name }}:main
+        run: >-
+          docker run --rm -v "$RUNNER_TEMP:/out" aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969
+          image --scanners vuln,secret --severity HIGH,CRITICAL --exit-code 0 --no-progress --format json
+          --output /out/trivy.json "$IMAGE"
+      # Where the night's result is seen (review round 3): one table row per image in the run's summary, the JSON as an
+      # artifact for 14 days. Counts only, no finding text; the job stays a report (exit code 0 on findings).
+      - name: HIGH and CRITICAL per image into the job summary
+        if: always()
+        env:
+          NAME: ${{ matrix.image.name }}
+        run: |
+          report="$RUNNER_TEMP/trivy.json"
+          {
+            echo "### Trivy full · $NAME"
+            echo
+            echo "| image | CRITICAL | HIGH | secrets |"
+            echo "|---|---|---|---|"
+            if [ -s "$report" ]; then
+              jq -r --arg name "$NAME" '[.Results[]? | .Vulnerabilities[]? | .Severity] as $sev
+                | "| \($name) | \($sev | map(select(. == "CRITICAL")) | length) | \($sev | map(select(. == "HIGH")) | length) | \([.Results[]? | .Secrets[]?] | length) |"' "$report"
+            else
+              echo "| $NAME | no report (scan failed) | | |"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: trivy-${{ matrix.image.name }}
+          path: ${{ runner.temp }}/trivy.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  scan-third-party:
+    # The third-party images of the stack and the service builds (scripts/ci/images.ts, `third_party`).
+    name: trivy full · third-party images
+    needs: plan
+    if: needs.plan.outputs.third_party != '[]' && needs.plan.outputs.third_party != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: trivy (HIGH and CRITICAL including unfixed; report only)
+        env:
+          IMAGES: ${{ needs.plan.outputs.third_party }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/trivy"
+          n=0
+          for image in $(printf '%s' "$IMAGES" | jq -r '.[]'); do
+            n=$((n + 1))
+            echo "== $image"
+            printf '%s\n' "$image" > "$RUNNER_TEMP/trivy/$n.image"
+            docker run --rm -v trivy-cache:/root/.cache -v "$RUNNER_TEMP/trivy:/out" aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969 \
+              image --scanners vuln,secret --severity HIGH,CRITICAL --exit-code 0 --no-progress --format json \
+              --output "/out/$n.json" "$image"
+          done
+      # Same place to look as `scan` (review W7 of 2026-10-30): one table row per image, the JSON as an artifact.
+      - name: HIGH and CRITICAL per image into the job summary
+        if: always()
+        run: |
+          {
+            echo "### Trivy full · third-party images"
+            echo
+            echo "| image | CRITICAL | HIGH | secrets |"
+            echo "|---|---|---|---|"
+            for marker in "$RUNNER_TEMP"/trivy/*.image; do
+              [ -e "$marker" ] || continue
+              image=$(cat "$marker")
+              report="${marker%.image}.json"
+              if [ -s "$report" ]; then
+                jq -r --arg name "$image" '[.Results[]? | .Vulnerabilities[]? | .Severity] as $sev
+                  | "| \($name) | \($sev | map(select(. == "CRITICAL")) | length) | \($sev | map(select(. == "HIGH")) | length) | \([.Results[]? | .Secrets[]?] | length) |"' "$report"
+              else
+                echo "| $image | no report (scan failed) | | |"
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: trivy-third-party
+          path: ${{ runner.temp }}/trivy/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  structure:
+    name: fallow audit + knip
+    needs: plan
+    if: needs.plan.outputs.run == 'true' && needs.plan.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: fallow-rs/fallow@d052786ef2baf78fa5b196f06dbccd6f0d26798e # v3.38.1
+        with:
+          command: audit
+          gate: all
+          format: markdown
+          fail-on-issues: false
+          branded-token: false
+          version: 3.34.1
+      - name: knip (counter-check)
+        run: pnpm exec knip --cycles --reporter markdown || true
+
+  golden:
+    name: Golden Set mock run + Deepgram probe
+    needs: plan
+    if: needs.plan.outputs.run == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: harness tests and mock run
+        if: hashFiles('evals/run.py') != ''
+        working-directory: evals
+        run: |
+          python3 -I -m unittest discover -s tests
+          python3 -I run.py run --config configs/baseline.json --golden golden --out "${RUNNER_TEMP}/reports" --mock
+      - name: Deepgram probe on the three latency excerpts (budget cap, ADR 0005)
+        if: hashFiles('evals/run.py') != '' && env.DEEPGRAM_API_KEY != ''
+        working-directory: evals
+        env:
+          DEEPGRAM_API_KEY: ${{ secrets.DEEPGRAM_API_KEY }}
+        run: python3 -I run.py probe --config configs/probe-deepgram.json --golden golden --out "${RUNNER_TEMP}/reports"
+
+  trend:
+    name: trend comment on the nightly issue
+    needs: [plan, mutation, stack, scan, scan-third-party, structure, golden]
+    # A skipped night (main unchanged) writes no comment; a failed plan still reports.
+    if: always() && needs.plan.outputs.run != 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: artifacts
+      - name: one comment with the night's numbers (issue labelled `nightly`)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEEDS: ${{ toJSON(needs) }}
+          BROWSER: ${{ needs.plan.outputs.browser }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python3 -I tools/nightly_trend.py --needs "$NEEDS" --browser "$BROWSER" --run-url "$RUN_URL" --artifacts artifacts

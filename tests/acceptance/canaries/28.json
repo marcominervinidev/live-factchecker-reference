@@ -1,0 +1,5 @@
+{
+  "title": "The skipped-Tick counts of a Session can be read through the edge",
+  "expected": "Wenn ich über den Eingang per HTTPS /detection/sessions/28a0c0de-0000-4000-8000-000000000003/ticks abfrage, antwortet der Erkennungsdienst mit 200 und nennt je Extraktor, wie viele Takte übersprungen wurden.",
+  "whyWrong": "The Session reports its skipped-Tick counts in-process only (AC15; T8 reads them for the report) and writes tick.skipped log events; Turn, Tick and the skip counters are internal types of the detection service, not a contract, and the ticket adds no route (ticket #28, Contracts and Risk). The edge routes only GET /detection/health and /detection/ready and answers this path itself with 404 and X-Lfc-Edge: unrouted (#25, AC9)."
+}

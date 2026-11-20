@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.stryker-tmp/
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+# Reports: stages 3 and 4 (CI uploads them as artifacts), Stryker per workspace (evals/reports/ is tracked).
+tests/*/reports/
+apps/*/reports/
+packages/*/reports/
+services/*/reports/
+# Throwaway secrets of `make ci-secrets`, one directory per Compose project.
+.secrets/
+
+# Owner packets of the main session (local only).
+.owner-pakete/

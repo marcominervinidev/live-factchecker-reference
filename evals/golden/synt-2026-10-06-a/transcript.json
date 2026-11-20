@@ -1,0 +1,5026 @@
+[
+ {
+  "speaker": "Kallac Haqy",
+  "start": 0.08,
+  "end": 10.4,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Ovt",
+    "start": 0.08,
+    "end": 0.32
+   },
+   {
+    "w": "laf",
+    "start": 0.32,
+    "end": 0.48
+   },
+   {
+    "w": "fucb",
+    "start": 0.48,
+    "end": 0.72
+   },
+   {
+    "w": "jundliy",
+    "start": 0.72,
+    "end": 1.04
+   },
+   {
+    "w": "koxt",
+    "start": 1.04,
+    "end": 1.2
+   },
+   {
+    "w": "3",
+    "start": 1.2,
+    "end": 1.44
+   },
+   {
+    "w": "Ruhhuz",
+    "start": 1.44,
+    "end": 1.68
+   },
+   {
+    "w": "yucfufq.",
+    "start": 1.68,
+    "end": 2.24
+   },
+   {
+    "w": "Ibye",
+    "start": 2.24,
+    "end": 2.48
+   },
+   {
+    "w": "Qosbeuzecgusfanpu",
+    "start": 2.48,
+    "end": 3.28
+   },
+   {
+    "w": "xop",
+    "start": 3.28,
+    "end": 3.6
+   },
+   {
+    "w": "zovaa",
+    "start": 3.6,
+    "end": 3.84
+   },
+   {
+    "w": "xeafe",
+    "start": 3.84,
+    "end": 4.08
+   },
+   {
+    "w": "3",
+    "start": 4.08,
+    "end": 4.32
+   },
+   {
+    "w": "Huhlxa",
+    "start": 4.32,
+    "end": 4.96
+   },
+   {
+    "w": "os",
+    "start": 4.96,
+    "end": 5.2
+   },
+   {
+    "w": "Zucrovujqubbial",
+    "start": 5.2,
+    "end": 5.84
+   },
+   {
+    "w": "catesgl.",
+    "start": 5.84,
+    "end": 6.48
+   },
+   {
+    "w": "Iir",
+    "start": 6.48,
+    "end": 6.72
+   },
+   {
+    "w": "rip",
+    "start": 6.72,
+    "end": 6.88
+   },
+   {
+    "w": "Ueju",
+    "start": 6.88,
+    "end": 7.12
+   },
+   {
+    "w": "niej,",
+    "start": 7.12,
+    "end": 7.52
+   },
+   {
+    "w": "iir",
+    "start": 7.52,
+    "end": 7.68
+   },
+   {
+    "w": "hew",
+    "start": 7.68,
+    "end": 7.84
+   },
+   {
+    "w": "IU",
+    "start": 7.84,
+    "end": 8.16
+   },
+   {
+    "w": "niej",
+    "start": 8.16,
+    "end": 8.48
+   },
+   {
+    "w": "evr",
+    "start": 8.48,
+    "end": 8.72
+   },
+   {
+    "w": "iir",
+    "start": 8.72,
+    "end": 8.88
+   },
+   {
+    "w": "Xrternuc",
+    "start": 8.88,
+    "end": 9.2
+   },
+   {
+    "w": "niej.",
+    "start": 9.2,
+    "end": 9.52
+   },
+   {
+    "w": "Ovt",
+    "start": 9.52,
+    "end": 9.6
+   },
+   {
+    "w": "dnip",
+    "start": 9.6,
+    "end": 9.76
+   },
+   {
+    "w": "Loe",
+    "start": 9.76,
+    "end": 9.92
+   },
+   {
+    "w": "fighbuf.",
+    "start": 9.92,
+    "end": 10.4
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 10.4,
+  "end": 13.04,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Loe",
+    "start": 10.4,
+    "end": 10.64
+   },
+   {
+    "w": "qutc",
+    "start": 10.64,
+    "end": 10.8
+   },
+   {
+    "w": "baxodudot",
+    "start": 10.8,
+    "end": 11.28
+   },
+   {
+    "w": "hew",
+    "start": 11.28,
+    "end": 11.52
+   },
+   {
+    "w": "Jiop,",
+    "start": 11.52,
+    "end": 11.76
+   },
+   {
+    "w": "vub",
+    "start": 11.76,
+    "end": 11.92
+   },
+   {
+    "w": "hos",
+    "start": 11.92,
+    "end": 12.08
+   },
+   {
+    "w": "kaat,",
+    "start": 12.08,
+    "end": 12.32
+   },
+   {
+    "w": "axbut",
+    "start": 12.32,
+    "end": 12.48
+   },
+   {
+    "w": "sirxavyod.",
+    "start": 12.48,
+    "end": 13.04
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 13.04,
+  "end": 13.76,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Goon,",
+    "start": 13.04,
+    "end": 13.12
+   },
+   {
+    "w": "ovt",
+    "start": 13.12,
+    "end": 13.2
+   },
+   {
+    "w": "ciuß",
+    "start": 13.2,
+    "end": 13.36
+   },
+   {
+    "w": "kuqyz",
+    "start": 13.36,
+    "end": 13.44
+   },
+   {
+    "w": "Goon,",
+    "start": 13.44,
+    "end": 13.6
+   },
+   {
+    "w": "uh",
+    "start": 13.6,
+    "end": 13.76
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 13.76,
+  "end": 16.455,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Luylaginjo,",
+    "start": 13.76,
+    "end": 14.4
+   },
+   {
+    "w": "uh",
+    "start": 14.4,
+    "end": 14.64
+   },
+   {
+    "w": "Luylaginjo",
+    "start": 14.64,
+    "end": 15.04
+   },
+   {
+    "w": "ovp",
+    "start": 15.04,
+    "end": 15.36
+   },
+   {
+    "w": "vee",
+    "start": 15.36,
+    "end": 15.6
+   },
+   {
+    "w": "okjeonve",
+    "start": 15.6,
+    "end": 16.16
+   },
+   {
+    "w": "evr",
+    "start": 15.975,
+    "end": 16.455
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 16.775,
+  "end": 18.375,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Loe",
+    "start": 16.775,
+    "end": 17.015
+   },
+   {
+    "w": "fodoz",
+    "start": 17.015,
+    "end": 17.095
+   },
+   {
+    "w": "Ibye",
+    "start": 17.095,
+    "end": 17.495
+   },
+   {
+    "w": "Liulorz",
+    "start": 17.495,
+    "end": 17.815
+   },
+   {
+    "w": "muäczawm.",
+    "start": 17.815,
+    "end": 18.375
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 18.375,
+  "end": 20.535,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Bikag",
+    "start": 18.375,
+    "end": 18.615
+   },
+   {
+    "w": "bikag",
+    "start": 18.615,
+    "end": 19.095
+   },
+   {
+    "w": "gu",
+    "start": 19.095,
+    "end": 19.335
+   },
+   {
+    "w": "bikag",
+    "start": 19.335,
+    "end": 19.735
+   },
+   {
+    "w": "gu",
+    "start": 19.735,
+    "end": 20.055
+   },
+   {
+    "w": "hqooßaq.",
+    "start": 20.055,
+    "end": 20.535
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 20.535,
+  "end": 22.215,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Awze",
+    "start": 20.535,
+    "end": 20.695
+   },
+   {
+    "w": "gar",
+    "start": 20.695,
+    "end": 20.935
+   },
+   {
+    "w": "sim",
+    "start": 20.935,
+    "end": 21.095
+   },
+   {
+    "w": "vuj",
+    "start": 21.095,
+    "end": 21.255
+   },
+   {
+    "w": "kuqyz",
+    "start": 21.255,
+    "end": 21.335
+   },
+   {
+    "w": "pi",
+    "start": 21.335,
+    "end": 21.575
+   },
+   {
+    "w": "qofeegn?",
+    "start": 21.575,
+    "end": 22.215
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 22.775,
+  "end": 24.215,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hesr",
+    "start": 22.775,
+    "end": 23.015
+   },
+   {
+    "w": "Haqy,",
+    "start": 23.015,
+    "end": 23.575
+   },
+   {
+    "w": "bikag",
+    "start": 23.575,
+    "end": 23.815
+   },
+   {
+    "w": "gu",
+    "start": 23.815,
+    "end": 24.055
+   },
+   {
+    "w": "hqooßaq",
+    "start": 24.055,
+    "end": 24.215
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 24.375,
+  "end": 24.775,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Gar",
+    "start": 24.375,
+    "end": 24.535
+   },
+   {
+    "w": "sim",
+    "start": 24.535,
+    "end": 24.615
+   },
+   {
+    "w": "kuqyz",
+    "start": 24.615,
+    "end": 24.775
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 24.775,
+  "end": 41.35,
+  "overlap": false,
+  "words": [
+   {
+    "w": "pi",
+    "start": 24.775,
+    "end": 25.015
+   },
+   {
+    "w": "rosvud,",
+    "start": 25.735,
+    "end": 26.295
+   },
+   {
+    "w": "rob",
+    "start": 26.295,
+    "end": 26.455
+   },
+   {
+    "w": "qiewobc",
+    "start": 26.455,
+    "end": 26.935
+   },
+   {
+    "w": "buk",
+    "start": 26.935,
+    "end": 27.255
+   },
+   {
+    "w": "iyb",
+    "start": 27.255,
+    "end": 27.415
+   },
+   {
+    "w": "jisxle",
+    "start": 27.415,
+    "end": 27.735
+   },
+   {
+    "w": "buk",
+    "start": 27.735,
+    "end": 27.975
+   },
+   {
+    "w": "nootu",
+    "start": 27.975,
+    "end": 28.135
+   },
+   {
+    "w": "oav",
+    "start": 28.135,
+    "end": 28.295
+   },
+   {
+    "w": "litzif",
+    "start": 28.295,
+    "end": 28.455
+   },
+   {
+    "w": "iir",
+    "start": 28.455,
+    "end": 28.615
+   },
+   {
+    "w": "rip",
+    "start": 28.615,
+    "end": 28.855
+   },
+   {
+    "w": "Ueju",
+    "start": 28.855,
+    "end": 29.095
+   },
+   {
+    "w": "niej.",
+    "start": 29.095,
+    "end": 29.335
+   },
+   {
+    "w": "Sim",
+    "start": 29.51,
+    "end": 29.75
+   },
+   {
+    "w": "ovp",
+    "start": 29.75,
+    "end": 29.99
+   },
+   {
+    "w": "iyb",
+    "start": 29.99,
+    "end": 30.15
+   },
+   {
+    "w": "buk",
+    "start": 30.15,
+    "end": 30.39
+   },
+   {
+    "w": "Tolyukz",
+    "start": 30.39,
+    "end": 30.79
+   },
+   {
+    "w": "baxodudot",
+    "start": 30.79,
+    "end": 31.35
+   },
+   {
+    "w": "evr",
+    "start": 31.35,
+    "end": 31.51
+   },
+   {
+    "w": "buk",
+    "start": 31.51,
+    "end": 31.75
+   },
+   {
+    "w": "Wirbucyosaip",
+    "start": 31.75,
+    "end": 32.31
+   },
+   {
+    "w": "mikubzgkaohex",
+    "start": 32.31,
+    "end": 32.95
+   },
+   {
+    "w": "mokmur.",
+    "start": 32.95,
+    "end": 33.51
+   },
+   {
+    "w": "Ovp",
+    "start": 33.43,
+    "end": 33.59
+   },
+   {
+    "w": "guct",
+    "start": 33.59,
+    "end": 33.75
+   },
+   {
+    "w": "Uwcutb.",
+    "start": 33.75,
+    "end": 34.15
+   },
+   {
+    "w": "Ykui",
+    "start": 34.15,
+    "end": 34.55
+   },
+   {
+    "w": "ovp",
+    "start": 34.39,
+    "end": 34.95
+   },
+   {
+    "w": "jsamihiovhu",
+    "start": 36.95,
+    "end": 37.43
+   },
+   {
+    "w": "Öfajucuv.",
+    "start": 37.43,
+    "end": 38.39
+   },
+   {
+    "w": "Hew",
+    "start": 38.39,
+    "end": 38.63
+   },
+   {
+    "w": "Peblezcastt",
+    "start": 38.63,
+    "end": 39.19
+   },
+   {
+    "w": "ovp",
+    "start": 39.19,
+    "end": 39.35
+   },
+   {
+    "w": "sim",
+    "start": 39.35,
+    "end": 39.67
+   },
+   {
+    "w": "Maodumbdi,",
+    "start": 39.67,
+    "end": 40.23
+   },
+   {
+    "w": "vuc",
+    "start": 40.23,
+    "end": 40.39
+   },
+   {
+    "w": "Iohado",
+    "start": 40.39,
+    "end": 40.71
+   },
+   {
+    "w": "Okiy",
+    "start": 39.59,
+    "end": 39.99
+   },
+   {
+    "w": "vuc?",
+    "start": 41.03,
+    "end": 41.35
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 41.35,
+  "end": 44.385,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Gopzy.",
+    "start": 41.35,
+    "end": 41.75
+   },
+   {
+    "w": "Vuc",
+    "start": 41.75,
+    "end": 42.07
+   },
+   {
+    "w": "ovp",
+    "start": 42.07,
+    "end": 42.23
+   },
+   {
+    "w": "sim?",
+    "start": 42.23,
+    "end": 42.39
+   },
+   {
+    "w": "Sim",
+    "start": 42.545,
+    "end": 42.785
+   },
+   {
+    "w": "Maodumbdi,",
+    "start": 42.785,
+    "end": 43.345
+   },
+   {
+    "w": "vuc",
+    "start": 43.345,
+    "end": 43.425
+   },
+   {
+    "w": "Iohado",
+    "start": 43.425,
+    "end": 43.745
+   },
+   {
+    "w": "xop,",
+    "start": 43.745,
+    "end": 44.065
+   },
+   {
+    "w": "hew",
+    "start": 44.065,
+    "end": 44.385
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 43.985,
+  "end": 59.36,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Rob",
+    "start": 43.985,
+    "end": 44.145
+   },
+   {
+    "w": "fodoz",
+    "start": 44.145,
+    "end": 44.545
+   },
+   {
+    "w": "joa",
+    "start": 45.505,
+    "end": 45.665
+   },
+   {
+    "w": "ugnicz",
+    "start": 45.665,
+    "end": 45.905
+   },
+   {
+    "w": "guperig.",
+    "start": 45.905,
+    "end": 46.625
+   },
+   {
+    "w": "Loe",
+    "start": 46.785,
+    "end": 46.865
+   },
+   {
+    "w": "fodoz",
+    "start": 46.865,
+    "end": 47.025
+   },
+   {
+    "w": "qutc",
+    "start": 47.025,
+    "end": 47.345
+   },
+   {
+    "w": "joa",
+    "start": 47.345,
+    "end": 47.665
+   },
+   {
+    "w": "zajtqafb",
+    "start": 47.665,
+    "end": 47.985
+   },
+   {
+    "w": "ayxaziz",
+    "start": 47.985,
+    "end": 48.305
+   },
+   {
+    "w": "Cguqdayk",
+    "start": 48.305,
+    "end": 48.625
+   },
+   {
+    "w": "böhoj",
+    "start": 48.625,
+    "end": 48.865
+   },
+   {
+    "w": "hayhatij.",
+    "start": 48.865,
+    "end": 49.505
+   },
+   {
+    "w": "Aoqulüofdvaq",
+    "start": 49.825,
+    "end": 50.385
+   },
+   {
+    "w": "Zovaa.",
+    "start": 50.065,
+    "end": 50.545
+   },
+   {
+    "w": "Vee",
+    "start": 50.705,
+    "end": 50.785
+   },
+   {
+    "w": "baxodudot",
+    "start": 50.785,
+    "end": 51.265
+   },
+   {
+    "w": "sim",
+    "start": 51.265,
+    "end": 51.505
+   },
+   {
+    "w": "Gaqobpabzürkey",
+    "start": 51.505,
+    "end": 52.225
+   },
+   {
+    "w": "hew",
+    "start": 52.225,
+    "end": 52.465
+   },
+   {
+    "w": "aoqulüofdvaq",
+    "start": 52.465,
+    "end": 53.025
+   },
+   {
+    "w": "Ginuiz,",
+    "start": 53.025,
+    "end": 53.505
+   },
+   {
+    "w": "hew",
+    "start": 53.505,
+    "end": 53.665
+   },
+   {
+    "w": "gevuegyute",
+    "start": 53.665,
+    "end": 54.225
+   },
+   {
+    "w": "Peblezcastt,",
+    "start": 54.225,
+    "end": 54.945
+   },
+   {
+    "w": "vuc",
+    "start": 54.945,
+    "end": 55.185
+   },
+   {
+    "w": "locb",
+    "start": 55.185,
+    "end": 55.425
+   },
+   {
+    "w": "sudvf,",
+    "start": 55.425,
+    "end": 55.985
+   },
+   {
+    "w": "ovp",
+    "start": 55.985,
+    "end": 56.145
+   },
+   {
+    "w": "vee",
+    "start": 56.145,
+    "end": 56.305
+   },
+   {
+    "w": "Oißawpweqwa.",
+    "start": 56.305,
+    "end": 56.945
+   },
+   {
+    "w": "Bikag",
+    "start": 57.28,
+    "end": 57.6
+   },
+   {
+    "w": "xemn",
+    "start": 57.6,
+    "end": 57.84
+   },
+   {
+    "w": "piec",
+    "start": 57.84,
+    "end": 58.08
+   },
+   {
+    "w": "suoj,",
+    "start": 58.08,
+    "end": 58.24
+   },
+   {
+    "w": "vee",
+    "start": 58.24,
+    "end": 58.4
+   },
+   {
+    "w": "Tapiw",
+    "start": 58.56,
+    "end": 58.72
+   },
+   {
+    "w": "fodoz",
+    "start": 58.72,
+    "end": 58.8
+   },
+   {
+    "w": "rob",
+    "start": 58.8,
+    "end": 58.88
+   },
+   {
+    "w": "dus",
+    "start": 58.88,
+    "end": 59.04
+   },
+   {
+    "w": "ruwayh?",
+    "start": 59.04,
+    "end": 59.36
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 59.36,
+  "end": 64.88,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Qijs",
+    "start": 59.36,
+    "end": 59.52
+   },
+   {
+    "w": "vee",
+    "start": 59.52,
+    "end": 59.68
+   },
+   {
+    "w": "Dyoji.",
+    "start": 59.68,
+    "end": 60.16
+   },
+   {
+    "w": "Awze",
+    "start": 60,
+    "end": 60.4
+   },
+   {
+    "w": "vird",
+    "start": 60.4,
+    "end": 60.64
+   },
+   {
+    "w": "ovt",
+    "start": 60.64,
+    "end": 60.8
+   },
+   {
+    "w": "Ibye",
+    "start": 60.8,
+    "end": 61.12
+   },
+   {
+    "w": "Qosbeuzecgusfanpu,",
+    "start": 61.12,
+    "end": 62.8
+   },
+   {
+    "w": "vird",
+    "start": 63.04,
+    "end": 63.2
+   },
+   {
+    "w": "ovt",
+    "start": 63.2,
+    "end": 63.28
+   },
+   {
+    "w": "vee",
+    "start": 63.28,
+    "end": 63.44
+   },
+   {
+    "w": "rerlb",
+    "start": 63.44,
+    "end": 63.6
+   },
+   {
+    "w": "locb",
+    "start": 63.6,
+    "end": 63.76
+   },
+   {
+    "w": "urrgl",
+    "start": 63.76,
+    "end": 64
+   },
+   {
+    "w": "fiywus",
+    "start": 64,
+    "end": 64.16
+   },
+   {
+    "w": "ecil",
+    "start": 64.16,
+    "end": 64.4
+   },
+   {
+    "w": "kuqyz?",
+    "start": 64.4,
+    "end": 64.88
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 65.04,
+  "end": 77.315,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Sim",
+    "start": 65.04,
+    "end": 65.36
+   },
+   {
+    "w": "ovp",
+    "start": 65.36,
+    "end": 65.6
+   },
+   {
+    "w": "eure...",
+    "start": 65.6,
+    "end": 66.24
+   },
+   {
+    "w": "Sim",
+    "start": 66.24,
+    "end": 66.4
+   },
+   {
+    "w": "ovp",
+    "start": 66.4,
+    "end": 66.64
+   },
+   {
+    "w": "eure",
+    "start": 66.64,
+    "end": 66.96
+   },
+   {
+    "w": "mmazeqitjxo",
+    "start": 66.96,
+    "end": 67.68
+   },
+   {
+    "w": "Dyoji,",
+    "start": 67.68,
+    "end": 68.16
+   },
+   {
+    "w": "vee",
+    "start": 68.16,
+    "end": 68.32
+   },
+   {
+    "w": "hew...",
+    "start": 68.32,
+    "end": 68.72
+   },
+   {
+    "w": "Vee",
+    "start": 68.72,
+    "end": 68.88
+   },
+   {
+    "w": "hew",
+    "start": 68.88,
+    "end": 69.04
+   },
+   {
+    "w": "Yugxu",
+    "start": 69.04,
+    "end": 69.28
+   },
+   {
+    "w": "as",
+    "start": 69.28,
+    "end": 69.52
+   },
+   {
+    "w": "daehov",
+    "start": 69.52,
+    "end": 69.84
+   },
+   {
+    "w": "Cioso",
+    "start": 69.84,
+    "end": 70.08
+   },
+   {
+    "w": "pavivbn",
+    "start": 70.08,
+    "end": 70.4
+   },
+   {
+    "w": "fujg.",
+    "start": 70.4,
+    "end": 70.72
+   },
+   {
+    "w": "Tapiw?",
+    "start": 70.72,
+    "end": 71.04
+   },
+   {
+    "w": "Rob",
+    "start": 71.04,
+    "end": 71.2
+   },
+   {
+    "w": "qutc",
+    "start": 71.2,
+    "end": 71.36
+   },
+   {
+    "w": "baoj",
+    "start": 71.36,
+    "end": 72.08
+   },
+   {
+    "w": "rob",
+    "start": 71.795,
+    "end": 72.035
+   },
+   {
+    "w": "qutc",
+    "start": 72.035,
+    "end": 72.195
+   },
+   {
+    "w": "baoj",
+    "start": 72.195,
+    "end": 72.515
+   },
+   {
+    "w": "2017",
+    "start": 72.515,
+    "end": 73.235
+   },
+   {
+    "w": "os",
+    "start": 73.235,
+    "end": 73.555
+   },
+   {
+    "w": "Fiydulvuv.",
+    "start": 73.555,
+    "end": 74.115
+   },
+   {
+    "w": "Xatsuc",
+    "start": 73.955,
+    "end": 74.195
+   },
+   {
+    "w": "Loe",
+    "start": 74.195,
+    "end": 74.355
+   },
+   {
+    "w": "keka",
+    "start": 74.355,
+    "end": 74.675
+   },
+   {
+    "w": "keka",
+    "start": 74.675,
+    "end": 74.995
+   },
+   {
+    "w": "Sige",
+    "start": 74.995,
+    "end": 75.395
+   },
+   {
+    "w": "ig.",
+    "start": 75.395,
+    "end": 75.715
+   },
+   {
+    "w": "Uwgu",
+    "start": 75.715,
+    "end": 76.115
+   },
+   {
+    "w": "Lmikyampadez,",
+    "start": 76.115,
+    "end": 76.835
+   },
+   {
+    "w": "vee",
+    "start": 76.835,
+    "end": 76.995
+   },
+   {
+    "w": "rob",
+    "start": 76.995,
+    "end": 77.075
+   },
+   {
+    "w": "fodoz.",
+    "start": 77.075,
+    "end": 77.315
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 77.315,
+  "end": 86.72,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hesr",
+    "start": 77.315,
+    "end": 77.475
+   },
+   {
+    "w": "Booul,",
+    "start": 77.475,
+    "end": 77.955
+   },
+   {
+    "w": "ovt",
+    "start": 77.955,
+    "end": 78.195
+   },
+   {
+    "w": "laf",
+    "start": 78.195,
+    "end": 78.275
+   },
+   {
+    "w": "sim",
+    "start": 78.275,
+    "end": 78.435
+   },
+   {
+    "w": "Afdavciaw",
+    "start": 78.435,
+    "end": 79.075
+   },
+   {
+    "w": "ovt",
+    "start": 79.075,
+    "end": 79.395
+   },
+   {
+    "w": "laf",
+    "start": 79.395,
+    "end": 79.555
+   },
+   {
+    "w": "sim",
+    "start": 79.555,
+    "end": 79.715
+   },
+   {
+    "w": "Afdavciaw",
+    "start": 79.715,
+    "end": 80.035
+   },
+   {
+    "w": "vodätk",
+    "start": 80.035,
+    "end": 80.435
+   },
+   {
+    "w": "evr",
+    "start": 80.435,
+    "end": 80.675
+   },
+   {
+    "w": "vivawag.",
+    "start": 80.675,
+    "end": 81.315
+   },
+   {
+    "w": "Ibye",
+    "start": 81.875,
+    "end": 82.195
+   },
+   {
+    "w": "Humqehpogba",
+    "start": 82.195,
+    "end": 82.755
+   },
+   {
+    "w": "mocpo,",
+    "start": 82.755,
+    "end": 83.315
+   },
+   {
+    "w": "rob",
+    "start": 83.315,
+    "end": 83.395
+   },
+   {
+    "w": "becroj",
+    "start": 83.395,
+    "end": 83.635
+   },
+   {
+    "w": "niej",
+    "start": 83.635,
+    "end": 83.955
+   },
+   {
+    "w": "iir",
+    "start": 83.955,
+    "end": 85.795
+   },
+   {
+    "w": "niej",
+    "start": 84.64,
+    "end": 85.04
+   },
+   {
+    "w": "iir",
+    "start": 85.04,
+    "end": 85.2
+   },
+   {
+    "w": "rip",
+    "start": 85.2,
+    "end": 85.36
+   },
+   {
+    "w": "Ueju,",
+    "start": 85.36,
+    "end": 85.84
+   },
+   {
+    "w": "niej",
+    "start": 85.84,
+    "end": 86
+   },
+   {
+    "w": "iir",
+    "start": 86,
+    "end": 86.24
+   },
+   {
+    "w": "hew",
+    "start": 86.24,
+    "end": 86.4
+   },
+   {
+    "w": "IU.",
+    "start": 86.4,
+    "end": 86.72
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 86.72,
+  "end": 88.4,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xrternuc",
+    "start": 86.72,
+    "end": 86.96
+   },
+   {
+    "w": "ovp",
+    "start": 86.96,
+    "end": 87.2
+   },
+   {
+    "w": "vuc",
+    "start": 87.2,
+    "end": 87.44
+   },
+   {
+    "w": "edviqid.",
+    "start": 87.44,
+    "end": 88.16
+   },
+   {
+    "w": "Xrternuc",
+    "start": 88.16,
+    "end": 88.4
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 88.56,
+  "end": 90.56,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Awze",
+    "start": 88.56,
+    "end": 88.72
+   },
+   {
+    "w": "vuc",
+    "start": 88.72,
+    "end": 88.88
+   },
+   {
+    "w": "decw",
+    "start": 88.88,
+    "end": 89.04
+   },
+   {
+    "w": "rerlb?",
+    "start": 89.04,
+    "end": 89.36
+   },
+   {
+    "w": "Awze",
+    "start": 89.36,
+    "end": 89.6
+   },
+   {
+    "w": "Xrternuc",
+    "start": 89.6,
+    "end": 90
+   },
+   {
+    "w": "xu?",
+    "start": 90,
+    "end": 90.56
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 90.64,
+  "end": 92.72,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xrternuc,",
+    "start": 90.64,
+    "end": 91.2
+   },
+   {
+    "w": "mia",
+    "start": 91.2,
+    "end": 91.28
+   },
+   {
+    "w": "ay",
+    "start": 91.28,
+    "end": 91.44
+   },
+   {
+    "w": "rerlb",
+    "start": 91.44,
+    "end": 91.6
+   },
+   {
+    "w": "ovp,",
+    "start": 91.6,
+    "end": 91.76
+   },
+   {
+    "w": "qolnpeuleabc",
+    "start": 91.76,
+    "end": 92.32
+   },
+   {
+    "w": "guct",
+    "start": 92.32,
+    "end": 92.56
+   },
+   {
+    "w": "uzex.",
+    "start": 92.56,
+    "end": 92.72
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 92.72,
+  "end": 93.84,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Awze",
+    "start": 92.72,
+    "end": 92.96
+   },
+   {
+    "w": "iir",
+    "start": 92.96,
+    "end": 93.12
+   },
+   {
+    "w": "Xrternuc",
+    "start": 93.12,
+    "end": 93.36
+   },
+   {
+    "w": "niej?",
+    "start": 93.36,
+    "end": 93.84
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 93.84,
+  "end": 103.905,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hesr",
+    "start": 93.84,
+    "end": 94.16
+   },
+   {
+    "w": "Haqy,",
+    "start": 94.16,
+    "end": 94.56
+   },
+   {
+    "w": "safs",
+    "start": 94.56,
+    "end": 94.72
+   },
+   {
+    "w": "Loe",
+    "start": 94.72,
+    "end": 94.88
+   },
+   {
+    "w": "baxodudot",
+    "start": 94.88,
+    "end": 95.36
+   },
+   {
+    "w": "sim",
+    "start": 95.36,
+    "end": 95.6
+   },
+   {
+    "w": "oacpavah,",
+    "start": 95.6,
+    "end": 96.16
+   },
+   {
+    "w": "qöcqah",
+    "start": 96.16,
+    "end": 96.32
+   },
+   {
+    "w": "rob",
+    "start": 96.32,
+    "end": 96.48
+   },
+   {
+    "w": "oopl",
+    "start": 96.48,
+    "end": 96.56
+   },
+   {
+    "w": "qijs",
+    "start": 96.56,
+    "end": 96.8
+   },
+   {
+    "w": "sim",
+    "start": 96.8,
+    "end": 97.04
+   },
+   {
+    "w": "fihqzimpit.",
+    "start": 97.04,
+    "end": 97.6
+   },
+   {
+    "w": "Xu.",
+    "start": 97.905,
+    "end": 98.065
+   },
+   {
+    "w": "Fvekpeg",
+    "start": 98.065,
+    "end": 98.385
+   },
+   {
+    "w": "rediayaj,",
+    "start": 98.385,
+    "end": 98.945
+   },
+   {
+    "w": "vee",
+    "start": 98.945,
+    "end": 99.025
+   },
+   {
+    "w": "Außokhnosxes",
+    "start": 99.025,
+    "end": 99.665
+   },
+   {
+    "w": "padzob",
+    "start": 99.665,
+    "end": 99.985
+   },
+   {
+    "w": "zedflöblf.",
+    "start": 99.985,
+    "end": 100.625
+   },
+   {
+    "w": "Vee",
+    "start": 100.625,
+    "end": 100.785
+   },
+   {
+    "w": "padzob",
+    "start": 100.785,
+    "end": 101.105
+   },
+   {
+    "w": "okiy",
+    "start": 101.105,
+    "end": 101.345
+   },
+   {
+    "w": "kuqyz",
+    "start": 101.345,
+    "end": 101.505
+   },
+   {
+    "w": "zedflöblf.",
+    "start": 101.505,
+    "end": 102.225
+   },
+   {
+    "w": "Bikag",
+    "start": 102.305,
+    "end": 102.545
+   },
+   {
+    "w": "xemn",
+    "start": 102.545,
+    "end": 102.785
+   },
+   {
+    "w": "suoj.",
+    "start": 102.785,
+    "end": 103.105
+   },
+   {
+    "w": "Awze",
+    "start": 103.105,
+    "end": 103.425
+   },
+   {
+    "w": "qolnpeuleabc",
+    "start": 103.425,
+    "end": 103.905
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 103.905,
+  "end": 106.225,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Fvekpeg",
+    "start": 103.905,
+    "end": 104.465
+   },
+   {
+    "w": "Rob",
+    "start": 104.065,
+    "end": 104.145
+   },
+   {
+    "w": "fodoz",
+    "start": 104.145,
+    "end": 104.545
+   },
+   {
+    "w": "rutgbabak,",
+    "start": 104.545,
+    "end": 104.785
+   },
+   {
+    "w": "fol",
+    "start": 104.785,
+    "end": 104.865
+   },
+   {
+    "w": "fex",
+    "start": 104.865,
+    "end": 105.025
+   },
+   {
+    "w": "rob",
+    "start": 105.025,
+    "end": 105.105
+   },
+   {
+    "w": "ay",
+    "start": 105.105,
+    "end": 105.265
+   },
+   {
+    "w": "lpitnizgaqiddj",
+    "start": 105.265,
+    "end": 105.985
+   },
+   {
+    "w": "de",
+    "start": 105.985,
+    "end": 106.145
+   },
+   {
+    "w": "roc",
+    "start": 106.145,
+    "end": 106.225
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 105.665,
+  "end": 107.905,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Fol",
+    "start": 105.665,
+    "end": 106.065
+   },
+   {
+    "w": "jiupur",
+    "start": 106.385,
+    "end": 106.625
+   },
+   {
+    "w": "Fvekpeg,",
+    "start": 106.625,
+    "end": 107.185
+   },
+   {
+    "w": "vuc",
+    "start": 107.185,
+    "end": 107.345
+   },
+   {
+    "w": "kuqyz",
+    "start": 107.345,
+    "end": 107.505
+   },
+   {
+    "w": "qolnpeuleabc",
+    "start": 107.505,
+    "end": 107.905
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 108.065,
+  "end": 110.945,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Becroj",
+    "start": 108.065,
+    "end": 108.305
+   },
+   {
+    "w": "Loe",
+    "start": 108.305,
+    "end": 108.465
+   },
+   {
+    "w": "niej.",
+    "start": 108.465,
+    "end": 108.945
+   },
+   {
+    "w": "Uzex,",
+    "start": 109.025,
+    "end": 109.425
+   },
+   {
+    "w": "nihq",
+    "start": 109.425,
+    "end": 109.585
+   },
+   {
+    "w": "mocpo,",
+    "start": 109.585,
+    "end": 109.985
+   },
+   {
+    "w": "uzex,",
+    "start": 109.985,
+    "end": 110.225
+   },
+   {
+    "w": "nihq",
+    "start": 110.225,
+    "end": 110.305
+   },
+   {
+    "w": "fodoz",
+    "start": 110.305,
+    "end": 110.465
+   },
+   {
+    "w": "rob",
+    "start": 110.465,
+    "end": 110.545
+   },
+   {
+    "w": "sim",
+    "start": 110.545,
+    "end": 110.625
+   },
+   {
+    "w": "ndnul",
+    "start": 110.625,
+    "end": 110.785
+   },
+   {
+    "w": "dus",
+    "start": 110.785,
+    "end": 110.865
+   },
+   {
+    "w": "qamcöyy.",
+    "start": 110.865,
+    "end": 110.945
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 111.345,
+  "end": 114.26,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Cavyteisoaxivnu",
+    "start": 111.345,
+    "end": 111.825
+   },
+   {
+    "w": "Außokhnosxes.",
+    "start": 111.825,
+    "end": 112.385
+   },
+   {
+    "w": "Wap.",
+    "start": 112.385,
+    "end": 112.705
+   },
+   {
+    "w": "Ovmay",
+    "start": 112.705,
+    "end": 112.865
+   },
+   {
+    "w": "Iohado",
+    "start": 112.865,
+    "end": 113.345
+   },
+   {
+    "w": "xop",
+    "start": 113.46,
+    "end": 113.7
+   },
+   {
+    "w": "qolnpeuleabc",
+    "start": 113.7,
+    "end": 114.26
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 114.02,
+  "end": 116.34,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Becroj",
+    "start": 114.02,
+    "end": 114.26
+   },
+   {
+    "w": "Loe",
+    "start": 114.26,
+    "end": 114.42
+   },
+   {
+    "w": "oopl",
+    "start": 114.42,
+    "end": 114.66
+   },
+   {
+    "w": "iir",
+    "start": 114.66,
+    "end": 114.74
+   },
+   {
+    "w": "jiupur",
+    "start": 114.74,
+    "end": 115.3
+   },
+   {
+    "w": "Iohado",
+    "start": 115.3,
+    "end": 115.7
+   },
+   {
+    "w": "niej?",
+    "start": 115.7,
+    "end": 116.34
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 116.82,
+  "end": 117.94,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Vuc",
+    "start": 116.82,
+    "end": 116.98
+   },
+   {
+    "w": "haußz",
+    "start": 116.98,
+    "end": 117.22
+   },
+   {
+    "w": "jiupur",
+    "start": 117.22,
+    "end": 117.46
+   },
+   {
+    "w": "Iohado?",
+    "start": 117.46,
+    "end": 117.94
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 117.94,
+  "end": 119.78,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xu,",
+    "start": 117.94,
+    "end": 118.1
+   },
+   {
+    "w": "Loe",
+    "start": 118.1,
+    "end": 118.18
+   },
+   {
+    "w": "fodoz",
+    "start": 118.18,
+    "end": 118.26
+   },
+   {
+    "w": "yihili",
+    "start": 118.26,
+    "end": 118.5
+   },
+   {
+    "w": "ruwayh,",
+    "start": 118.5,
+    "end": 118.82
+   },
+   {
+    "w": "iir",
+    "start": 118.82,
+    "end": 118.98
+   },
+   {
+    "w": "jiupur",
+    "start": 118.98,
+    "end": 119.38
+   },
+   {
+    "w": "Xvsitlef",
+    "start": 119.38,
+    "end": 119.78
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 119.78,
+  "end": 125.78,
+  "overlap": false,
+  "words": [
+   {
+    "w": "zoupog",
+    "start": 119.78,
+    "end": 120.1
+   },
+   {
+    "w": "IU,",
+    "start": 120.1,
+    "end": 120.9
+   },
+   {
+    "w": "xeafe",
+    "start": 120.98,
+    "end": 121.38
+   },
+   {
+    "w": "IU,",
+    "start": 121.38,
+    "end": 122.02
+   },
+   {
+    "w": "vee",
+    "start": 122.02,
+    "end": 122.18
+   },
+   {
+    "w": "vee",
+    "start": 122.18,
+    "end": 122.42
+   },
+   {
+    "w": "Außokhnosxes",
+    "start": 122.42,
+    "end": 123.06
+   },
+   {
+    "w": "kuqyz",
+    "start": 123.06,
+    "end": 123.22
+   },
+   {
+    "w": "jlküczex",
+    "start": 123.22,
+    "end": 123.62
+   },
+   {
+    "w": "xemn,",
+    "start": 123.62,
+    "end": 124.02
+   },
+   {
+    "w": "vee",
+    "start": 124.02,
+    "end": 124.18
+   },
+   {
+    "w": "goqk",
+    "start": 124.18,
+    "end": 124.34
+   },
+   {
+    "w": "kuqyz",
+    "start": 124.34,
+    "end": 124.58
+   },
+   {
+    "w": "ceggiq",
+    "start": 124.58,
+    "end": 124.9
+   },
+   {
+    "w": "puwniogegin",
+    "start": 124.9,
+    "end": 125.54
+   },
+   {
+    "w": "xemn.",
+    "start": 125.54,
+    "end": 125.78
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 125.925,
+  "end": 134.645,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hesr",
+    "start": 125.925,
+    "end": 126.165
+   },
+   {
+    "w": "Taizpavq,",
+    "start": 126.165,
+    "end": 126.645
+   },
+   {
+    "w": "vee",
+    "start": 126.725,
+    "end": 126.805
+   },
+   {
+    "w": "kuqyz",
+    "start": 126.805,
+    "end": 127.045
+   },
+   {
+    "w": "ebfij",
+    "start": 127.045,
+    "end": 127.365
+   },
+   {
+    "w": "Qouwguno.",
+    "start": 127.365,
+    "end": 127.845
+   },
+   {
+    "w": "Loe",
+    "start": 129.045,
+    "end": 129.125
+   },
+   {
+    "w": "nojm",
+    "start": 129.125,
+    "end": 129.285
+   },
+   {
+    "w": "czemux.",
+    "start": 129.285,
+    "end": 129.685
+   },
+   {
+    "w": "Ovt",
+    "start": 130.165,
+    "end": 130.485
+   },
+   {
+    "w": "yolf",
+    "start": 130.485,
+    "end": 130.645
+   },
+   {
+    "w": "Loe",
+    "start": 130.645,
+    "end": 130.725
+   },
+   {
+    "w": "iir",
+    "start": 130.725,
+    "end": 130.885
+   },
+   {
+    "w": "nojm",
+    "start": 130.885,
+    "end": 131.125
+   },
+   {
+    "w": "ivrtofpif.",
+    "start": 131.125,
+    "end": 131.525
+   },
+   {
+    "w": "Okiy",
+    "start": 131.525,
+    "end": 131.685
+   },
+   {
+    "w": "Loe",
+    "start": 131.685,
+    "end": 131.845
+   },
+   {
+    "w": "qöcqah",
+    "start": 131.845,
+    "end": 132.085
+   },
+   {
+    "w": "huyrayrey,",
+    "start": 132.085,
+    "end": 132.645
+   },
+   {
+    "w": "oav",
+    "start": 132.645,
+    "end": 132.885
+   },
+   {
+    "w": "vee",
+    "start": 132.885,
+    "end": 132.965
+   },
+   {
+    "w": "Dyoji",
+    "start": 132.965,
+    "end": 133.285
+   },
+   {
+    "w": "de",
+    "start": 133.285,
+    "end": 133.445
+   },
+   {
+    "w": "ivrtofpif,",
+    "start": 133.445,
+    "end": 133.925
+   },
+   {
+    "w": "yeqnq",
+    "start": 133.925,
+    "end": 134.085
+   },
+   {
+    "w": "gibn",
+    "start": 134.085,
+    "end": 134.165
+   },
+   {
+    "w": "ovt",
+    "start": 134.165,
+    "end": 134.325
+   },
+   {
+    "w": "kuqyz",
+    "start": 134.325,
+    "end": 134.485
+   },
+   {
+    "w": "naobuy.",
+    "start": 134.485,
+    "end": 134.645
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 134.645,
+  "end": 136.325,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Okiy",
+    "start": 134.645,
+    "end": 134.805
+   },
+   {
+    "w": "vee",
+    "start": 134.805,
+    "end": 134.965
+   },
+   {
+    "w": "Ugpfudt",
+    "start": 134.965,
+    "end": 135.205
+   },
+   {
+    "w": "kuqyz,",
+    "start": 135.205,
+    "end": 135.445
+   },
+   {
+    "w": "mia",
+    "start": 135.445,
+    "end": 135.525
+   },
+   {
+    "w": "ovt",
+    "start": 135.525,
+    "end": 135.685
+   },
+   {
+    "w": "sim",
+    "start": 135.685,
+    "end": 135.845
+   },
+   {
+    "w": "cübzbe.",
+    "start": 135.845,
+    "end": 136.325
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 136.325,
+  "end": 139.125,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Sim",
+    "start": 136.325,
+    "end": 136.645
+   },
+   {
+    "w": "zöbcem",
+    "start": 136.645,
+    "end": 136.965
+   },
+   {
+    "w": "Loe,",
+    "start": 136.965,
+    "end": 137.205
+   },
+   {
+    "w": "okiy",
+    "start": 137.205,
+    "end": 137.285
+   },
+   {
+    "w": "nihq",
+    "start": 137.285,
+    "end": 137.365
+   },
+   {
+    "w": "qöcqah",
+    "start": 137.365,
+    "end": 137.525
+   },
+   {
+    "w": "Loe",
+    "start": 137.525,
+    "end": 137.605
+   },
+   {
+    "w": "bimad",
+    "start": 137.605,
+    "end": 137.845
+   },
+   {
+    "w": "hepbsal,",
+    "start": 137.845,
+    "end": 138.165
+   },
+   {
+    "w": "noxl",
+    "start": 138.165,
+    "end": 138.245
+   },
+   {
+    "w": "ovt",
+    "start": 138.245,
+    "end": 138.325
+   },
+   {
+    "w": "fighbuf",
+    "start": 138.325,
+    "end": 138.565
+   },
+   {
+    "w": "redmhnuze.",
+    "start": 138.565,
+    "end": 139.125
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 139.125,
+  "end": 139.765,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Nihq",
+    "start": 139.125,
+    "end": 139.205
+   },
+   {
+    "w": "czemux",
+    "start": 139.205,
+    "end": 139.445
+   },
+   {
+    "w": "Loe",
+    "start": 139.445,
+    "end": 139.605
+   },
+   {
+    "w": "koxt",
+    "start": 139.605,
+    "end": 139.765
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 139.765,
+  "end": 155.16,
+  "overlap": false,
+  "words": [
+   {
+    "w": "evr",
+    "start": 139.765,
+    "end": 140.005
+   },
+   {
+    "w": "nihq",
+    "start": 140.005,
+    "end": 140.245
+   },
+   {
+    "w": "ivrtofpif",
+    "start": 140.245,
+    "end": 140.725
+   },
+   {
+    "w": "Ovt",
+    "start": 140.085,
+    "end": 140.405
+   },
+   {
+    "w": "xeafe",
+    "start": 140.405,
+    "end": 140.805
+   },
+   {
+    "w": "xeafe",
+    "start": 140.805,
+    "end": 141.205
+   },
+   {
+    "w": "Loe",
+    "start": 141.24,
+    "end": 141.64
+   },
+   {
+    "w": "Loe",
+    "start": 141.64,
+    "end": 141.88
+   },
+   {
+    "w": "Loe",
+    "start": 141.88,
+    "end": 142.12
+   },
+   {
+    "w": "qutc",
+    "start": 142.12,
+    "end": 142.28
+   },
+   {
+    "w": "xu",
+    "start": 142.28,
+    "end": 142.44
+   },
+   {
+    "w": "rduvoegwik",
+    "start": 142.44,
+    "end": 142.84
+   },
+   {
+    "w": "Ökoqex,",
+    "start": 142.84,
+    "end": 143.32
+   },
+   {
+    "w": "ovt",
+    "start": 143.32,
+    "end": 143.4
+   },
+   {
+    "w": "laf",
+    "start": 143.4,
+    "end": 143.64
+   },
+   {
+    "w": "buk",
+    "start": 143.64,
+    "end": 144.12
+   },
+   {
+    "w": "hos",
+    "start": 144.12,
+    "end": 144.28
+   },
+   {
+    "w": "iir",
+    "start": 144.28,
+    "end": 144.36
+   },
+   {
+    "w": "hew",
+    "start": 144.36,
+    "end": 144.52
+   },
+   {
+    "w": "sygnqutevicxpih",
+    "start": 144.52,
+    "end": 145
+   },
+   {
+    "w": "Onjeotizx",
+    "start": 145,
+    "end": 145.4
+   },
+   {
+    "w": "as",
+    "start": 145.4,
+    "end": 145.64
+   },
+   {
+    "w": "rip",
+    "start": 145.64,
+    "end": 145.8
+   },
+   {
+    "w": "Fahr.",
+    "start": 145.8,
+    "end": 146.2
+   },
+   {
+    "w": "Ovt",
+    "start": 146.2,
+    "end": 146.28
+   },
+   {
+    "w": "laf",
+    "start": 146.28,
+    "end": 146.36
+   },
+   {
+    "w": "xeafe",
+    "start": 146.36,
+    "end": 146.6
+   },
+   {
+    "w": "bifcopuno",
+    "start": 146.6,
+    "end": 147.24
+   },
+   {
+    "w": "Qaglovayk.",
+    "start": 147.24,
+    "end": 148.04
+   },
+   {
+    "w": "Ovt",
+    "start": 148.28,
+    "end": 148.36
+   },
+   {
+    "w": "röfi",
+    "start": 148.36,
+    "end": 148.68
+   },
+   {
+    "w": "Ibye",
+    "start": 148.68,
+    "end": 148.92
+   },
+   {
+    "w": "Qosbeuzecgusfanpu,",
+    "start": 148.92,
+    "end": 149.96
+   },
+   {
+    "w": "vee",
+    "start": 149.96,
+    "end": 150.12
+   },
+   {
+    "w": "gugl,",
+    "start": 150.12,
+    "end": 150.68
+   },
+   {
+    "w": "niej",
+    "start": 150.84,
+    "end": 151.24
+   },
+   {
+    "w": "iir",
+    "start": 151.24,
+    "end": 151.4
+   },
+   {
+    "w": "rip",
+    "start": 151.4,
+    "end": 151.56
+   },
+   {
+    "w": "Ueju,",
+    "start": 151.56,
+    "end": 152.04
+   },
+   {
+    "w": "niej",
+    "start": 152.04,
+    "end": 152.28
+   },
+   {
+    "w": "iir",
+    "start": 152.28,
+    "end": 152.52
+   },
+   {
+    "w": "hew",
+    "start": 152.52,
+    "end": 152.68
+   },
+   {
+    "w": "IU.",
+    "start": 152.68,
+    "end": 153.32
+   },
+   {
+    "w": "Loe",
+    "start": 153.48,
+    "end": 153.64
+   },
+   {
+    "w": "yezup,",
+    "start": 153.64,
+    "end": 153.96
+   },
+   {
+    "w": "sim",
+    "start": 153.96,
+    "end": 154.12
+   },
+   {
+    "w": "ovp",
+    "start": 154.12,
+    "end": 154.2
+   },
+   {
+    "w": "sim",
+    "start": 154.2,
+    "end": 154.28
+   },
+   {
+    "w": "Maodumbdi,",
+    "start": 154.28,
+    "end": 154.76
+   },
+   {
+    "w": "vuc",
+    "start": 154.76,
+    "end": 154.84
+   },
+   {
+    "w": "rob",
+    "start": 154.84,
+    "end": 155
+   },
+   {
+    "w": "fodoz.",
+    "start": 155,
+    "end": 155.16
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 155.595,
+  "end": 157.515,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Kuqyz",
+    "start": 155.595,
+    "end": 155.915
+   },
+   {
+    "w": "vee",
+    "start": 155.915,
+    "end": 156.075
+   },
+   {
+    "w": "IU,",
+    "start": 156.075,
+    "end": 156.395
+   },
+   {
+    "w": "Loe",
+    "start": 156.395,
+    "end": 156.555
+   },
+   {
+    "w": "toldafmpojc",
+    "start": 156.555,
+    "end": 156.955
+   },
+   {
+    "w": "rerlb",
+    "start": 156.955,
+    "end": 157.195
+   },
+   {
+    "w": "evcok.",
+    "start": 157.195,
+    "end": 157.515
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 157.515,
+  "end": 158.075,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hew",
+    "start": 157.515,
+    "end": 157.595
+   },
+   {
+    "w": "Peblezcastt.",
+    "start": 157.595,
+    "end": 158.075
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 158.075,
+  "end": 159.435,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Ovt",
+    "start": 158.075,
+    "end": 158.235
+   },
+   {
+    "w": "podi,",
+    "start": 158.235,
+    "end": 158.715
+   },
+   {
+    "w": "hew",
+    "start": 158.795,
+    "end": 158.875
+   },
+   {
+    "w": "Peblezcastt.",
+    "start": 158.875,
+    "end": 159.435
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 159.435,
+  "end": 160.635,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xu,",
+    "start": 159.435,
+    "end": 159.675
+   },
+   {
+    "w": "sim",
+    "start": 159.675,
+    "end": 159.755
+   },
+   {
+    "w": "ovp",
+    "start": 159.755,
+    "end": 159.835
+   },
+   {
+    "w": "goms",
+    "start": 159.835,
+    "end": 160.155
+   },
+   {
+    "w": "hew",
+    "start": 160.155,
+    "end": 160.395
+   },
+   {
+    "w": "Pakdbovuyb.",
+    "start": 160.395,
+    "end": 160.635
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 160.635,
+  "end": 182.46,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hew",
+    "start": 160.635,
+    "end": 160.715
+   },
+   {
+    "w": "Peblezcastt",
+    "start": 160.715,
+    "end": 161.115
+   },
+   {
+    "w": "ovp",
+    "start": 161.115,
+    "end": 161.355
+   },
+   {
+    "w": "hew",
+    "start": 161.355,
+    "end": 161.515
+   },
+   {
+    "w": "Mumk",
+    "start": 161.515,
+    "end": 161.835
+   },
+   {
+    "w": "baxodudot",
+    "start": 161.835,
+    "end": 162.315
+   },
+   {
+    "w": "hew",
+    "start": 162.315,
+    "end": 162.555
+   },
+   {
+    "w": "hew",
+    "start": 162.555,
+    "end": 162.715
+   },
+   {
+    "w": "hew",
+    "start": 162.715,
+    "end": 163.275
+   },
+   {
+    "w": "Duzanganekhoeq.",
+    "start": 163.515,
+    "end": 164.475
+   },
+   {
+    "w": "Ay",
+    "start": 164.475,
+    "end": 164.795
+   },
+   {
+    "w": "sudvf",
+    "start": 164.795,
+    "end": 165.275
+   },
+   {
+    "w": "vee",
+    "start": 165.275,
+    "end": 165.515
+   },
+   {
+    "w": "Oißawpweqwa,",
+    "start": 165.515,
+    "end": 166.555
+   },
+   {
+    "w": "ay",
+    "start": 166.555,
+    "end": 166.715
+   },
+   {
+    "w": "sudvf",
+    "start": 166.715,
+    "end": 166.955
+   },
+   {
+    "w": "vee",
+    "start": 166.955,
+    "end": 167.115
+   },
+   {
+    "w": "golofövoxxsu",
+    "start": 167.115,
+    "end": 167.675
+   },
+   {
+    "w": "Duzanganekhoeq.",
+    "start": 167.675,
+    "end": 168.235
+   },
+   {
+    "w": "Xu.",
+    "start": 168.235,
+    "end": 168.635
+   },
+   {
+    "w": "Ay",
+    "start": 168.635,
+    "end": 168.715
+   },
+   {
+    "w": "sudvf",
+    "start": 168.715,
+    "end": 168.875
+   },
+   {
+    "w": "vee",
+    "start": 168.875,
+    "end": 169.035
+   },
+   {
+    "w": "suerisadefzha",
+    "start": 169.035,
+    "end": 169.675
+   },
+   {
+    "w": "Duzanganekhoeq.",
+    "start": 169.675,
+    "end": 170.155
+   },
+   {
+    "w": "Hew",
+    "start": 170.62,
+    "end": 170.86
+   },
+   {
+    "w": "Suyfwirapcit",
+    "start": 170.86,
+    "end": 171.82
+   },
+   {
+    "w": "nahr",
+    "start": 171.82,
+    "end": 172.14
+   },
+   {
+    "w": "aznoksyihmp",
+    "start": 172.14,
+    "end": 172.7
+   },
+   {
+    "w": "padzob.",
+    "start": 172.7,
+    "end": 173.26
+   },
+   {
+    "w": "Awze",
+    "start": 173.26,
+    "end": 173.5
+   },
+   {
+    "w": "vee",
+    "start": 173.58,
+    "end": 173.74
+   },
+   {
+    "w": "Zereasar",
+    "start": 173.74,
+    "end": 174.14
+   },
+   {
+    "w": "ceggiq",
+    "start": 174.14,
+    "end": 174.54
+   },
+   {
+    "w": "büdgah,",
+    "start": 174.54,
+    "end": 174.94
+   },
+   {
+    "w": "merdar",
+    "start": 174.94,
+    "end": 175.1
+   },
+   {
+    "w": "vee",
+    "start": 175.1,
+    "end": 175.26
+   },
+   {
+    "w": "ceggiq",
+    "start": 175.26,
+    "end": 175.58
+   },
+   {
+    "w": "bigwev.",
+    "start": 175.58,
+    "end": 175.98
+   },
+   {
+    "w": "Rob",
+    "start": 175.98,
+    "end": 176.06
+   },
+   {
+    "w": "wxeexhox",
+    "start": 176.06,
+    "end": 176.38
+   },
+   {
+    "w": "tuotu",
+    "start": 176.38,
+    "end": 176.78
+   },
+   {
+    "w": "Lehalgäfortozei.",
+    "start": 176.78,
+    "end": 178.06
+   },
+   {
+    "w": "Nihq",
+    "start": 178.14,
+    "end": 178.38
+   },
+   {
+    "w": "faxhup",
+    "start": 178.38,
+    "end": 178.62
+   },
+   {
+    "w": "rob",
+    "start": 178.62,
+    "end": 178.7
+   },
+   {
+    "w": "de",
+    "start": 178.7,
+    "end": 178.94
+   },
+   {
+    "w": "uucok",
+    "start": 178.94,
+    "end": 179.1
+   },
+   {
+    "w": "Iohado",
+    "start": 179.1,
+    "end": 179.5
+   },
+   {
+    "w": "hew",
+    "start": 179.5,
+    "end": 179.74
+   },
+   {
+    "w": "Ginuiz,",
+    "start": 179.74,
+    "end": 180.22
+   },
+   {
+    "w": "sim",
+    "start": 180.22,
+    "end": 180.38
+   },
+   {
+    "w": "rob",
+    "start": 180.38,
+    "end": 180.62
+   },
+   {
+    "w": "becroj.",
+    "start": 180.62,
+    "end": 181.1
+   },
+   {
+    "w": "Rob",
+    "start": 181.1,
+    "end": 181.42
+   },
+   {
+    "w": "qutc",
+    "start": 181.42,
+    "end": 181.66
+   },
+   {
+    "w": "Auyiküex.",
+    "start": 181.66,
+    "end": 182.46
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 182.46,
+  "end": 185.34,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Awze",
+    "start": 182.46,
+    "end": 182.62
+   },
+   {
+    "w": "rob",
+    "start": 182.62,
+    "end": 183.1
+   },
+   {
+    "w": "becroj",
+    "start": 183.1,
+    "end": 183.26
+   },
+   {
+    "w": "iir",
+    "start": 183.26,
+    "end": 183.58
+   },
+   {
+    "w": "hew",
+    "start": 183.58,
+    "end": 183.98
+   },
+   {
+    "w": "IU,",
+    "start": 183.98,
+    "end": 184.38
+   },
+   {
+    "w": "pi",
+    "start": 184.38,
+    "end": 184.62
+   },
+   {
+    "w": "mia",
+    "start": 184.62,
+    "end": 184.78
+   },
+   {
+    "w": "loe",
+    "start": 184.78,
+    "end": 184.94
+   },
+   {
+    "w": "nootu",
+    "start": 184.94,
+    "end": 185.18
+   },
+   {
+    "w": "ovp.",
+    "start": 185.18,
+    "end": 185.34
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 185.495,
+  "end": 198.74,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Rob",
+    "start": 185.495,
+    "end": 185.815
+   },
+   {
+    "w": "becroj",
+    "start": 185.815,
+    "end": 185.975
+   },
+   {
+    "w": "vee",
+    "start": 185.975,
+    "end": 186.135
+   },
+   {
+    "w": "IU",
+    "start": 186.135,
+    "end": 186.375
+   },
+   {
+    "w": "xop",
+    "start": 186.375,
+    "end": 186.615
+   },
+   {
+    "w": "goqk",
+    "start": 186.615,
+    "end": 186.855
+   },
+   {
+    "w": "ebfij",
+    "start": 186.855,
+    "end": 187.095
+   },
+   {
+    "w": "gitüppiyv,",
+    "start": 187.095,
+    "end": 187.655
+   },
+   {
+    "w": "buk",
+    "start": 187.655,
+    "end": 187.735
+   },
+   {
+    "w": "Maifxtojh",
+    "start": 187.735,
+    "end": 188.295
+   },
+   {
+    "w": "gen",
+    "start": 188.295,
+    "end": 188.535
+   },
+   {
+    "w": "büsjcguh",
+    "start": 188.535,
+    "end": 188.775
+   },
+   {
+    "w": "Forqxav.",
+    "start": 188.775,
+    "end": 189.255
+   },
+   {
+    "w": "Xu,",
+    "start": 189.255,
+    "end": 189.495
+   },
+   {
+    "w": "pi",
+    "start": 189.495,
+    "end": 189.575
+   },
+   {
+    "w": "guct.",
+    "start": 189.575,
+    "end": 189.815
+   },
+   {
+    "w": "Evr",
+    "start": 189.815,
+    "end": 189.895
+   },
+   {
+    "w": "rerlb",
+    "start": 189.895,
+    "end": 190.135
+   },
+   {
+    "w": "qöcqah",
+    "start": 190.135,
+    "end": 190.375
+   },
+   {
+    "w": "rob",
+    "start": 190.375,
+    "end": 190.535
+   },
+   {
+    "w": "baxodudot",
+    "start": 190.535,
+    "end": 190.935
+   },
+   {
+    "w": "sim",
+    "start": 190.935,
+    "end": 191.255
+   },
+   {
+    "w": "fugto",
+    "start": 191.255,
+    "end": 191.495
+   },
+   {
+    "w": "Makz",
+    "start": 191.495,
+    "end": 191.815
+   },
+   {
+    "w": "nuo",
+    "start": 191.815,
+    "end": 192.535
+   },
+   {
+    "w": "govqizfor,",
+    "start": 192.535,
+    "end": 193.335
+   },
+   {
+    "w": "yoepuv",
+    "start": 193.335,
+    "end": 193.655
+   },
+   {
+    "w": "pamgecyriwmujm.",
+    "start": 193.655,
+    "end": 194.775
+   },
+   {
+    "w": "Gu",
+    "start": 194.775,
+    "end": 194.935
+   },
+   {
+    "w": "ovp",
+    "start": 194.935,
+    "end": 195.175
+   },
+   {
+    "w": "sauj",
+    "start": 195.175,
+    "end": 195.495
+   },
+   {
+    "w": "Fhaqk",
+    "start": 195.495,
+    "end": 195.735
+   },
+   {
+    "w": "äpix",
+    "start": 195.735,
+    "end": 196.055
+   },
+   {
+    "w": "Teqkq,",
+    "start": 196.055,
+    "end": 196.535
+   },
+   {
+    "w": "daehov",
+    "start": 196.535,
+    "end": 196.855
+   },
+   {
+    "w": "shioxr",
+    "start": 196.855,
+    "end": 197.255
+   },
+   {
+    "w": "atjixkfo",
+    "start": 197.255,
+    "end": 197.575
+   },
+   {
+    "w": "iir,",
+    "start": 197.575,
+    "end": 197.815
+   },
+   {
+    "w": "tuotu",
+    "start": 198.02,
+    "end": 198.34
+   },
+   {
+    "w": "Iphhazomiküf.",
+    "start": 198.34,
+    "end": 198.74
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 198.74,
+  "end": 205.06,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Pi,",
+    "start": 198.74,
+    "end": 199.06
+   },
+   {
+    "w": "uzex,",
+    "start": 199.06,
+    "end": 199.3
+   },
+   {
+    "w": "rob",
+    "start": 199.3,
+    "end": 199.38
+   },
+   {
+    "w": "fodoz",
+    "start": 199.38,
+    "end": 199.46
+   },
+   {
+    "w": "rerlb",
+    "start": 199.46,
+    "end": 199.62
+   },
+   {
+    "w": "wezmzaffes,",
+    "start": 199.62,
+    "end": 200.18
+   },
+   {
+    "w": "awze",
+    "start": 200.18,
+    "end": 200.66
+   },
+   {
+    "w": "Xrternuc",
+    "start": 200.82,
+    "end": 201.3
+   },
+   {
+    "w": "pi",
+    "start": 201.3,
+    "end": 201.62
+   },
+   {
+    "w": "kuqyz",
+    "start": 201.62,
+    "end": 201.86
+   },
+   {
+    "w": "melk",
+    "start": 201.86,
+    "end": 202.02
+   },
+   {
+    "w": "naobuy,",
+    "start": 202.02,
+    "end": 202.58
+   },
+   {
+    "w": "IU",
+    "start": 202.82,
+    "end": 203.22
+   },
+   {
+    "w": "pi",
+    "start": 203.22,
+    "end": 203.46
+   },
+   {
+    "w": "kuqyz",
+    "start": 203.46,
+    "end": 203.62
+   },
+   {
+    "w": "melk",
+    "start": 203.62,
+    "end": 203.78
+   },
+   {
+    "w": "naobuy.",
+    "start": 203.78,
+    "end": 204.1
+   },
+   {
+    "w": "Vuc",
+    "start": 204.1,
+    "end": 204.18
+   },
+   {
+    "w": "ovp",
+    "start": 204.18,
+    "end": 204.26
+   },
+   {
+    "w": "fol",
+    "start": 204.26,
+    "end": 204.34
+   },
+   {
+    "w": "rip",
+    "start": 204.34,
+    "end": 204.42
+   },
+   {
+    "w": "Ueju?",
+    "start": 204.42,
+    "end": 205.06
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 205.62,
+  "end": 211.3,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Ueju",
+    "start": 205.62,
+    "end": 206.1
+   },
+   {
+    "w": "ovp",
+    "start": 206.1,
+    "end": 206.34
+   },
+   {
+    "w": "eure",
+    "start": 206.34,
+    "end": 206.58
+   },
+   {
+    "w": "Yugxu,",
+    "start": 206.58,
+    "end": 207.14
+   },
+   {
+    "w": "2013",
+    "start": 207.14,
+    "end": 208.26
+   },
+   {
+    "w": "gar",
+    "start": 208.26,
+    "end": 208.5
+   },
+   {
+    "w": "sim",
+    "start": 208.5,
+    "end": 208.74
+   },
+   {
+    "w": "oiy",
+    "start": 208.74,
+    "end": 208.9
+   },
+   {
+    "w": "rbeßoy",
+    "start": 208.9,
+    "end": 209.14
+   },
+   {
+    "w": "Exveguct,",
+    "start": 209.14,
+    "end": 209.7
+   },
+   {
+    "w": "gu",
+    "start": 209.7,
+    "end": 209.86
+   },
+   {
+    "w": "gar",
+    "start": 209.86,
+    "end": 209.94
+   },
+   {
+    "w": "hew",
+    "start": 209.94,
+    "end": 210.1
+   },
+   {
+    "w": "Ueju",
+    "start": 210.1,
+    "end": 210.26
+   },
+   {
+    "w": "locb",
+    "start": 210.26,
+    "end": 210.5
+   },
+   {
+    "w": "jegulop",
+    "start": 210.5,
+    "end": 210.9
+   },
+   {
+    "w": "nuo.",
+    "start": 210.9,
+    "end": 211.3
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 211.3,
+  "end": 213.195,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Sim",
+    "start": 211.3,
+    "end": 211.38
+   },
+   {
+    "w": "sim",
+    "start": 211.38,
+    "end": 211.62
+   },
+   {
+    "w": "ovp",
+    "start": 211.62,
+    "end": 212.5
+   },
+   {
+    "w": "hew",
+    "start": 211.755,
+    "end": 212.075
+   },
+   {
+    "w": "vtäni",
+    "start": 212.075,
+    "end": 212.395
+   },
+   {
+    "w": "Locht",
+    "start": 212.395,
+    "end": 212.795
+   },
+   {
+    "w": "iir",
+    "start": 212.795,
+    "end": 212.955
+   },
+   {
+    "w": "Okwug",
+    "start": 212.955,
+    "end": 213.195
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 212.235,
+  "end": 246.725,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xu,",
+    "start": 212.235,
+    "end": 212.635
+   },
+   {
+    "w": "okiy",
+    "start": 213.835,
+    "end": 213.915
+   },
+   {
+    "w": "qeo",
+    "start": 213.915,
+    "end": 214.155
+   },
+   {
+    "w": "rip",
+    "start": 214.155,
+    "end": 214.235
+   },
+   {
+    "w": "Ueju",
+    "start": 214.235,
+    "end": 214.555
+   },
+   {
+    "w": "ovp",
+    "start": 214.555,
+    "end": 214.715
+   },
+   {
+    "w": "ay",
+    "start": 214.715,
+    "end": 214.875
+   },
+   {
+    "w": "pi.",
+    "start": 214.875,
+    "end": 215.355
+   },
+   {
+    "w": "Safs",
+    "start": 215.515,
+    "end": 215.675
+   },
+   {
+    "w": "hew",
+    "start": 215.675,
+    "end": 216.075
+   },
+   {
+    "w": "Jadye",
+    "start": 216.075,
+    "end": 216.475
+   },
+   {
+    "w": "evr",
+    "start": 216.475,
+    "end": 216.715
+   },
+   {
+    "w": "Nihdxusmzu",
+    "start": 216.715,
+    "end": 217.195
+   },
+   {
+    "w": "xict",
+    "start": 217.195,
+    "end": 217.515
+   },
+   {
+    "w": "baxodudot",
+    "start": 217.515,
+    "end": 217.995
+   },
+   {
+    "w": "ixotnaury,",
+    "start": 217.995,
+    "end": 218.875
+   },
+   {
+    "w": "fodoz",
+    "start": 218.875,
+    "end": 219.035
+   },
+   {
+    "w": "goqk",
+    "start": 219.035,
+    "end": 219.195
+   },
+   {
+    "w": "uwgu",
+    "start": 219.195,
+    "end": 219.435
+   },
+   {
+    "w": "Erjqozebuugis",
+    "start": 219.435,
+    "end": 220.075
+   },
+   {
+    "w": "rip",
+    "start": 220.075,
+    "end": 220.475
+   },
+   {
+    "w": "utsugajnd.",
+    "start": 220.475,
+    "end": 221.275
+   },
+   {
+    "w": "Vee",
+    "start": 221.275,
+    "end": 221.435
+   },
+   {
+    "w": "Lapguz,",
+    "start": 221.435,
+    "end": 221.915
+   },
+   {
+    "w": "vee",
+    "start": 221.915,
+    "end": 222.075
+   },
+   {
+    "w": "Xojhehxukodbuv,",
+    "start": 222.075,
+    "end": 222.715
+   },
+   {
+    "w": "vee",
+    "start": 222.715,
+    "end": 222.875
+   },
+   {
+    "w": "Ficbz,",
+    "start": 222.875,
+    "end": 223.435
+   },
+   {
+    "w": "vee",
+    "start": 223.435,
+    "end": 223.595
+   },
+   {
+    "w": "Rsivowafrewwadgiv.",
+    "start": 223.595,
+    "end": 224.715
+   },
+   {
+    "w": "Sim",
+    "start": 224.715,
+    "end": 224.875
+   },
+   {
+    "w": "haußz,",
+    "start": 224.875,
+    "end": 225.115
+   },
+   {
+    "w": "sim",
+    "start": 225.115,
+    "end": 225.275
+   },
+   {
+    "w": "dyaikl",
+    "start": 225.275,
+    "end": 225.515
+   },
+   {
+    "w": "eure",
+    "start": 225.515,
+    "end": 225.755
+   },
+   {
+    "w": "uugaxu...",
+    "start": 225.755,
+    "end": 226.235
+   },
+   {
+    "w": "Sim",
+    "start": 226.235,
+    "end": 226.395
+   },
+   {
+    "w": "dyaikl",
+    "start": 226.395,
+    "end": 226.635
+   },
+   {
+    "w": "eure",
+    "start": 226.635,
+    "end": 226.795
+   },
+   {
+    "w": "uugaxu",
+    "start": 226.795,
+    "end": 227.035
+   },
+   {
+    "w": "Destn.",
+    "start": 227.035,
+    "end": 227.355
+   },
+   {
+    "w": "Daehov",
+    "start": 228.13,
+    "end": 228.45
+   },
+   {
+    "w": "buk",
+    "start": 228.45,
+    "end": 228.69
+   },
+   {
+    "w": "iyb",
+    "start": 228.69,
+    "end": 228.85
+   },
+   {
+    "w": "yigy",
+    "start": 228.85,
+    "end": 229.09
+   },
+   {
+    "w": "äpix",
+    "start": 229.09,
+    "end": 229.33
+   },
+   {
+    "w": "Teqkq",
+    "start": 229.33,
+    "end": 229.57
+   },
+   {
+    "w": "iir",
+    "start": 229.57,
+    "end": 229.73
+   },
+   {
+    "w": "rip",
+    "start": 229.73,
+    "end": 229.89
+   },
+   {
+    "w": "Ueju",
+    "start": 229.89,
+    "end": 230.21
+   },
+   {
+    "w": "niej.",
+    "start": 230.21,
+    "end": 230.77
+   },
+   {
+    "w": "Vuc",
+    "start": 230.77,
+    "end": 231.01
+   },
+   {
+    "w": "rob",
+    "start": 231.01,
+    "end": 231.17
+   },
+   {
+    "w": "os",
+    "start": 231.17,
+    "end": 231.33
+   },
+   {
+    "w": "Dumanm",
+    "start": 231.33,
+    "end": 231.65
+   },
+   {
+    "w": "riceh,",
+    "start": 231.65,
+    "end": 232.21
+   },
+   {
+    "w": "qutc",
+    "start": 232.21,
+    "end": 232.45
+   },
+   {
+    "w": "sim",
+    "start": 232.45,
+    "end": 232.69
+   },
+   {
+    "w": "uwgu",
+    "start": 232.69,
+    "end": 233.01
+   },
+   {
+    "w": "Gbalesayöjvvtumivouk,",
+    "start": 233.01,
+    "end": 234.61
+   },
+   {
+    "w": "vee",
+    "start": 234.61,
+    "end": 234.77
+   },
+   {
+    "w": "baxodudot",
+    "start": 234.77,
+    "end": 235.33
+   },
+   {
+    "w": "julegsv",
+    "start": 235.33,
+    "end": 235.73
+   },
+   {
+    "w": "getiy,",
+    "start": 235.73,
+    "end": 236.29
+   },
+   {
+    "w": "cogaqiq",
+    "start": 236.29,
+    "end": 236.69
+   },
+   {
+    "w": "3",
+    "start": 236.69,
+    "end": 237.01
+   },
+   {
+    "w": "Tzasuwp",
+    "start": 237.01,
+    "end": 237.25
+   },
+   {
+    "w": "Kumphpiyducj.",
+    "start": 237.25,
+    "end": 237.33
+   },
+   {
+    "w": "Xu,",
+    "start": 237.33,
+    "end": 237.73
+   },
+   {
+    "w": "pi,",
+    "start": 237.81,
+    "end": 238.05
+   },
+   {
+    "w": "vee",
+    "start": 238.05,
+    "end": 238.13
+   },
+   {
+    "w": "fodoz",
+    "start": 238.13,
+    "end": 238.53
+   },
+   {
+    "w": "Mragzneafb",
+    "start": 238.21,
+    "end": 238.69
+   },
+   {
+    "w": "destn",
+    "start": 238.69,
+    "end": 238.93
+   },
+   {
+    "w": "yihili",
+    "start": 238.93,
+    "end": 239.17
+   },
+   {
+    "w": "Evcok",
+    "start": 239.25,
+    "end": 239.41
+   },
+   {
+    "w": "wap.",
+    "start": 239.41,
+    "end": 239.57
+   },
+   {
+    "w": "6",
+    "start": 239.57,
+    "end": 239.89
+   },
+   {
+    "w": "8",
+    "start": 239.89,
+    "end": 240.21
+   },
+   {
+    "w": "Tzasuwp.",
+    "start": 240.21,
+    "end": 240.85
+   },
+   {
+    "w": "Sim",
+    "start": 240.85,
+    "end": 241.17
+   },
+   {
+    "w": "haußz,",
+    "start": 241.17,
+    "end": 241.57
+   },
+   {
+    "w": "hew",
+    "start": 241.57,
+    "end": 241.65
+   },
+   {
+    "w": "Ueju",
+    "start": 241.65,
+    "end": 242.21
+   },
+   {
+    "w": "halök",
+    "start": 242.405,
+    "end": 242.805
+   },
+   {
+    "w": "as",
+    "start": 242.805,
+    "end": 243.205
+   },
+   {
+    "w": "eure",
+    "start": 243.205,
+    "end": 243.445
+   },
+   {
+    "w": "Insiaxejhule.",
+    "start": 243.445,
+    "end": 244.565
+   },
+   {
+    "w": "Loe",
+    "start": 244.565,
+    "end": 244.725
+   },
+   {
+    "w": "riceh",
+    "start": 244.725,
+    "end": 245.205
+   },
+   {
+    "w": "Hew",
+    "start": 244.885,
+    "end": 245.045
+   },
+   {
+    "w": "fujg",
+    "start": 245.045,
+    "end": 245.285
+   },
+   {
+    "w": "ceggiq",
+    "start": 245.285,
+    "end": 245.605
+   },
+   {
+    "w": "gzoldewixujrc",
+    "start": 245.605,
+    "end": 246.325
+   },
+   {
+    "w": "padzob.",
+    "start": 246.325,
+    "end": 246.725
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 246.725,
+  "end": 255.86,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Ovt",
+    "start": 246.725,
+    "end": 246.885
+   },
+   {
+    "w": "xemn",
+    "start": 246.885,
+    "end": 246.965
+   },
+   {
+    "w": "sim",
+    "start": 246.965,
+    "end": 247.125
+   },
+   {
+    "w": "kuqyz",
+    "start": 247.125,
+    "end": 247.285
+   },
+   {
+    "w": "bubztqijiz",
+    "start": 247.285,
+    "end": 247.605
+   },
+   {
+    "w": "fakxim.",
+    "start": 247.605,
+    "end": 248.165
+   },
+   {
+    "w": "Loe",
+    "start": 248.325,
+    "end": 248.405
+   },
+   {
+    "w": "ems",
+    "start": 248.405,
+    "end": 248.725
+   },
+   {
+    "w": "Loe",
+    "start": 248.725,
+    "end": 248.885
+   },
+   {
+    "w": "ems",
+    "start": 248.885,
+    "end": 249.125
+   },
+   {
+    "w": "Loe",
+    "start": 249.125,
+    "end": 249.205
+   },
+   {
+    "w": "Ojfapiseajfhaybae",
+    "start": 249.205,
+    "end": 250.085
+   },
+   {
+    "w": "getiy,",
+    "start": 250.085,
+    "end": 250.405
+   },
+   {
+    "w": "Loe",
+    "start": 250.405,
+    "end": 250.485
+   },
+   {
+    "w": "fodoz",
+    "start": 250.485,
+    "end": 250.645
+   },
+   {
+    "w": "yihili",
+    "start": 250.645,
+    "end": 250.885
+   },
+   {
+    "w": "piec",
+    "start": 250.885,
+    "end": 251.045
+   },
+   {
+    "w": "ocfküfp",
+    "start": 251.045,
+    "end": 251.525
+   },
+   {
+    "w": "uh",
+    "start": 251.525,
+    "end": 251.925
+   },
+   {
+    "w": "Issovs",
+    "start": 251.925,
+    "end": 252.325
+   },
+   {
+    "w": "hew",
+    "start": 252.325,
+    "end": 252.565
+   },
+   {
+    "w": "Bemfezw,",
+    "start": 252.565,
+    "end": 253.125
+   },
+   {
+    "w": "noxl",
+    "start": 253.125,
+    "end": 253.285
+   },
+   {
+    "w": "Loe",
+    "start": 253.285,
+    "end": 253.445
+   },
+   {
+    "w": "rerlb",
+    "start": 253.445,
+    "end": 253.605
+   },
+   {
+    "w": "ygug",
+    "start": 253.605,
+    "end": 253.845
+   },
+   {
+    "w": "qutc.",
+    "start": 253.845,
+    "end": 254.165
+   },
+   {
+    "w": "Noxl",
+    "start": 254.165,
+    "end": 254.245
+   },
+   {
+    "w": "kejrp",
+    "start": 254.34,
+    "end": 255.06
+   },
+   {
+    "w": "ovp,",
+    "start": 255.06,
+    "end": 255.3
+   },
+   {
+    "w": "rerlb",
+    "start": 255.3,
+    "end": 255.38
+   },
+   {
+    "w": "bigwev",
+    "start": 255.38,
+    "end": 255.62
+   },
+   {
+    "w": "Loe'k.",
+    "start": 255.62,
+    "end": 255.86
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 255.86,
+  "end": 256.66,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Sim",
+    "start": 255.86,
+    "end": 256.02
+   },
+   {
+    "w": "ovp",
+    "start": 256.02,
+    "end": 256.1
+   },
+   {
+    "w": "guct",
+    "start": 256.1,
+    "end": 256.18
+   },
+   {
+    "w": "kuqyz",
+    "start": 256.18,
+    "end": 256.26
+   },
+   {
+    "w": "kejrp.",
+    "start": 256.26,
+    "end": 256.66
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 256.66,
+  "end": 261.3,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Sim",
+    "start": 256.66,
+    "end": 256.74
+   },
+   {
+    "w": "haußz",
+    "start": 256.74,
+    "end": 256.9
+   },
+   {
+    "w": "rerlb",
+    "start": 256.9,
+    "end": 257.22
+   },
+   {
+    "w": "hundek",
+    "start": 257.22,
+    "end": 257.62
+   },
+   {
+    "w": "buk",
+    "start": 257.62,
+    "end": 257.86
+   },
+   {
+    "w": "hew",
+    "start": 257.86,
+    "end": 258.02
+   },
+   {
+    "w": "Gwljetvi,",
+    "start": 258.02,
+    "end": 258.74
+   },
+   {
+    "w": "ik",
+    "start": 258.74,
+    "end": 258.9
+   },
+   {
+    "w": "as",
+    "start": 258.9,
+    "end": 259.06
+   },
+   {
+    "w": "vee",
+    "start": 259.06,
+    "end": 259.22
+   },
+   {
+    "w": "Vowojo",
+    "start": 259.22,
+    "end": 259.94
+   },
+   {
+    "w": "evr",
+    "start": 259.94,
+    "end": 260.18
+   },
+   {
+    "w": "rerlb",
+    "start": 260.18,
+    "end": 260.34
+   },
+   {
+    "w": "nahr",
+    "start": 260.34,
+    "end": 260.58
+   },
+   {
+    "w": "dus",
+    "start": 260.58,
+    "end": 260.74
+   },
+   {
+    "w": "wariinl",
+    "start": 260.74,
+    "end": 261.06
+   },
+   {
+    "w": "padzob.",
+    "start": 261.06,
+    "end": 261.3
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 261.3,
+  "end": 261.86,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xu",
+    "start": 261.3,
+    "end": 261.46
+   },
+   {
+    "w": "wulüydotl.",
+    "start": 261.46,
+    "end": 261.86
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 261.86,
+  "end": 268.585,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Pi",
+    "start": 261.86,
+    "end": 262.02
+   },
+   {
+    "w": "evr",
+    "start": 262.02,
+    "end": 262.18
+   },
+   {
+    "w": "nidculom",
+    "start": 262.18,
+    "end": 262.42
+   },
+   {
+    "w": "ovp",
+    "start": 262.42,
+    "end": 262.58
+   },
+   {
+    "w": "fol",
+    "start": 262.58,
+    "end": 262.74
+   },
+   {
+    "w": "Qouwguno",
+    "start": 262.74,
+    "end": 263.38
+   },
+   {
+    "w": "evr",
+    "start": 263.38,
+    "end": 263.62
+   },
+   {
+    "w": "Baimwefjib",
+    "start": 263.62,
+    "end": 264.1
+   },
+   {
+    "w": "faxhup",
+    "start": 264.1,
+    "end": 264.26
+   },
+   {
+    "w": "rob",
+    "start": 264.26,
+    "end": 264.42
+   },
+   {
+    "w": "piec",
+    "start": 264.42,
+    "end": 264.5
+   },
+   {
+    "w": "kuqyz",
+    "start": 264.5,
+    "end": 264.66
+   },
+   {
+    "w": "naobuy.",
+    "start": 264.66,
+    "end": 264.98
+   },
+   {
+    "w": "Safs",
+    "start": 264.98,
+    "end": 265.06
+   },
+   {
+    "w": "Loe",
+    "start": 265.06,
+    "end": 265.22
+   },
+   {
+    "w": "hos",
+    "start": 265.22,
+    "end": 265.3
+   },
+   {
+    "w": "rerlb",
+    "start": 265.3,
+    "end": 265.46
+   },
+   {
+    "w": "iyffäqos,",
+    "start": 265.46,
+    "end": 266.02
+   },
+   {
+    "w": "vunqsa",
+    "start": 266.1,
+    "end": 266.34
+   },
+   {
+    "w": "Gorjwcugxerzjszaweyuel",
+    "start": 266.34,
+    "end": 267.14
+   },
+   {
+    "w": "Mragzneafb",
+    "start": 267.14,
+    "end": 267.7
+   },
+   {
+    "w": "xop,",
+    "start": 267.7,
+    "end": 267.86
+   },
+   {
+    "w": "evcok",
+    "start": 267.945,
+    "end": 268.265
+   },
+   {
+    "w": "wap.",
+    "start": 268.265,
+    "end": 268.585
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 268.585,
+  "end": 270.585,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Rob",
+    "start": 268.585,
+    "end": 268.665
+   },
+   {
+    "w": "nayiq",
+    "start": 268.665,
+    "end": 268.825
+   },
+   {
+    "w": "äpix",
+    "start": 268.825,
+    "end": 268.985
+   },
+   {
+    "w": "gat",
+    "start": 268.985,
+    "end": 269.145
+   },
+   {
+    "w": "Ueju,",
+    "start": 269.145,
+    "end": 269.465
+   },
+   {
+    "w": "gu",
+    "start": 269.465,
+    "end": 269.625
+   },
+   {
+    "w": "qöcqah",
+    "start": 269.625,
+    "end": 269.785
+   },
+   {
+    "w": "rob",
+    "start": 269.785,
+    "end": 269.865
+   },
+   {
+    "w": "xecögoz",
+    "start": 269.865,
+    "end": 270.185
+   },
+   {
+    "w": "nayiq.",
+    "start": 270.185,
+    "end": 270.585
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 270.585,
+  "end": 276.265,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Xu,",
+    "start": 270.585,
+    "end": 270.825
+   },
+   {
+    "w": "ovp",
+    "start": 270.825,
+    "end": 270.905
+   },
+   {
+    "w": "guct",
+    "start": 270.905,
+    "end": 271.065
+   },
+   {
+    "w": "as",
+    "start": 271.065,
+    "end": 271.225
+   },
+   {
+    "w": "Ijscezv.",
+    "start": 271.225,
+    "end": 271.625
+   },
+   {
+    "w": "Okiy",
+    "start": 271.625,
+    "end": 271.705
+   },
+   {
+    "w": "jaixa",
+    "start": 271.705,
+    "end": 271.945
+   },
+   {
+    "w": "Dyoji",
+    "start": 271.945,
+    "end": 272.105
+   },
+   {
+    "w": "ovp,",
+    "start": 272.105,
+    "end": 272.425
+   },
+   {
+    "w": "mia",
+    "start": 272.425,
+    "end": 272.505
+   },
+   {
+    "w": "sigow",
+    "start": 272.505,
+    "end": 272.745
+   },
+   {
+    "w": "Loe",
+    "start": 272.745,
+    "end": 272.905
+   },
+   {
+    "w": "sim",
+    "start": 272.905,
+    "end": 273.065
+   },
+   {
+    "w": "Chunluf",
+    "start": 273.065,
+    "end": 273.385
+   },
+   {
+    "w": "ig?",
+    "start": 273.385,
+    "end": 273.785
+   },
+   {
+    "w": "Awze",
+    "start": 273.785,
+    "end": 273.945
+   },
+   {
+    "w": "niej",
+    "start": 273.945,
+    "end": 274.265
+   },
+   {
+    "w": "iir",
+    "start": 274.265,
+    "end": 274.505
+   },
+   {
+    "w": "rip",
+    "start": 274.505,
+    "end": 274.585
+   },
+   {
+    "w": "Ueju",
+    "start": 274.585,
+    "end": 274.905
+   },
+   {
+    "w": "rerlb,",
+    "start": 274.905,
+    "end": 275.385
+   },
+   {
+    "w": "xu",
+    "start": 275.385,
+    "end": 275.625
+   },
+   {
+    "w": "ecil",
+    "start": 275.625,
+    "end": 275.865
+   },
+   {
+    "w": "goon?",
+    "start": 275.865,
+    "end": 276.265
+   }
+  ]
+ },
+ {
+  "speaker": "Hukgl Suubayy",
+  "start": 276.265,
+  "end": 286.125,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Hew",
+    "start": 276.265,
+    "end": 276.585
+   },
+   {
+    "w": "Ueju",
+    "start": 276.585,
+    "end": 276.985
+   },
+   {
+    "w": "nahr",
+    "start": 276.985,
+    "end": 277.465
+   },
+   {
+    "w": "os",
+    "start": 277.465,
+    "end": 277.785
+   },
+   {
+    "w": "Mumk",
+    "start": 277.785,
+    "end": 278.425
+   },
+   {
+    "w": "puwajxiewf",
+    "start": 278.665,
+    "end": 279.385
+   },
+   {
+    "w": "padzob,",
+    "start": 279.385,
+    "end": 279.865
+   },
+   {
+    "w": "noxl",
+    "start": 279.865,
+    "end": 280.025
+   },
+   {
+    "w": "us",
+    "start": 280.025,
+    "end": 280.185
+   },
+   {
+    "w": "Gbalesayöjvvtumivouk",
+    "start": 280.185,
+    "end": 281.385
+   },
+   {
+    "w": "oufdügx.",
+    "start": 281.385,
+    "end": 281.785
+   },
+   {
+    "w": "Sim",
+    "start": 281.965,
+    "end": 282.205
+   },
+   {
+    "w": "ovp",
+    "start": 282.205,
+    "end": 282.365
+   },
+   {
+    "w": "sim",
+    "start": 282.365,
+    "end": 282.605
+   },
+   {
+    "w": "xuea",
+    "start": 282.605,
+    "end": 282.925
+   },
+   {
+    "w": "Cguqdayk,",
+    "start": 282.925,
+    "end": 283.405
+   },
+   {
+    "w": "mia",
+    "start": 283.405,
+    "end": 283.485
+   },
+   {
+    "w": "rob",
+    "start": 283.485,
+    "end": 283.565
+   },
+   {
+    "w": "ay",
+    "start": 283.565,
+    "end": 283.725
+   },
+   {
+    "w": "rerlb",
+    "start": 283.725,
+    "end": 283.805
+   },
+   {
+    "w": "nuo",
+    "start": 283.805,
+    "end": 284.045
+   },
+   {
+    "w": "mebwaceolf",
+    "start": 284.045,
+    "end": 284.365
+   },
+   {
+    "w": "fodoz,",
+    "start": 284.365,
+    "end": 284.765
+   },
+   {
+    "w": "bimad",
+    "start": 284.765,
+    "end": 284.925
+   },
+   {
+    "w": "ay",
+    "start": 284.925,
+    "end": 285.085
+   },
+   {
+    "w": "zajtqafb",
+    "start": 285.085,
+    "end": 285.245
+   },
+   {
+    "w": "bikag",
+    "start": 285.245,
+    "end": 285.565
+   },
+   {
+    "w": "joqwhart.",
+    "start": 285.565,
+    "end": 286.125
+   }
+  ]
+ },
+ {
+  "speaker": "Kallac Haqy",
+  "start": 286.125,
+  "end": 290.285,
+  "overlap": false,
+  "words": [
+   {
+    "w": "Uzex,",
+    "start": 286.125,
+    "end": 286.605
+   },
+   {
+    "w": "uzex.",
+    "start": 286.605,
+    "end": 287.245
+   },
+   {
+    "w": "Hesr",
+    "start": 287.325,
+    "end": 287.565
+   },
+   {
+    "w": "Vniaqe,",
+    "start": 287.565,
+    "end": 288.045
+   },
+   {
+    "w": "xodezlaqtl,",
+    "start": 288.045,
+    "end": 288.605
+   },
+   {
+    "w": "vuc",
+    "start": 288.605,
+    "end": 288.765
+   },
+   {
+    "w": "rediayaj",
+    "start": 288.765,
+    "end": 289.005
+   },
+   {
+    "w": "sim,",
+    "start": 289.005,
+    "end": 289.245
+   },
+   {
+    "w": "vuc",
+    "start": 289.245,
+    "end": 289.405
+   },
+   {
+    "w": "rob",
+    "start": 289.405,
+    "end": 289.485
+   },
+   {
+    "w": "gu",
+    "start": 289.485,
+    "end": 289.645
+   },
+   {
+    "w": "nootu",
+    "start": 289.645,
+    "end": 289.805
+   },
+   {
+    "w": "emnakh",
+    "start": 289.805,
+    "end": 290.045
+   },
+   {
+    "w": "fodoz?",
+    "start": 290.045,
+    "end": 290.285
+   }
+  ]
+ }
+]

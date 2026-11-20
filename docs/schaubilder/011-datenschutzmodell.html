@@ -1,0 +1,409 @@
+<!-- Quelle: https://claude.ai/artifact/8yYJ5bqpa6Fy9RYiBB1DSa, exportiert 2026-10-23, Ticket #11 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datenschutzmodell</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; vier Zonen von links nach rechts (Gerät, Backend EU, Auftragsverarbeiter EU, eigenständige Empfänger USA), die Grenze nach außen als bernsteinfarbene Linie; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.dialog .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:6px}
+.dialog .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.dialog .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+.dialog .btn{display:inline-block;border:1px solid var(--ok2);color:var(--ok2);border-radius:6px;padding:2px 10px;font-family:var(--font-display);font-size:13px;margin-right:6px}
+.dialog .btn.ghost{border-color:var(--line);color:var(--muted)}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 11 · Grilling · Schaubild der Entscheidung · 2026-10-15</div>
+  <h1>Datenschutzmodell</h1>
+  <p class="lead">Wie setzt das Produkt Einwilligung und Datensparsamkeit um, wenn mehrere Personen sprechen und ein Konto zahlt? Fest ist viel: Audio wird nie gespeichert (ADR 0005), der Modus ist Pflichtfeld (ADR 0007), die Namensmaske sitzt an der Grenze zur Websuche (ADR 0002), private Namen bleiben beim Nutzer (ADR 0008), alle Modelle rechnen in der EU (ADR 0006). Runde 1 hat sechs Fragen entschieden (Abschnitt 5): Einwilligung je Gespräch mit Ereignis ohne Inhalt, Nebensprecher im Modus Sendung verworfen, Verlauf nur auf Wunsch, dieselbe Grenze nach außen in beiden Modi, Privatfilter nach Person statt Thema, Urteilscache nur für Sendungen. Runde 2 (Abschnitt 6) hat Löschung, Transparenz, Gerätemodus und Datei, das Anwaltsticket und das Festhalten entschieden. Diese Seite ist das Schaubild zum Abnicken.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Datenfluss</a><a href="#festgelegt">Festgelegt</a><a href="#fakten">Fakten</a><a href="#dialog">Dialog</a><a href="#runde1">Runde 1</a><a href="#fragen">Runde 2</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Datenfluss: vier Zonen, eine Grenze nach außen</h2>
+<p>Von links nach rechts wird der Kreis der Empfänger größer und die Daten werden weniger. Auf dem Gerät liegt alles, auch private Namen; im Backend liegt die Session im Durchlauf; die Auftragsverarbeiter in der EU sehen Audio und Transkriptausschnitte unter Vertrag; die eigenständigen Empfänger in den USA sehen nur den Behauptungssatz hinter der Namensmaske. Alles ist entschieden; die früher bernsteinfarbenen Kästen stehen jetzt teal. Rot gestrichelt bleibt Wikimedia, bis der Anwalt Frage 3 beantwortet hat; bis dahin gehen dorthin nur Stichworte.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 560" role="img" aria-label="Vier Zonen von links nach rechts: Gerät des Nutzers mit Mikrofon, Einwilligungsdialog und Karte; Backend in der EU mit Session in Redis für 15 Minuten ohne Platte, Belegspeicher, gemeinsamem Index und einer Kontodatenbank mit Einwilligungsereignis, Abrechnung und optionalem Verlauf; Auftragsverarbeiter in der EU, nämlich Deepgram EU für Audio und Bedrock EU beziehungsweise Vertex EU für Transkriptausschnitte; eigenständige Empfänger in den USA, nämlich Brave, Google Fact Check und Wikimedia, die nur den Behauptungssatz hinter Namensmaske und Privatfilter erhalten. Amtliche Quellen in der EU stehen daneben.">
+  <!-- Zonen -->
+  <rect class="zone" x="10" y="40" width="200" height="500" rx="10"/>
+  <rect class="zone" x="225" y="40" width="330" height="500" rx="10"/>
+  <rect class="zone" x="570" y="40" width="190" height="500" rx="10"/>
+  <rect class="zone" x="775" y="40" width="215" height="500" rx="10"/>
+  <text class="lab" x="20" y="28">Gerät des Nutzers</text>
+  <text class="lab" x="235" y="28">Backend, EU-Hosting</text>
+  <text class="lab" x="580" y="28">Auftragsverarbeiter EU</text>
+  <text class="lab lab-warn" x="785" y="28">Eigenständige Empfänger USA</text>
+
+  <!-- Gerät -->
+  <rect class="box" x="22" y="56" width="176" height="52" rx="6"/>
+  <text class="t" x="32" y="76">Mikrofon oder Kanalabgriff</text>
+  <text class="t2" x="32" y="94">Audio PCM, nie gespeichert</text>
+
+  <rect class="box box-ok" x="22" y="124" width="176" height="66" rx="6"/>
+  <text class="t" x="32" y="144">Einwilligungsdialog</text>
+  <text class="t2" x="32" y="162">je Gespräch, je Modus</text>
+  <text class="t3" x="32" y="180">Consent Record ohne Inhalt</text>
+
+  <rect class="box" x="22" y="206" width="176" height="66" rx="6"/>
+  <text class="t" x="32" y="226">Karte und Transkript</text>
+  <text class="t2" x="32" y="244">Name auch privat, nur hier</text>
+  <text class="t3" x="32" y="262">Teilen: Label statt Name</text>
+
+  <rect class="box" x="22" y="288" width="176" height="52" rx="6"/>
+  <text class="t" x="32" y="308">Aufnahmeanzeige, Pause</text>
+  <text class="t2" x="32" y="326">Store-Pflicht, Widerspruch</text>
+
+  <!-- Backend -->
+  <rect class="box box-ok" x="237" y="56" width="306" height="84" rx="6"/>
+  <text class="t" x="247" y="76">Session in Redis, ohne Platte</text>
+  <text class="t2" x="247" y="94">Transkript, Behauptungen, Urteile, Zuordnungstabelle</text>
+  <text class="t2" x="247" y="112">im Durchlauf: 15 Minuten nach dem letzten Segment weg</text>
+  <text class="t3" x="247" y="130">wie ADR 0018 alt; kein Logging von Transkripttext</text>
+
+  <rect class="box box-ok" x="237" y="156" width="146" height="66" rx="6"/>
+  <text class="t" x="247" y="176">Belegspeicher</text>
+  <text class="t2" x="247" y="194">je Session, Redis</text>
+  <text class="t2" x="247" y="212">Session + 15 min</text>
+
+  <rect class="box box-ok" x="397" y="156" width="146" height="66" rx="6"/>
+  <text class="t" x="407" y="176">Gemeinsamer Index</text>
+  <text class="t2" x="407" y="194">dauerhaft, nachts</text>
+  <text class="t2" x="407" y="212">keine Gesprächsdaten</text>
+
+  <rect class="box box-ok" x="237" y="238" width="306" height="118" rx="6"/>
+  <text class="t" x="247" y="258">Kontodatenbank (Postgres, EU)</text>
+  <text class="t2" x="247" y="276">Einwilligungsereignis ohne Inhalt: Zeit, Modus, Dialogversion</text>
+  <text class="t2" x="247" y="294">Abrechnung getrennt (§ 147 AO), Nutzungszähler</text>
+  <text class="t2" x="247" y="312">Verlauf nur auf Wunsch: Karten ohne Transkript</text>
+  <text class="t3" x="247" y="330">3 Jahre · 10 Jahre · bis der Nutzer löscht</text>
+  <text class="t3" x="247" y="348">Konten (#13), Datenmodell (Nebel)</text>
+
+  <rect class="box box-ok" x="237" y="372" width="306" height="66" rx="6"/>
+  <text class="t" x="247" y="392">Urteilscache, nur Modus Sendung</text>
+  <text class="t2" x="247" y="410">Hash des maskierten Satzes, 7 Tage, ohne Session und Sprecher</text>
+  <text class="t3" x="247" y="428">eigene Redis-Instanz, Löschpfad nach Satz</text>
+
+  <rect class="box box-ok" x="237" y="454" width="306" height="72" rx="6"/>
+  <text class="t" x="247" y="474">Grenze nach außen</text>
+  <text class="t2" x="247" y="492">Namensmaske (nur öffentliche Namen) + Privatfilter</text>
+  <text class="t2" x="247" y="510">nie: Transkript, Wortlaut, Label, Session, Konto, Zeit</text>
+  <text class="t3" x="247" y="524">dieselbe Grenze in beiden Modi; Wikimedia nur Stichworte</text>
+
+  <!-- Auftragsverarbeiter -->
+  <rect class="box box-ok" x="582" y="56" width="166" height="84" rx="6"/>
+  <text class="t" x="592" y="76">Deepgram EU</text>
+  <text class="t2" x="592" y="94">Audio, mip_opt_out</text>
+  <text class="t2" x="592" y="112">Aufbewahrung: Beleg</text>
+  <text class="t3" x="592" y="130">vor Launch, sonst AssemblyAI</text>
+
+  <rect class="box box-ok" x="582" y="156" width="166" height="84" rx="6"/>
+  <text class="t" x="592" y="176">Bedrock EU (Claude)</text>
+  <text class="t2" x="592" y="194">Transkriptausschnitte,</text>
+  <text class="t2" x="592" y="212">Setting mit Namen</text>
+  <text class="t3" x="592" y="230">null Aufbewahrung, DPA + SCC</text>
+
+  <rect class="box box-ok" x="582" y="256" width="166" height="70" rx="6"/>
+  <text class="t" x="592" y="276">Vertex EU (Ausweich, Gemini)</text>
+  <text class="t2" x="592" y="294">24-h-Cache abschalten</text>
+  <text class="t3" x="592" y="312">DPA mit DPF und SCC</text>
+
+  <rect class="box" x="582" y="342" width="166" height="52" rx="6"/>
+  <text class="t" x="592" y="362">Hosting EU</text>
+  <text class="t2" x="592" y="380">OVH oder Scaleway (#9, #15)</text>
+
+  <!-- Empfänger USA -->
+  <rect class="box box-warn" x="787" y="56" width="193" height="70" rx="6"/>
+  <text class="t" x="797" y="76">Brave Search</text>
+  <text class="t2" x="797" y="94">Query-Log 90 Tage</text>
+  <text class="t3" x="797" y="112">DPF nicht verifiziert; DPA mit SCC</text>
+
+  <rect class="box box-warn" x="787" y="142" width="193" height="70" rx="6"/>
+  <text class="t" x="797" y="162">Google Fact Check</text>
+  <text class="t2" x="797" y="180">eigenständig, kein DPA</text>
+  <text class="t3" x="797" y="198">Google LLC DPF-zertifiziert</text>
+
+  <rect class="box box-bad" x="787" y="228" width="193" height="70" rx="6"/>
+  <text class="t" x="797" y="248">Wikimedia</text>
+  <text class="t2" x="797" y="266">nur Stichworte, kein Satz</text>
+  <text class="t3" x="797" y="284">weder DPF noch SCC: Anwaltsfrage 3</text>
+
+  <rect class="box box-ok" x="787" y="314" width="193" height="70" rx="6"/>
+  <text class="t" x="797" y="334">Amtliche Quellen EU</text>
+  <text class="t2" x="797" y="352">Destatis, Eurostat, DIP, Bundesbank</text>
+  <text class="t3" x="797" y="370">frei, speicherbar, Prefetch</text>
+
+  <!-- Linien -->
+  <path class="ln" d="M198 82 L237 82"/><polygon class="m" points="237,82 230,78 230,86"/>
+  <text class="t3" x="202" y="76">Audio</text>
+  <path class="ln" d="M198 157 L237 100"/>
+  <text class="t3" x="203" y="150">Setting</text>
+  <path class="ln ln-ok" d="M237 96 L198 230"/><polygon class="m-ok" points="198,230 206,224 208,232"/>
+  <text class="t3" x="203" y="200">Karten</text>
+  <path class="ln ln-dash" d="M198 157 L237 270"/>
+  <text class="t3" x="203" y="248">Ereignis</text>
+
+  <path class="ln" d="M543 82 L582 82"/><polygon class="m" points="582,82 575,78 575,86"/>
+  <path class="ln" d="M582 100 L543 100"/><polygon class="m" points="543,100 550,96 550,104"/>
+  <text class="t3" x="548" y="96">Segmente</text>
+  <path class="ln" d="M543 120 L582 184"/><polygon class="m" points="582,184 573,182 577,176"/>
+  <path class="ln" d="M543 130 L582 290"/><polygon class="m" points="582,290 573,288 577,282"/>
+
+  <path class="ln ln-warn" d="M543 490 L765 490 L765 92 L787 92"/><polygon class="m-warn" points="787,92 780,88 780,96"/>
+  <path class="ln ln-warn" d="M765 176 L787 176"/><polygon class="m-warn" points="787,176 780,172 780,180"/>
+  <path class="ln ln-warn" d="M765 262 L787 262"/><polygon class="m-warn" points="787,262 780,258 780,266"/>
+  <path class="ln ln-ok" d="M543 190 L765 190 L765 348 L787 348"/><polygon class="m-ok" points="787,348 780,344 780,352"/>
+  <text class="t3" x="560" y="505">Behauptungssatz hinter Maske, Suchanfragen, Topic-Stichworte</text>
+  <text class="t3" x="560" y="520">ohne Session, Konto, Zeit, Label</text>
+</svg>
+</div>
+<figcaption>Teal: festgelegt (ADR 0005 bis 0009). Rot gestrichelt: ohne dokumentierten Übermittlungsmechanismus. Der Pfeil "Ereignis" vom Dialog in die Kontodatenbank ist das Einwilligungsereignis ohne Inhalt.</figcaption>
+</figure>
+
+<h2 id="festgelegt">2 · Was schon festgelegt ist</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Festlegung</th><th>Woher</th><th>Folge für dieses Ticket</th></tr></thead>
+  <tbody>
+    <tr><td>Audio wird im Backend nie gespeichert; STT-Mitschnitte nur im privaten Testkorpus</td><td>ADR 0005</td><td>Die Datentabelle beginnt mit "Audio: nie"</td></tr>
+    <tr><td>Modus ist Pflichtfeld (<code>broadcast</code>, <code>conversation</code>); Sprecher mit <code>role</code> und <code>public</code></td><td>ADR 0007</td><td>Einwilligungsfluss und Grenze nach außen werden je Modus festgelegt</td></tr>
+    <tr><td>Namensmaske an der Grenze zur Websuche und zum Cache: nach außen nur Namen mit <code>public: true</code></td><td>ADR 0002, 0008</td><td>Hier wird festgelegt, welche Felder die Grenze passieren und ob sie im Modus Gespräch überhaupt offen ist</td></tr>
+    <tr><td>Private Namen nur für den Nutzer auf seinem Gerät; Teilen und Export mit Label</td><td>ADR 0008</td><td>Bestätigen; Verlauf und Export erben die Regel</td></tr>
+    <tr><td>Namen nie aus der Stimme; keine Stimmprofile; keine Emotionserkennung</td><td>ADR 0008, Rechtslage</td><td>Kein Hochrisiko nach AI Act; DSFA trotzdem (Muss-Liste Nr. 11)</td></tr>
+    <tr><td>Claude über Bedrock EU (null Aufbewahrung), Vertex EU als Ausweich (24-h-Cache abschalten); Deepgram EU mit Schranke; Anthropic direkt nie für Gesprächsdaten</td><td>ADR 0006</td><td>Auftragsverarbeiter stehen; die Fristen gehören in die Datenschutzerklärung</td></tr>
+    <tr><td>Belegspeicher je Session in Redis ohne Platte (Session + 15 min, nie Transkripttext); gemeinsamer Index dauerhaft ohne Gesprächsdaten</td><td>ADR 0007</td><td>Zwei Zeilen der Datentabelle stehen schon</td></tr>
+    <tr><td>Einschätzung ohne Belege wird gekennzeichnet wie das Urteil (Art. 50 AI Act)</td><td>#4</td><td>Transparenz in Runde 2</td></tr>
+    <tr><td>Nebensprecher ohne Attribution erscheinen als "Sprecher C"; ob geprüft, entscheidet dieses Ticket</td><td>ADR 0008</td><td>Q2</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">3 · Die Fakten auf dem Tisch</h2>
+<h3>Rechtslage (#6), gekürzt auf das, was hier entschieden wird</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Pflicht</th><th>Quelle</th><th>Was folgt</th></tr></thead>
+  <tbody>
+    <tr><td>Einwilligung <strong>aller</strong> Sprecher vor Aufnahme nichtöffentlicher Gespräche; auch die flüchtige Zwischenspeicherung ist "Aufnahme", Transkription ist "Gebrauch"</td><td>§ 201 StGB; § 120 öStGB; Art. 179ter chStGB ("auswertet" trifft den Server)</td><td>Der Anbieter kann die Einwilligung der Mitsprecher nicht einholen; er verpflichtet den Nutzer und protokolliert das Ereignis ohne Audio. Ob Weitersprechen nach Ansage reicht: Anwaltsfrage 1</td></tr>
+    <tr><td>Rundfunk und öffentliche Reden sind öffentlich gesprochen, nicht § 201; Kommentare der Anwesenden im Wohnzimmer sind es doch</td><td>§ 201 StGB, Lesart</td><td>Modus Sendung braucht eine Antwort auf Nebensprecher (Q2)</td></tr>
+    <tr><td>Anbieter ist Verantwortlicher; Nutzer: Vertrag; Mitsprecher: berechtigtes Interesse, getragen von der § 201-Einwilligung; öffentliche Personen: lit. f</td><td>Art. 6 Abs. 1 lit. b, f; EG 18 DSGVO</td><td>Verarbeitungsverzeichnis, Datenschutzerklärung, Betroffenenrechte beim Anbieter</td></tr>
+    <tr><td>Gesprächsinhalte können Art.-9-Daten sein (politische Meinung, Gesundheit); für private Mitsprecher gibt es keine Ausnahme außer Einwilligung</td><td>Art. 9 Abs. 1, Abs. 2 lit. a, e</td><td>Nicht speichern, nicht trainieren, Privates nicht prüfen (Q5); Rest Anwaltsfrage 2</td></tr>
+    <tr><td>Informationspflicht gegenüber Mitsprechern; Widerspruch muss wirken</td><td>Art. 14 Abs. 5 lit. b, Art. 21</td><td>Öffentliche Datenschutzinformation für Gesprächsteilnehmer; Pause je Sprecher (Runde 2)</td></tr>
+    <tr><td>Drittlandübermittlung nur mit DPF-Listung oder SCC; jede API-Anfrage mit Personendaten an einen US-Empfänger ist eine Übermittlung</td><td>Art. 44 ff.; EDPB 05/2021; Beschluss 2023/1795; C-703/25 P anhängig</td><td>Je Empfänger Mechanismus dokumentieren (Q4, Anwaltsfragen 3 und 4)</td></tr>
+    <tr><td>Speicherbegrenzung, Voreinstellung, Löschkonzept schriftlich</td><td>Art. 5 Abs. 1 lit. e, 17, 25 Abs. 2</td><td>Datentabelle mit Fristen (Q3)</td></tr>
+    <tr><td>Abrechnungsdaten zehn Jahre, Inhalte nie unter § 147</td><td>§ 147 AO</td><td>Abrechnung technisch getrennt von Inhalten (Q3, Konten #13)</td></tr>
+    <tr><td>DSFA vor Launch (KI steuert, was der Nutzer sieht); Verzeichnis trotz Kleinbetrieb</td><td>Art. 35; DSK Muss-Liste Nr. 11; Art. 30 Abs. 5</td><td>Task-Ticket mit dem Anwalt (Runde 2)</td></tr>
+    <tr><td>Keine öffentliche Mitteilung des Wortlauts nichtöffentlicher Gespräche</td><td>§ 201 Abs. 2 StGB</td><td>Karten aus dem Modus Gespräch nur mit Label und Warnung teilbar (ADR 0008, Runde 2)</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Einwilligungsmuster der Branche und der Behörden (Research #40)</h3>
+<div class="two">
+  <div class="card"><h3>Drei Stufen in Produkten</h3><ul>
+    <li><strong>Ansage</strong> über Lautsprecher (Apple Telefon, Google Telefon, Zoom Telefon, Fireflies Desktop): trifft alle im Raum, kein Nachweis je Person.</li>
+    <li><strong>Sichtbarkeit</strong> (Bot, Chat, Wasserzeichen, E-Mail vorab): braucht eine Konferenzplattform.</li>
+    <li><strong>Bestätigung je Person mit Protokoll</strong> (Teams, Zoom-Disclaimer, Fireflies-Opt-out): braucht ein Gerät je Mitsprecher.</li>
+    <li>Alle Anbieter legen die Einwilligung dem Nutzer auf ("you are responsible for informing participants"). Reine Rekorder (Google Recorder, Plaud) haben gar keinen Hinweis.</li>
+  </ul></div>
+  <div class="card"><h3>Was Behörden verlangen</h3><ul>
+    <li><strong>DSK</strong> (Videokonferenzen): "expliziter und durch die Teilnehmenden zu bestätigender Hinweis oder Kennzeichnung innerhalb der Benutzerschnittstelle".</li>
+    <li><strong>BayLDA</strong> 2025: Transkription auch auf lit. f stützbar; Widerspruch wirkt "ab diesem Zeitpunkt", schon Erfasstes entfernen; Live-Untertitel ohne Speicherung als datensparsames Muster.</li>
+    <li><strong>LfDI BW</strong> 2026: Hinweis mündlich oder Lichtsignal, Pause-Funktion, Protokoll der Zeitfenster, Verarbeitung in der EU, Bürgerbeiträge strikt ausnehmen.</li>
+    <li><strong>Stores:</strong> Apple 2.5.14 verlangt explizite Nutzereinwilligung und sichtbare Aufnahmeanzeige; 5.1.2(i) Offenlegung der Weitergabe an "third-party AI".</li>
+  </ul></div>
+</div>
+
+<h3>Was die Anbieter behalten (ADR 0006, Rechtslage 2.4)</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Empfänger</th><th>Rolle</th><th>Was er sieht</th><th>Behält</th><th>Mechanismus</th></tr></thead>
+  <tbody>
+    <tr><td>Deepgram EU</td><td>Auftragsverarbeiter</td><td>Audio, Transkript</td><td>unbelegt; Metadaten 90 Tage; <code>mip_opt_out</code> Pflicht</td><td>SCC laut Privacy Policy; DPA anfordern; <strong>Schranke vor Launch</strong></td></tr>
+    <tr><td>Bedrock EU</td><td>Auftragsverarbeiter (AWS)</td><td>Transkriptausschnitte, Setting, Zuordnungstabelle, Behauptungen</td><td>null (Haiku, Sonnet, Opus)</td><td>AWS DPA mit SCC; Anthropic sieht nichts</td></tr>
+    <tr><td>Vertex EU</td><td>Auftragsverarbeiter (Google Cloud)</td><td>dasselbe, nur Ausweich und Messung</td><td>Cache bis 24 h, abschaltbar; Löschung 180 Tage nach Vertragsende</td><td>Google Cloud DPA mit DPF und SCC</td></tr>
+    <tr><td>Brave Search</td><td>eigenständiger Empfänger</td><td>Suchanfragen aus dem Behauptungssatz</td><td>Query-Log bis 90 Tage; ZDR nur Enterprise</td><td>DPA mit SCC referenziert (PDF nicht abrufbar); DPF nicht verifiziert</td></tr>
+    <tr><td>Google Fact Check</td><td>eigenständiger Empfänger</td><td>Behauptungssatz als Suchbegriff</td><td>nach Google-Datenschutzerklärung</td><td>Google LLC DPF-zertifiziert; kein DPA</td></tr>
+    <tr><td>Wikimedia</td><td>eigenständiger Empfänger</td><td>Stichworte, Entitäten</td><td>nach eigener Policy, Server USA</td><td><strong>weder DPF noch SCC genannt</strong>: Anwaltsfrage 3</td></tr>
+    <tr><td>Amtliche Quellen</td><td>EU, öffentlich</td><td>Stichworte, Tabellen-IDs</td><td>–</td><td>keine Übermittlung ins Drittland</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Übermittlung und Namensmaske (Research #40, Abschnitt 3)</h3>
+<ul>
+  <li>Die DSK sagt wörtlich: Namen zu entfernen reiche "regelmäßig nicht", aus dem Zusammenhang lasse sich ein Personenbezug herstellen. Die Maske mindert das Risiko, beendet den Personenbezug nicht.</li>
+  <li>EDPB 01/2025 (Entwurf): Pseudonymisierung als Zusatzmaßnahme zu Art. 46; je Empfänger dessen Zuordnungsmittel prüfen; <strong>keine stabilen Pseudonyme mitsenden</strong> (keine Sprecher-IDs, keine Session-IDs).</li>
+  <li>EuGH C-413/23 P: ob Daten für den Empfänger personenbezogen sind, hängt von dessen Mitteln ab; Verhältnis zu Kapitel V laut EDPB noch offen. Nicht durch Architektur lösbar: Anwaltsfrage.</li>
+  <li>Einzige aktuelle Aufsichtsentscheidung zu US-Cloud (Datatilsynet DK, 2026): DPF trägt, aber die Kette der Unterauftragsverarbeiter muss je Glied dokumentiert sein.</li>
+</ul>
+
+<h3>Was das alte Repo schon hatte</h3>
+<ul>
+  <li><strong>ADR 0018 alt:</strong> Streams 15 Minuten, Redis ohne AOF auf tmpfs, Verdict-Cache 7 Tage als Hash des normalisierten Satzes ohne Sprecher und Session; ein Neustart startet leer. Der Dialog versprach genau das.</li>
+  <li><strong>ADR 0017 alt, Runde 3b:</strong> eine dritte Klassifikatorfrage "betrifft das Privatleben einer nicht öffentlichen Person" (Tischrunde, Familie, Nachbarn); ab 0,5 verworfen und für spätere Fenster als "[private Äußerung ausgelassen]" maskiert. Öffentliche Personen werden auch bei Privatem geprüft ("Helmut Kohl ist eine Frau" muss eine Karte bekommen). Dieser Privatfilter fehlt in ADR 0004 noch.</li>
+  <li><strong>Brief 15.6:</strong> Einwilligungsdialog vor jeder Aufnahme, nennt alle aktiven externen Anbieter; <code>PERSIST_TRANSCRIPTS</code> war im Brief, nie im Code.</li>
+  <li><strong>Brief 11:</strong> keine Personenwertung, keine "Lügen-Scores"; Zusammenfassung als Markdown-Export; nicht gebaut.</li>
+</ul>
+
+<h2 id="dialog">4 · So sieht der Dialog aus</h2>
+<p>Festgelegt in Q1 und Q2, Wortlaut in der Spezifikation Abschnitt 1.1. Zwei Fassungen, je Modus; beide erzeugen denselben Consent Record ohne Inhalt.</p>
+<div class="two">
+  <div>
+    <div class="dialog">
+      <div class="k1">Gespräch im Raum</div>
+      <div>Alle, die mitsprechen, müssen wissen, dass dieses Gespräch mitgehört und geprüft wird, und damit einverstanden sein. Das Gesetz verlangt die Einwilligung jeder einzelnen Person (§ 201 StGB).</div>
+      <div class="k2">Was passiert: Ton geht an Deepgram (EU) zur Verschriftung, Ausschnitte an Claude (AWS, EU) zur Erkennung; Behauptungen gehen ohne Namen privater Personen an Brave, Google Fact Check und Wikipedia (USA). Nichts wird gespeichert; 15 Minuten nach Ende ist alles weg. Audio wird nie gespeichert.</div>
+      <div class="k3"><span class="btn">Alle sind informiert und einverstanden</span> <span class="btn ghost">Abbrechen</span><br><span class="k2">Optional: Ansage über den Lautsprecher abspielen · Während des Gesprächs: Pause, Sprecher ausnehmen</span></div>
+    </div>
+    <p class="muted">Modus Gespräch: volle Fassung, Bestätigung ist Pflicht, Ereignis wird protokolliert.</p>
+  </div>
+  <div>
+    <div class="dialog">
+      <div class="k1">Sendung</div>
+      <div>Geprüft wird die Sendung. Wer im Raum mitspricht, wird mit erfasst; seine Beiträge werden nicht geprüft und nicht angezeigt. Sag den Anwesenden Bescheid oder nimm den Ton direkt vom Gerät ab.</div>
+      <div class="k2">Was passiert: wie links; Namen der Sendungsgäste gehen mit in die Suche.</div>
+      <div class="k3"><span class="btn">Verstanden, starten</span> <span class="btn ghost">Tonabgriff wählen</span></div>
+    </div>
+    <p class="muted">Modus Sendung: Kurzform; mit Kanalabgriff entfällt der Satz zu den Anwesenden.</p>
+  </div>
+</div>
+
+<h2 id="runde1">5 · Festgelegt in Runde 1</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Einwilligung Gespräch</td><td><strong>Nutzerbestätigung je Gespräch</strong> als Pflicht in beiden Modi, Dialog versioniert; <strong>Einwilligungsereignis</strong> ohne Inhalt (Konto, Session, Modus, Dialogversion, Zeit, Sprecheranzahl, Ansage ja/nein), drei Jahre. Ansage als Schalter; Aufnahmeanzeige, Pause, "Sprecher ausnehmen" als Widerspruch mit Wirkung ab sofort. Form bleibt Anwaltsfrage 1.</td></tr>
+    <tr><td class="num">Q2</td><td>Nebensprecher Sendung</td><td>Mikrofon erlaubt mit Kurzform-Dialog; <strong>Labels ohne Attribution werden verworfen</strong> (nicht erkannt, nicht angezeigt, nichts nach außen, gezählt). Kanalabgriff als Standard, wo die Plattform ihn hat (#10). Ergänzt ADR 0008: "Sprecher C" bekommt im Modus Sendung keine Karte.</td></tr>
+    <tr><td class="num">Q3</td><td>Datentabelle</td><td>Tabelle wie vorgeschlagen (Abschnitt Q3 oben, wird Abschnitt 2 der Spezifikation). <strong>Verlauf nur auf Wunsch je Gespräch</strong>, Karten ohne Transkript, je Konto, löschbar; Wortlaut nur für öffentliche Sprecher.</td></tr>
+    <tr><td class="num">Q4</td><td>Grenze nach außen</td><td><strong>Dieselbe Grenze in beiden Modi:</strong> nur Behauptungssatz, Suchanfragen und Topic-Stichworte hinter Namensmaske und Privatfilter; nie Wortlaut, Transkript, Label, Session, Konto, Zeit, Setting; Anfrage vom Backend. Mechanismus je Empfänger dokumentiert; Wikimedia bis zur Anwaltsantwort nur Stichworte ohne Satz; Dialog nennt die Empfänger je Modus.</td></tr>
+    <tr><td class="num">Q5</td><td>Privatfilter</td><td>Behauptungen über <strong>nicht öffentliche Personen aus dem Umfeld der Sprecher</strong> (Anwesende, Familie, Freunde, Nachbarn, Kollegen) werden keine Behauptung und kein Candidate; Diagnosezähler. <strong>Marcos Ergänzung:</strong> Öffentliche Personen werden auch bei Privatem geprüft, <em>einschließlich öffentlich bekannter Tatsachen über ihre Familie</em> ("Friedrich Merz hat drei Töchter", seine Frau als Teil des öffentlichen Lebens). Die Grenze ist also die Person, nicht das Thema: privat ist, wer nicht öffentlich bekannt ist. Labels "privat" im Golden Set v2.</td></tr>
+    <tr><td class="num">Q6</td><td>Urteilscache</td><td><strong>Nur Modus Sendung</strong>, Schlüssel aus dem maskierten normalisierten Satz, 7 Tage, Wert ohne Session, Konto, Label; eigene Redis-Instanz neben dem Index; Löschpfad nach Behauptungstext; Trefferquote in #39, danach Bleiben oder Fallen.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">6 · Festgelegt in Runde 2</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q7</td><td>Löschung</td><td>Verlauf je Gespräch sofort löschbar, Export als Datei; Konto löschen entfernt Verlauf und Zähler sofort, Consent Records und Rechnungen bleiben für ihre Fristen ohne Bezug zu Inhalten. Mitsprecher: Widerspruch live über "Sprecher ausnehmen", nachträglich nur über den Nutzer. Öffentliche Person: Löschpfad im Urteilscache nach Behauptungstext. Backups nur Kontodatenbank, verschlüsselt, 30 Tage. Datenpanne: Sicherheit (#22).</td></tr>
+    <tr><td class="num">Q8</td><td>Transparenz</td><td>Dialog je Modus versioniert, Anbieterliste aus der Konfiguration. Karte sichtbar "automatisch erzeugt, nicht redaktionell geprüft"; Feld <code>generated</code> (System, Modell, Prompt-Version) in Urteil und Einschätzung, Export und Teilen schreiben es mit; keine C2PA in Version 1. Öffentliche Datenschutzinformation für Gesprächsteilnehmer als eigene Seite. Stores: Audio Data und User Content. Keine Personenwertung.</td></tr>
+    <tr><td class="num">Q9</td><td>Gerät und Datei</td><td>Gerätemodus verspricht genau: "Dein Ton verlässt das Gerät nicht." Datei-Upload nach dem Launch, nur Modus Gespräch, Bestätigung "mit Einwilligung aller entstanden", Durchlauf, nie Sendungsmitschnitte.</td></tr>
+    <tr><td class="num">Q10</td><td>Anwalt</td><td>Task-Ticket "Anwaltliche Prüfung und DSFA vor dem Launch" (Marco): vorgelegt werden ADR 0009 mit Spezifikation, Dialogtexte, Datentabelle, Grenze nach außen, Anbietermatrix, dieses Schaubild, die 13 Fragen mit Präzisierung von Frage 2 und 3. Blockiert den Launch, nicht die Map; Deepgram-Schranke wird dort abgehakt.</td></tr>
+    <tr><td class="num">Q11</td><td>Festhalten</td><td>Glossar: Private Matter, Consent Record, History. <a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/adr/0009-datenschutzmodell-durchlauf-und-grenze-nach-aussen.md">ADR 0009</a>, <a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/spec/datenschutz.md">docs/spec/datenschutz.md</a>; Ergänzungen in ADR 0004 (Regel 8) und ADR 0008 (Sprecher C, Sprecher ausnehmen). Commit dbb9ef9.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="wohin">7 · Was wo liegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Ort</th><th>Inhalt</th></tr></thead>
+  <tbody>
+    <tr><td>ADR 0009</td><td>Durchlauf als Standard, Einwilligung je Modus, Nebensprecher, Verlauf, Grenze nach außen, Privatfilter, Urteilscache, Kennzeichnung, Gerätemodus, Datei; verworfene Optionen; Folgen.</td></tr>
+    <tr><td><code>docs/spec/datenschutz.md</code></td><td>Dialogtexte je Modus, Consent Record als Schema, Datentabelle, Verlauf, Grenze nach außen je Empfänger, Privatfilter-Regel, Urteilscache, Kennzeichnung, Löschung, Datenschutzinformation, Gerät und Datei, Vorlage für den Anwalt, Offenes.</td></tr>
+    <tr><td><code>CONTEXT.md</code></td><td>Private Matter (Privates), Consent Record (Einwilligungsnachweis), History (Verlauf).</td></tr>
+    <tr><td>Spezifikation Modellrollen 4.3</td><td>Regel 8 Privatfilter, Diagnosefeld <code>dropped.private</code>.</td></tr>
+    <tr><td>Spezifikation Sprecher 3 und 8</td><td>"Sprecher ausnehmen" als Nutzereingriff; Nebensprecher im Modus Sendung verworfen.</td></tr>
+    <tr><td>Spezifikation Topic 1, Inputs</td><td>Modus-Zeile und Datei-Upload verweisen auf ADR 0009.</td></tr>
+    <tr><td>Weitergaben</td><td>Clients #10, Konten #13, Betriebsmodell #15, Live-Ansicht #16, Sicherheit #22, Messaufbau der Prüfung #39, Vergleichsprototyp #30, Testkorpus #25; neues Task-Ticket Anwalt; Map: Nebel "Datenmodell" mit vier Tabellen, "Anwaltliche Prüfung" graduiert, "Datei-Upload" bleibt Nebel mit Regel.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Einwilligungsereignis</dt><dd>Der Nachweis, dass der Nutzer den Dialog bestätigt hat: Konto, Session, Modus, Dialogversion, Zeit, Sprecheranzahl, Ansage ja oder nein. Nie Audio, nie Namen, nie Inhalt. Kandidat für das Glossar als Consent Record.</dd>
+  <dt>Durchlauf</dt><dd>Verarbeitung ohne Speicherung: Daten leben nur so lange, wie die Pipeline sie braucht (Redis ohne Platte, 15 Minuten), und erreichen nie eine Platte.</dd>
+  <dt>Grenze nach außen</dt><dd>Die Stelle im Backend, hinter der eigenständige Empfänger stehen (Brave, Google Fact Check, Wikimedia). Sie lässt nur den Behauptungssatz hinter Namensmaske und Privatfilter passieren, nie Kennungen.</dd>
+  <dt>Namensmaske</dt><dd>Vor jedem Aufruf nach außen werden Namen ersetzt, außer bei Sprechern mit <code>public: true</code> und sicherer Attribution (ADR 0002, 0008).</dd>
+  <dt>Privatfilter</dt><dd>Die Regel des Claim Extractors, dass Behauptungen über das Privatleben nicht öffentlicher Personen keine Behauptung werden (Q5). Glossarkandidat: Private Matter (Privates).</dd>
+  <dt>Verlauf</dt><dd>Die Karten eines Gesprächs, die der Nutzer auf Wunsch je Konto behält (Q3). Glossarkandidat: History.</dd>
+  <dt>Auftragsverarbeiter</dt><dd>Anbieter, der nur nach Weisung verarbeitet und per Vertrag (Art. 28) gebunden ist: Deepgram, AWS, Google Cloud. Gegenstück: eigenständiger Empfänger, der nach eigener Policy verarbeitet (Brave, Google LLC, Wikimedia).</dd>
+  <dt>DPF</dt><dd>EU-US Data Privacy Framework, Angemessenheitsbeschluss 2023/1795: Übermittlungen an gelistete US-Organisationen sind zulässig; Rechtsmittel C-703/25 P anhängig; SCC als Rückfall.</dd>
+  <dt>DSFA</dt><dd>Datenschutz-Folgenabschätzung nach Art. 35: Pflicht vor dem Launch, weil KI steuert, was der Nutzer sieht (DSK Muss-Liste Nr. 11).</dd>
+</dl>
+</div>
+</body>
+</html>
+
+</body></html>

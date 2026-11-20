@@ -1,0 +1,103 @@
+# After the merge: multi-arch images to GHCR, stages 3 and 4 against the pushed images, aggregate `main passed`.
+# The ticket close is not here: acceptance.js closes the issue from the judge's verdicts (docs/process/test-strategy.md).
+name: main
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: main
+  cancel-in-progress: false
+
+jobs:
+  images-matrix:
+    name: images to build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      images: ${{ steps.list.outputs.images }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - id: list
+        run: |
+          if [ -f scripts/ci/images.ts ]; then node scripts/ci/images.ts; else echo "images=[]" >> "$GITHUB_OUTPUT"; fi
+
+  publish:
+    name: publish · ${{ matrix.image.name }}
+    needs: images-matrix
+    if: needs.images-matrix.outputs.images != '[]'
+    runs-on: ubuntu-24.04
+    # amd64 about 2 minutes uncached, arm64 under QEMU a few times that (ticket #68 AC5).
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.images-matrix.outputs.images) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          # BuildKit pinned like every tool image (review round 2, S4); bump it with the other pins.
+          driver-opts: image=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ matrix.image.dockerfile }}
+          target: ${{ matrix.image.target }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          # Attestations travel with the pushed index (pr.yml builds with `load: true`, which carries none).
+          provenance: true
+          sbom: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ matrix.image.name }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ matrix.image.name }}:main
+          cache-from: type=gha,scope=${{ matrix.image.name }}
+          cache-to: type=gha,scope=${{ matrix.image.name }},mode=max
+
+  stack-tests:
+    name: stack tests (pushed images)
+    needs: [images-matrix, publish]
+    if: needs.images-matrix.outputs.images != '[]'
+    uses: ./.github/workflows/stack-tests.yml
+    permissions:
+      contents: read
+      checks: write
+      packages: read
+    with:
+      registry: ghcr.io/${{ github.repository }}
+      tag: ${{ github.sha }}
+      shards: '[1, 2]'
+      e2e-args: --project=chromium-desktop --project=chromium-mobile
+
+  main-passed:
+    name: main passed
+    needs: [images-matrix, publish, stack-tests]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          printf '%s' "$NEEDS" | node -e "
+            const needs = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+            const bad = Object.entries(needs).filter(([, v]) => !['success', 'skipped'].includes(v.result));
+            if (bad.length) { console.error('failed:', bad.map(([k, v]) => k + '=' + v.result).join(', ')); process.exit(1); }
+            console.log('all stages green');"

@@ -1,0 +1,40 @@
+# Prettier checks code and its configuration. Prose, data and areas with their own conventions stay out.
+pnpm-lock.yaml
+**/reports/
+# Generated from the Zod schemas; src/json-schema.test.ts pins their bytes to the generator's output (ADR 0012).
+packages/contracts/json-schema/
+*.md
+docs/
+evals/
+tools/
+.claude/
+.github/rulesets/
+.github/ISSUE_TEMPLATE/
+# Written before the toolchain existed; reformatting them is a change of its own.
+commitlint.config.mjs
+.dependency-cruiser.cjs
+knip.json
+# Frozen tests (.claude/frozen/<issue>.json) are never reformatted: their bytes are pinned by sha256.
+scripts/ci/affected.test.ts
+scripts/ci/images.test.ts
+tools/tests/test_check_contract_change.py
+packages/service-kit/src/logger.test.ts
+packages/service-kit/src/health.test.ts
+packages/service-kit/src/testing/probe-body.ts
+services/detection/src/config.test.ts
+services/detection/src/main.test.ts
+services/detection/features/readiness.feature
+services/detection/features/steps/detection.steps.ts
+tests/api/features/edge.feature
+tests/api/steps/edge.steps.ts
+tests/acceptance/features/25/walking-skeleton.feature
+tests/acceptance/steps/owner.steps.ts
+tests/acceptance/canaries/25.json
+packages/contracts/src/segment.test.ts
+packages/contracts/src/json-schema.test.ts
+packages/contracts/src/segment.limits.test.ts
+packages/contracts/src/claim-event.test.ts
+packages/contracts/src/detection-event.test.ts
+packages/providers/src/call-validated.test.ts
+packages/providers/src/call-validated.elements.test.ts
+packages/providers/src/mock/mock-claim-extractor.test.ts

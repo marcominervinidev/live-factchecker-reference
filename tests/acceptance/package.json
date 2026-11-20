@@ -1,0 +1,19 @@
+{
+  "name": "@lfc/acceptance-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Acceptance cases (owner's view) and their runner: `make acceptance ISSUE=<n>` through the edge only; never imports service code, never runs in CI.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test:unit": "vitest run",
+    "acceptance": "node runner/run.ts"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "13.3.0",
+    "@lfc/api-tests": "workspace:*",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

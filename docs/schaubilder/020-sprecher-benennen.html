@@ -1,0 +1,313 @@
+<!-- Quelle: https://claude.ai/artifact/DR6S9Pb2R3UPignz9KguU8, exportiert 2026-10-23, Ticket #20 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sprecher benennen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; zulässige Zuordnungsquellen teal, Verbotenes rot durchgestrichen, Unsicheres bernstein; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.karte{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.karte .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:4px}
+.karte .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.karte .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .box-src{fill:var(--soft)}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 20 · Grilling · Schaubild der Entscheidung · 2026-10-12</div>
+  <h1>Sprecher benennen</h1>
+  <p class="lead">Wie wird aus dem Diarisierungslabel <code>A</code> der Name "Friedrich Merz" auf der Karte, ohne die Stimme zu erkennen? Fest ist: Namen kommen nur aus dem Setting, dem Programmkontext oder der Anrede im Transkript, nie aus der Stimme (Rechtslage #6); die Extraktion sieht die Namen aus dem Setting (ADR 0002); ein Segment trägt genau ein Label (ADR 0005); das Setting hat je Sprecher <code>name</code>, <code>role</code>, <code>public</code> (ADR 0007). Entschieden sind Mechanismus, Setting, Programmdaten, private Namen, Sicherheitsstufen, Karte und Festhalten. Diese Seite ist das Schaubild zum Abnicken.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Datenfluss</a><a href="#quellen">Zuordnungsquellen</a><a href="#festgelegt">Festgelegt</a><a href="#karte">Karte</a><a href="#fakten">Fakten</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Datenfluss: vom Label zum Namen</h2>
+<p>So ist es seit Runde 1 festgelegt. Die Diarisierung liefert nur Labels. Ein eigener Schritt, der <strong>Speaker Mapper</strong>, führt je Session eine Zuordnungstabelle Label zu Sprecher, mit Quelle und Sicherheit; der Claim Extractor liest diese Tabelle und schreibt den Namen in die Behauptung; die Karte zeigt, woher die Zuordnung kommt.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 480" role="img" aria-label="Links kommen Segmente mit Labels A und B von der Diarisierung. Ein Speaker Mapper führt die Zuordnungstabelle: A ist Friedrich Merz aus dem Setting, B ist Sprecher B unsicher. Zulässige Quellen, die den Mapper füttern: das Setting, die Anrede im Transkript, Programmdaten und der Nutzer. Die Stimme ist als Quelle rot durchgestrichen. Der Claim Extractor liest die Tabelle und schreibt den Namen in die Behauptung; die Karte zeigt die Zuordnungsquelle; die Namensmaske lässt nur öffentliche Namen nach außen.">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-ok"/></marker>
+  <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-warn"/></marker>
+</defs>
+
+<!-- Quellen -->
+<text x="20" y="28" class="lab lab-ok">Zulässige Quellen der Zuordnung</text>
+<rect x="20" y="40" width="190" height="44" rx="6" class="box box-ok"/>
+<text x="115" y="58" text-anchor="middle" class="t">Setting · Q2 fest</text>
+<text x="115" y="74" text-anchor="middle" class="t2">Name, Rolle, öffentlich</text>
+<rect x="20" y="96" width="190" height="44" rx="6" class="box box-ok"/>
+<text x="115" y="114" text-anchor="middle" class="t">Anrede im Transkript</text>
+<text x="115" y="130" text-anchor="middle" class="t2">"Herr Merz, …" · Vorstellung</text>
+<rect x="20" y="152" width="190" height="44" rx="6" class="box box-ok"/>
+<text x="115" y="170" text-anchor="middle" class="t">Programmdaten · Q3 fest</text>
+<text x="115" y="186" text-anchor="middle" class="t2">Sendung, Gästeliste · später</text>
+<rect x="20" y="208" width="190" height="44" rx="6" class="box box-ok"/>
+<text x="115" y="226" text-anchor="middle" class="t">Nutzer</text>
+<text x="115" y="242" text-anchor="middle" class="t2">benennt "Sprecher B" um</text>
+<rect x="20" y="270" width="190" height="44" rx="6" class="box box-bad"/>
+<text x="115" y="288" text-anchor="middle" class="t2" style="fill:var(--bad)">Stimme</text>
+<text x="115" y="304" text-anchor="middle" class="t3" style="fill:var(--bad)">nie; öffentliche Personen: Anwaltsfrage 13</text>
+<line x1="60" y1="292" x2="170" y2="292" class="ln ln-bad"/>
+
+<line x1="210" y1="62" x2="300" y2="140" class="ln ln-ok" marker-end="url(#aro)"/>
+<line x1="210" y1="118" x2="300" y2="150" class="ln ln-ok" marker-end="url(#aro)"/>
+<line x1="210" y1="174" x2="300" y2="160" class="ln ln-ok ln-dash" marker-end="url(#aro)"/>
+<line x1="210" y1="230" x2="300" y2="170" class="ln ln-ok" marker-end="url(#aro)"/>
+
+<!-- Diarisierung -->
+<rect x="20" y="360" width="190" height="56" rx="6" class="box"/>
+<text x="115" y="382" text-anchor="middle" class="t">Diarisierung</text>
+<text x="115" y="400" text-anchor="middle" class="t2">Segmente mit Label A, B, C</text>
+<text x="115" y="412" text-anchor="middle" class="t3">Sitzungslabel, kein Stimmprofil</text>
+<line x1="210" y1="388" x2="300" y2="200" class="ln" marker-end="url(#ar)"/>
+<text x="268" y="300" class="t3">neues Label,</text>
+<text x="268" y="313" text-anchor="start" class="t3">Anrede-Treffer</text>
+
+<!-- Mapper -->
+<rect x="300" y="110" width="230" height="110" rx="6" class="box box-ok"/>
+<text x="415" y="132" text-anchor="middle" class="t">Speaker Mapper · Q1 fest</text>
+<text x="415" y="150" text-anchor="middle" class="t2">Modellaufruf außerhalb des Ticks</text>
+<text x="415" y="166" text-anchor="middle" class="t3">führt die Zuordnungstabelle je Session</text>
+<text x="415" y="184" text-anchor="middle" class="t3">Auslöser: neues Label, Anrede,</text>
+<text x="415" y="198" text-anchor="middle" class="t3">Setting-Änderung, Nutzer-Eingriff</text>
+
+<!-- Tabelle -->
+<rect x="300" y="250" width="230" height="96" rx="6" class="box box-src"/>
+<text x="415" y="270" text-anchor="middle" class="t">Zuordnungstabelle</text>
+<text x="312" y="292" class="t2" style="font-family:var(--font-mono)">A → Friedrich Merz</text>
+<text x="312" y="306" class="t3">Quelle: Setting + Anrede · sicher</text>
+<text x="312" y="324" class="t2" style="font-family:var(--font-mono)">B → "Sprecher B"</text>
+<text x="312" y="338" class="t3">Quelle: keine · Stufe "keine" · Q5 fest</text>
+<line x1="415" y1="220" x2="415" y2="248" class="ln ln-ok" marker-end="url(#aro)"/>
+
+<!-- Extractor -->
+<rect x="600" y="110" width="200" height="70" rx="6" class="box"/>
+<text x="700" y="134" text-anchor="middle" class="t">Claim Extractor</text>
+<text x="700" y="152" text-anchor="middle" class="t2">liest Tabelle im Präfix-Block 2</text>
+<text x="700" y="168" text-anchor="middle" class="t3">Sprechername nur aus der Tabelle</text>
+<polyline points="530,298 565,298 565,145 598,145" class="ln ln-ok" marker-end="url(#aro)"/>
+<line x1="210" y1="388" x2="598" y2="388" class="ln" marker-end="url(#ar)"/>
+<polyline points="700,388 700,182" class="ln ln-dash"/>
+<text x="700" y="404" text-anchor="middle" class="t3">Turn-Blöcke mit Label</text>
+
+<!-- Claim -->
+<rect x="600" y="230" width="200" height="60" rx="6" class="box box-ok"/>
+<text x="700" y="252" text-anchor="middle" class="t">Behauptung</text>
+<text x="700" y="268" text-anchor="middle" class="t2">speaker, speakerSource,</text>
+<text x="700" y="282" text-anchor="middle" class="t2">sentence (sinngemäß), verbatim</text>
+<line x1="700" y1="180" x2="700" y2="228" class="ln ln-ok" marker-end="url(#aro)"/>
+
+<!-- Karte -->
+<rect x="840" y="230" width="140" height="60" rx="6" class="box"/>
+<text x="910" y="252" text-anchor="middle" class="t">Karte · Q6 fest</text>
+<text x="910" y="268" text-anchor="middle" class="t2">zeigt Name und</text>
+<text x="910" y="282" text-anchor="middle" class="t2">Quelle der Zuordnung</text>
+<line x1="800" y1="260" x2="838" y2="260" class="ln" marker-end="url(#ar)"/>
+
+<!-- Maske -->
+<rect x="840" y="320" width="140" height="60" rx="6" class="box box-warn"/>
+<text x="910" y="342" text-anchor="middle" class="t">Namensmaske</text>
+<text x="910" y="358" text-anchor="middle" class="t2">nach außen nur</text>
+<text x="910" y="372" text-anchor="middle" class="t2">public = true · Q4 fest</text>
+<polyline points="700,290 700,350 838,350" class="ln ln-warn" marker-end="url(#arw)"/>
+<text x="760" y="344" text-anchor="middle" class="t3">Suche, Cache</text>
+
+<text x="20" y="450" class="t3">Die Tabelle gilt je Session; Labels werden nie über Sessions hinweg wiedererkannt. Ändert sich eine Zuordnung, werden die Karten dieser Session nachgezogen (Runde 2).</text>
+<text x="20" y="466" class="t3">Messung: Zuschreibung ≥ 0,95 im Messaufbau (ADR 0003) misst genau diese Tabelle.</text>
+</svg>
+</div>
+<figcaption>Die Diarisierung liefert Labels, der Speaker Mapper macht daraus Namen, aber nur aus vier zulässigen Quellen. Was er nicht sicher zuordnen kann, bleibt "Sprecher B". Die Namensmaske sitzt dahinter und lässt nur Namen öffentlicher Personen nach außen.</figcaption>
+</figure>
+
+<h2 id="quellen">2 · Zuordnungsquellen: was sie liefern und wann</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Quelle</th><th>Liefert</th><th>Wann</th><th>Sicherheit</th><th>Erlaubt</th></tr></thead>
+  <tbody>
+    <tr><td>Setting</td><td>die Menge der Sprecher mit Namen und Rolle; bei zwei Sprechern und zwei Labels oft schon die Zuordnung</td><td>vor dem Gespräch</td><td>hoch, wenn Zahl der Labels = Zahl der Sprecher und die Rollen trennen (Moderation spricht zuerst)</td><td><span class="tag ok">ja</span></td></tr>
+    <tr><td>Anrede im Transkript</td><td>"Herr Merz, Sie haben gesagt …" ordnet den nächsten Sprecher zu; "Ich bin Alice Weidel" den aktuellen; Moderator stellt Gäste vor</td><td>laufend, meist in den ersten Minuten</td><td>hoch bei Vorstellung, mittel bei Anrede (der Angesprochene antwortet nicht immer als Nächster)</td><td><span class="tag ok">ja</span></td></tr>
+    <tr><td>Programmdaten</td><td>Sendung, Datum, Gästeliste mit Rollen (MediathekViewWeb liefert Titel, Thema, Beschreibung; Beschreibungen von Talkshows nennen üblicherweise die Gäste)</td><td>vor dem Gespräch, maschinell</td><td>Menge sicher, Zuordnung zu Labels nicht</td><td><span class="tag ok">ja</span>, später mit dem Sender-Livestream</td></tr>
+    <tr><td>Nutzer</td><td>benennt ein Label um, bestätigt oder verwirft eine Zuordnung</td><td>jederzeit</td><td>gilt als sicher, mit Hinweis auf seine Verantwortung</td><td><span class="tag ok">ja</span></td></tr>
+    <tr><td>Stimme</td><td>–</td><td>–</td><td>–</td><td><span class="tag bad">nie</span>: biometrische Identifizierung, Art. 9 DSGVO, DSFA-Pflicht, Hochrisiko nach AI Act Anhang III Nr. 1 lit. a</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="festgelegt">3 · Festgelegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Mechanismus</td><td><strong>Speaker Mapper:</strong> ein Modellaufruf außerhalb des Ticks führt je Session die Zuordnungstabelle Label zu Sprecher mit Quelle und Sicherheit; Auslöser: neues Label, Anrede oder Vorstellung, Setting-Änderung, Nutzereingriff. Der Claim Extractor setzt Namen nur aus der Tabelle; ohne Zuordnung heißt der Sprecher "Sprecher B". Die Zuordnungsquellen sind eine erweiterbare Liste; "Stimme nur bei öffentlichen Personen" bleibt Anwaltsfrage 13 und würde eine fünfte Quelle.</td></tr>
+    <tr><td class="num">Q2</td><td>Öffentlich</td><td>Standard aus Modus und Rolle: im Modus Sendung sind Moderation, Gäste, Hosts öffentlich, die Rolle <code>private</code> nicht; im Modus Gespräch ist jeder privat; der Nutzer kann je Sprecher umschalten. Wikidata-Vorschlag später.</td></tr>
+    <tr><td class="num">Q3</td><td>Programmdaten</td><td>Das Setting ist die einzige Schnittstelle; jedes Feld trägt seine Quelle (<code>user</code>, <code>programme</code>). Ein Programmdaten-Adapter füllt es später aus Titel und Beschreibung (MediathekViewWeb) per Modell. Sender-Untertitel bleiben Labelhilfe für den Korpus.</td></tr>
+    <tr><td class="num">Q4</td><td>Private Namen</td><td>Nur für den Nutzer: auf der Karte auf seinem Gerät, nie außerhalb des Backends, nie im Cache, beim Teilen oder Export durch das Label ersetzt. Bestätigung durch das Datenschutzmodell (#11); Research #40 bestätigt, dass die Namensmaske allein keine Übermittlung trägt.</td></tr>
+    <tr><td class="num">Q5</td><td>Sicherheit</td><td>Zwei Stufen: <strong>sicher</strong> bei Nutzerangabe oder zwei unabhängigen Quellen, dann Name auf Karte und in der Behauptung; <strong>vermutlich</strong> bei einer Quelle, dann Label mit Vorschlag und Bestätigen, nichts mit dem Namen nach außen. Änderung: Ereignis "Attribution geändert" zieht alle Karten der Session nach; Label-Revisionen gelten als neue Labels. Zuschreibung ≥ 0,95 zählt nur "sicher".</td></tr>
+    <tr><td class="num">Q6</td><td>Karte</td><td>Name oder Label mit Plakette zur Quelle; Paraphrase immer "sinngemäß", Wortlaut immer darunter; Umbenennen mit einmaligem Hinweis; beim Teilen private Namen durch Label ersetzt und Kennzeichnung "automatisch erzeugt". Gestaltung: #16.</td></tr>
+    <tr><td class="num">Q7</td><td>Festhalten</td><td>Glossar: <strong>Attribution</strong>, <strong>Speaker Mapper</strong> neu, <strong>Speaker</strong> ergänzt. <strong>ADR 0008</strong> und <code>docs/spec/sprecher.md</code>.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="karte">4 · So sieht die Karte aus (Q6)</h2>
+<p>Die Karte trennt drei Dinge, die die Rechtslage auseinanderhalten will: den Wortlaut aus dem Transkript, die Paraphrase als "sinngemäß", und die Quelle der Zuordnung.</p>
+<div class="two">
+  <div>
+    <div class="karte">
+      <div class="k1">Friedrich Merz <span class="tag ok">Rahmen + Anrede</span></div>
+      <div>behauptet sinngemäß: Die Mieten in Berlin sind seit 2015 um 40 Prozent gestiegen.</div>
+      <div class="k2">Wortlaut: "also die Mieten hier in Berlin, die sind seit 2015 um vierzig Prozent hoch"</div>
+      <div class="k3">Prüfung läuft … · Thema: Mieten Berlin</div>
+    </div>
+    <p class="muted">Sichere Zuordnung: Name, Quelle als Plakette, Paraphrase mit "sinngemäß", Wortlaut darunter.</p>
+  </div>
+  <div>
+    <div class="karte">
+      <div class="k1">Sprecher B <span class="tag warn">nicht zugeordnet</span> <span class="tag">umbenennen</span></div>
+      <div>behauptet sinngemäß: Die Zahl war viel niedriger.</div>
+      <div class="k2">Wortlaut: "das stimmt so nicht, die Zahl war viel niedriger"</div>
+      <div class="k3">Einschätzung ohne Belege · Thema: Mieten Berlin</div>
+    </div>
+    <p class="muted">Unsichere Zuordnung: Label bleibt, Plakette "nicht zugeordnet", der Nutzer kann umbenennen; beim ersten Mal mit Hinweis auf seine Verantwortung.</p>
+  </div>
+</div>
+
+<h2 id="fakten">5 · Die Fakten auf dem Tisch</h2>
+<h3>Was die Diarisierung liefert</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Anbieter</th><th>Label</th><th>Stabilität in der Session</th><th>Nachträgliche Änderung</th><th>Sprecherzahl vorgebbar</th></tr></thead>
+  <tbody>
+    <tr><td>Deepgram Nova-3 (Stream, Diarizer v1)</td><td>je Wort, 0, 1, 2 … nach Auftreten</td><td>Doku ohne Angabe; alter Realtest: zwei Stimmen stabil getrennt</td><td>keine; keine Konfidenz im Stream</td><td>nein</td></tr>
+    <tr><td>AssemblyAI (Stream)</td><td>je Wort und je Turn</td><td>Labels "können sich nachträglich ändern"</td><td><code>SpeakerRevision</code> während oder am Ende der Sitzung</td><td><code>max_speakers</code> 1 bis 10</td></tr>
+    <tr><td>Speechmatics (Realtime)</td><td>S1, S2, …, UU für unbekannt</td><td>nicht dokumentiert</td><td>nicht dokumentiert</td><td><code>max_speakers</code>, <code>speaker_sensitivity</code></td></tr>
+  </tbody>
+</table></div>
+<p class="muted">Folge: Die Zuordnungstabelle muss mit Label-Änderungen umgehen können (AssemblyAI) und ohne Konfidenz auskommen (Deepgram). Eine Diarisierung, die zwei Personen in ein Label mischt, ist nur über die Anrede oder den Nutzer zu heilen; das misst der Audiomodus als Zuschreibung.</p>
+
+<h3>Was sonst feststeht</h3>
+<ul>
+  <li><strong>Rechtslage #6:</strong> Namen nie aus der Stimme (Art. 9, EDPB 3/2019, DSK Muss-Liste Nr. 1, AI Act Anhang III Nr. 1 lit. a); zulässig: Nutzerangabe, Programmkontext, Anrede; Karte nennt die Quelle der Zuordnung; unsicher bleibt "Sprecher A"; Paraphrasen als "sinngemäß" kennzeichnen (BVerfG Böll: das unrichtige Zitat ist nicht geschützt); Teilen von Karten mit Namen nur mit Kennzeichnung "automatisch erzeugt".</li>
+  <li><strong>ADR 0002, 0004:</strong> Behauptung trägt den Sprecher ("X behauptet, dass …"); Sprechername nur aus dem Setting; bei nicht zuzuordnendem Sprecher in einer Überlappung ist die Behauptung ein Candidate mit <code>sprecher_unklar</code> für den Resolver. Private Sprecher ohne Namen im Setting als Rolle ("die Anruferin").</li>
+  <li><strong>ADR 0005:</strong> ein Label je Segment, Labels bleiben Sitzungslabel; im Textmodus liefert das Referenz-Transkript die Namen direkt.</li>
+  <li><strong>ADR 0007:</strong> <code>public: true</code> löst den Sprecher-Prefetch aus und erlaubt den Namen nach außen.</li>
+  <li><strong>Messaufbau (ADR 0003):</strong> Zuschreibung ≥ 0,95 (Treffer mit richtigem Sprecher geteilt durch Treffer), Audiomodus; Labels tragen Namen aus dem Setting.</li>
+  <li><strong>Altes Repo:</strong> "Sprecher umbenennen (A → Marco)" als Steuernachricht über den WebSocket, nur in der UI; Platzhalter A, B vor jedem Cloud-Aufruf (ADR 0017 alt, durch ADR 0002 gekippt).</li>
+</ul>
+
+<h2 id="wohin">6 · Was wo liegt</h2>
+<div class="two">
+  <div class="card"><h3>live-factchecker-plan</h3><ul>
+    <li><strong>ADR 0008</strong> "Sprecher benennen durch Zuordnung, nie durch die Stimme": Entscheidung, neun verworfene Wege, Folgen</li>
+    <li><strong><code>docs/spec/sprecher.md</code></strong>: Sprecherfelder im Setting, Zuordnungstabelle als Schema, Speaker Mapper (Auslöser, Eingabe, Regeln), Sicherheitsstufen, Änderungsereignis, Felder der Behauptung und Karte, Programmdaten-Adapter, Nebensprecher, Messung</li>
+    <li><strong><code>CONTEXT.md</code></strong>: Attribution, Speaker Mapper neu; Speaker ergänzt</li>
+    <li><strong><code>docs/spec/erkennung-modellrollen.md</code></strong>: Prompt-Block 1a Zuordnungstabelle, Felder <code>speakerLabel</code>, <code>speakerSource</code>, <code>speakerCertainty</code></li>
+  </ul></div>
+  <div class="card"><h3>Kommentare an andere Tickets</h3><ul>
+    <li><strong>Datenschutzmodell (#11):</strong> private Namen nur für den Nutzer; Nebensprecher ohne Attribution; Art. 9 für benannte private Mitsprecher</li>
+    <li><strong>Live-Ansicht (#16):</strong> Plakette, Umbenennen mit Hinweis, Bestätigen, Teilen mit Kennzeichnung</li>
+    <li><strong>Clients (#10):</strong> Kanalabgriff des Sendungstons als Anforderung für den Modus Sendung</li>
+    <li><strong>Vergleichsprototyp (#30):</strong> Speaker Mapper in der Pipeline, Zuschreibung nur bei "sicher", Diagnosezahlen</li>
+    <li><strong>Testkorpus (#25):</strong> Referenz-Transkript trägt je Sprecher die Quelle der Zuordnung</li>
+  </ul></div>
+  <div class="card"><h3>Map</h3><ul>
+    <li>Decisions so far: eine Zeile mit Link auf dieses Ticket und dieses Schaubild</li>
+    <li>Nebel "Sprecher: Diarization-Technik als Sitzungslabel" ist aufgelöst; Anwaltsfrage 13 steht schon</li>
+  </ul></div>
+  <div class="card"><h3>Noch offen, nicht hier</h3><ul>
+    <li>Was mit Behauptungen von Nebensprechern geschieht (#11)</li>
+    <li>Stimmerkennung für öffentliche Personen (Anwalt)</li>
+    <li>Gestaltung der Karte (#16)</li>
+  </ul></div>
+</div>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Diarisierungslabel</dt><dd>Das Sitzungslabel (A, B, C), das die Spracherkennung jedem Segment gibt; sagt nur "dieselbe Stimme wie vorhin", nie wer.</dd>
+  <dt>Speaker Mapper (Sprecher-Zuordner)</dt><dd>Glossarbegriff seit Q7: der Modellaufruf außerhalb des Ticks, der je Session die Tabelle Label zu Sprecher führt, aus den zulässigen Quellen.</dd>
+  <dt>Attribution (Zuordnung)</dt><dd>Glossarbegriff seit Q7: die Verbindung von Label zu Sprecher mit Quelle (Setting, Anrede, Programmdaten, Nutzer) und Sicherheit.</dd>
+  <dt>Anrede</dt><dd>Stellen im Transkript, aus denen ein Name hervorgeht: Vorstellung ("Ich bin …"), Ansprache ("Frau Weidel, …"), Moderation ("Bei mir ist …").</dd>
+  <dt>Programmdaten</dt><dd>Metadaten einer Sendung: Titel, Datum, Beschreibung, Gästeliste; etwa aus MediathekViewWeb.</dd>
+  <dt>Namensmaske</dt><dd>Vor jedem Aufruf nach außen (Suche, Faktencheck, Cache) werden Namen ersetzt, außer bei Sprechern mit <code>public: true</code> (ADR 0002).</dd>
+  <dt>Stimmprofil</dt><dd>Ein biometrisches Merkmal, mit dem eine Stimme über Aufnahmen hinweg wiedererkannt würde. Wird nie gebildet.</dd>
+  <dt>sinngemäß</dt><dd>Kennzeichnung der Paraphrase auf der Karte, neben dem Wortlaut aus dem Transkript; nach BVerfG Böll darf eine Interpretation nicht als Zitat erscheinen.</dd>
+</dl>
+</div>
+
+</body></html>

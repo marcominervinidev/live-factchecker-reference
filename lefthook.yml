@@ -1,0 +1,60 @@
+# Git hooks for every tool (Claude Code sessions, manual commits). Runs inside the toolbox via the shim
+# installed by `make hooks-install`. Budget: under 30 seconds (docs/process/pr-format.md). CI repeats every
+# check, because --no-verify skips this. No pre-push hook by decision; the PR pipeline is the second net.
+no_auto_install: true
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gitleaks
+      run: gitleaks git --pre-commit --staged --redact --no-banner .
+
+    - name: prettier
+      glob: '*.{ts,tsx,js,cjs,mjs,json,yaml,yml,css,html,md}'
+      run: pnpm exec prettier --check {staged_files}
+
+    - name: eslint
+      glob: '*.{ts,tsx,js,cjs,mjs}'
+      run: pnpm exec eslint --max-warnings 0 {staged_files}
+
+    - name: typecheck
+      glob: '*.{ts,tsx,js,cjs,mjs,json}'
+      run: pnpm typecheck
+
+    - name: unit
+      glob: '*.{ts,tsx}'
+      # Unit tests (stage 1) of packages affected by uncommitted changes and their dependents.
+      run: pnpm --filter "...[HEAD]" --filter "!live-factchecker-v2" --if-present test:unit
+
+    - name: boundaries
+      glob: '*.{ts,tsx,js,cjs,mjs,json}'
+      run: pnpm depcruise
+
+    - name: docs coverage
+      glob: '{apps,services,packages,tests}/**'
+      run: python3 -I tools/check_docs_coverage.py
+
+    - name: context budget
+      glob: '{CLAUDE.md,.claude/**}'
+      run: python3 -I tools/check_context_budget.py
+
+    - name: tool image pins
+      glob: '{.github/workflows/*.yml,scripts/ci/local.sh}'
+      run: python3 -I tools/check_ci_pins.py
+
+    - name: agent models in sync
+      glob: '.claude/**'
+      run: python3 -I tools/sync_agent_models.py --check
+
+    - name: hook regression test
+      glob: '.claude/hooks/**'
+      run: sh .claude/hooks/test-hooks.sh
+
+    - name: limit watcher tests
+      glob: 'tools/limit-waechter/**'
+      run: python3 -I -m unittest discover -s tools/limit-waechter/tests
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: python3 -I tools/check_commits.py --file {1}

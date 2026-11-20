@@ -1,0 +1,35 @@
+{
+  "_comment": "Single source for model tiers (ADR 0011 with its addenda, docs/process/rollen.md). tools/sync_agent_models.py writes the resolved id into the `model:` line of each agent file, and a fixed effort into its `effort:` line, and fails when a tier floor below is broken. Change a tier here, run the script, commit both.",
+  "tiers": {
+    "spitze": "claude-fable-5-1",
+    "stark": "claude-opus-5-5",
+    "mittel": "claude-sonnet-5-5",
+    "guenstig": "claude-haiku-5-5"
+  },
+  "roles": {
+    "refinement": "stark",
+    "test-designer": "stark",
+    "critic": "spitze",
+    "implementer": "stark",
+    "reviewer": "stark",
+    "security-reviewer": "stark",
+    "architecture-reviewer": "spitze",
+    "frontend-reviewer": "stark",
+    "platform-engineer": "stark",
+    "platform-coach": "stark",
+    "acceptance-judge": "spitze"
+  },
+  "rules": [
+    "The acceptance judge never runs on the model that wrote the change; because the judge is on tier spitze, the implementer never runs on spitze.",
+    "The critic is always at least one tier above the test designer.",
+    "Floors (owner, 2026-10-25): acceptance judge, critic and architecture reviewer always run on spitze, the highest reasoning tier (today Fable 5.1; a successor model is adopted only by changing the tier table above). If a subagent cannot start the spitze model they fall back to stark, never to mittel or guenstig; rather no verdict than a weak one (the owner then reads the report). No review role (reviewer, security-reviewer, frontend-reviewer) runs below stark. tools/sync_agent_models.py --check enforces these floors.",
+    "The implementer runs on tier stark (Opus 5.5) with the effort chosen by the ticket's risk (owner, 2026-10-25): low medium, medium high, high xhigh. Never tier spitze (the judge's tier)."
+  ],
+  "effort": {
+    "_comment": "Reasoning effort per role: low, medium, high, xhigh, max. A string is fixed and written into the agent file by tools/sync_agent_models.py; the implementer's map is keyed by the ticket's Risk field and passed by the main session at start (Agent tool `effort`; skill brief-implementer). Owner 2026-10-25.",
+    "implementer": { "low": "medium", "medium": "high", "high": "xhigh" },
+    "reviewer": "xhigh",
+    "security-reviewer": "xhigh",
+    "frontend-reviewer": "xhigh"
+  }
+}

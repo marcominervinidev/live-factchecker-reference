@@ -1,0 +1,211 @@
+{
+  "issue": 27,
+  "approvedAt": "2026-10-29T12:49:01Z",
+  "ticketSha256": "47735a6cbb7e933463bbbd7b541747c1903b78fb93b2e0543ec5681209158006",
+  "paths": [
+    "packages/contracts/src/segment.test.ts",
+    "packages/contracts/src/json-schema.test.ts",
+    "packages/contracts/src/segment.limits.test.ts",
+    "packages/inputs/src/reference-transcript.test.ts",
+    "packages/inputs/src/stt-recording.test.ts",
+    "packages/inputs/src/replay.test.ts",
+    "packages/inputs/src/testing/golden.ts",
+    "tests/fixtures/golden-window.mjs",
+    "tests/fixtures/README.md",
+    "services/detection/src/config.session.test.ts",
+    "services/detection/features/session.feature",
+    "services/detection/features/steps/session.steps.ts",
+    "services/detection/features/support/service.ts",
+    "tests/api/features/segment-seam.feature",
+    "tests/api/steps/segment-seam.steps.ts",
+    "tests/api/steps/support/edge-client.ts",
+    "tests/acceptance/features/27/segment-seam.feature",
+    "tests/acceptance/canaries/27.json"
+  ],
+  "tasks": {
+    "1": [
+      "packages/contracts/src/segment.test.ts",
+      "packages/contracts/src/json-schema.test.ts",
+      "packages/contracts/src/segment.limits.test.ts"
+    ],
+    "2": [
+      "packages/inputs/src/reference-transcript.test.ts",
+      "packages/inputs/src/stt-recording.test.ts",
+      "packages/inputs/src/replay.test.ts",
+      "packages/inputs/src/testing/golden.ts",
+      "tests/fixtures/golden-window.mjs",
+      "tests/fixtures/README.md"
+    ],
+    "3": [
+      "services/detection/src/config.session.test.ts",
+      "services/detection/features/session.feature",
+      "services/detection/features/steps/session.steps.ts",
+      "services/detection/features/support/service.ts",
+      "tests/api/features/segment-seam.feature",
+      "tests/api/steps/segment-seam.steps.ts",
+      "tests/api/steps/support/edge-client.ts",
+      "tests/acceptance/features/27/segment-seam.feature",
+      "tests/acceptance/canaries/27.json"
+    ]
+  },
+  "taskNotes": {
+    "1": {
+      "addendum": "gate-1 addendum 2026-10-29: bounds, three-word order, anchors, attack inputs (reviewer m4, security F1/F4/F5)"
+    },
+    "3": {
+      "implementerPaths": [
+        "services/detection/src/config.ts (SESSION_LIFETIME_SECONDS, default 900)",
+        "services/detection/src/session/",
+        "services/detection/README.md",
+        "packages/service-kit (logger: new caller field segmentId)",
+        ".claude/rules/platform.md (logging fields: segmentId)"
+      ],
+      "why": "Production paths Task 3 needs beyond the ticket's list; kept out of `tasks` on purpose, because every path there is frozen for the implementer. Session lifetime comes from the environment (SESSION_LIFETIME_SECONDS), not from a startDetection option (platform.md: configuration from the environment only).",
+      "addendum": "gate-1 addendum 2026-10-29: three scenarios against surviving mutants; evidence scratchpad/evidence-27-3/2a-addendum.log (22 scenarios passed); addendum 3 2026-10-29: five @ac-19 limit scenarios, evidence scratchpad/evidence-27-3/2a-addendum3b.log (27 scenarios, 230 steps passed) and three mutant logs 2a-addendum3b-mutant-*.log (each falls at the intended scenario)"
+    }
+  },
+  "ownerDecisions": {
+    "date": "2026-10-29 (gate 1, Marco)",
+    "wordOrder": "B3 variant (a): the segment contract rejects a word that starts before the word in front of it starts; overlapping words stay valid; both Inputs cut like the harness and then sort the words of each Segment stably by start (start = first, end = last sorted word). Variant (b) is dropped.",
+    "gate2Evidence": "Stages 1 and 2a are enough as evidence for gate 2; no platform change in T2.",
+    "ac18": "Replay of the 45 s window in under 1000 ms of real time, under fake timers with no open timer, as written.",
+    "sessionLifetime": "SESSION_LIFETIME_SECONDS: whole seconds from 1, default 900, no upper bound, as written."
+  },
+  "followUp": [
+    "After #25 is closed: switch services/detection/features/steps/detection.steps.ts to features/support/service.ts (required, freePort, eventually, start logic) and tests/api/steps/edge.steps.ts to steps/support/edge-client.ts (askEdge, X-Lfc-Edge header); let tests/acceptance/support/evidence.ts record methods other than GET. Until then those helpers exist twice (frozen #25 copies plus the #27 support modules)."
+  ],
+  "pyramidNote": "Counted like tools/check_test_pyramid.py: stage 1 85 it-calls (66 + 19 of the gate-1 addendum file packages/contracts/src/segment.limits.test.ts; about 126 cases with the it.each rows; 88 %), stage 2a 11 scenarios/outlines, stage 3 1 outline (12 % together), stage 4 none (increment 1 has no client). AC5, AC8 and AC10 moved from stage 3 (ticket, Task 3 Verify) to 2a: the stage-3 client sits on the network clients and reaches the edge only, and AC13 keeps the Session routes off the edge; 2a is the lowest stage that shows them. AC11 is a configuration check inside session.feature (the Redis ACL denies CONFIG and INFO). After the third addendum (five AC19 limit scenarios) session.feature holds 18 scenarios/outlines; tools/check_test_pyramid.py reports issue 27: 68 tests, stage 1 72 %, stages 2a-3 28 %, stage 4 0 %. The drift from 80/15/5 is the price of three owner-approved addenda against surviving mutants (limits need a real Redis, so they cannot sit on stage 1).",
+  "redRun": {
+    "packages/contracts/src/segment.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/segment.test.ts'",
+      "base": "678a0b8 (task/25-3, local stand-in for main after #25) plus the frozen task-1 files; re-recorded on main after #25 is merged (2026-11-01)",
+      "exitCode": 1,
+      "sha256": "2ee1bc4b2be8d68030617afb991897180d662baf3259132399359668eeddb076",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: Cannot find module ./segment.ts (module under test), 0 tests; tools/classify_red_reason.py agrees; re-recorded 2026-10-29 after the header comments named the gate-1 decision, two runs gave the same hash",
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "packages/contracts/src/json-schema.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/json-schema.test.ts'",
+      "base": "678a0b8 (task/25-3, local stand-in for main after #25) plus the frozen task-1 files; re-recorded on main after #25 is merged (2026-11-01)",
+      "exitCode": 1,
+      "sha256": "2e263e679e6ef4c0593a87be03a3eba3b0ec4394daf97e04f4a6456f201aadc7",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: Cannot find module ../scripts/generate-json-schema.ts (module under test); tools/classify_red_reason.py agrees; two runs gave the same hash",
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "packages/contracts/src/segment.limits.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/contracts src/segment.limits.test.ts'",
+      "base": "main after #25 plus the frozen task-1 files; segment.ts absent",
+      "exitCode": 1,
+      "sha256": "",
+      "reason": "Cannot find module './segment.ts'",
+      "recordedBy": "test designer, 2026-10-29: simulated on a temporary copy of packages/contracts without src/segment.ts (0 tests, exit 1); tools/classify_red_reason.py: red for the right reason: missing module ./segment.ts"
+    },
+    "packages/inputs/src/reference-transcript.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/inputs src/reference-transcript.test.ts'",
+      "base": "d6eba00 (td-27 = T1 task 3) plus the frozen files of #27",
+      "exitCode": 1,
+      "sha256": "1b76b44bede0c846a6579ed91a0e98d041b196263f1889b21517fdd271bc3650",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: Cannot find module ./reference-transcript.ts (module under test; imported before @lfc/contracts). Also right on a simulated Task 2 base with packages/contracts/package.json present; tools/classify_red_reason.py agrees; re-recorded 2026-10-29 after the header comments named the gate-1 decision, two runs gave the same hash"
+    },
+    "packages/inputs/src/stt-recording.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/inputs src/stt-recording.test.ts'",
+      "base": "d6eba00 (td-27 = T1 task 3) plus the frozen files of #27",
+      "exitCode": 1,
+      "sha256": "8e50bc6616119f165be204b6cb689cd667d75661c131c6a4c1f509edb3be865f",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: Cannot find module ./stt-recording.ts (module under test; imported before @lfc/contracts). Also right on a simulated Task 2 base; tools/classify_red_reason.py agrees; re-recorded 2026-10-29 after the header comments named the gate-1 decision, two runs gave the same hash (unchanged: the comment lines do not reach the output)"
+    },
+    "packages/inputs/src/replay.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root packages/inputs src/replay.test.ts'",
+      "base": "d6eba00 (td-27 = T1 task 3) plus the frozen files of #27",
+      "exitCode": 1,
+      "sha256": "7efbd8cb28adcf8cef705e3eccc22ab40a96a17f73364ad89c87a933183d3929",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: Cannot find module ./reference-transcript.ts (both Inputs imported before @lfc/contracts). Also right on a simulated Task 2 base; tools/classify_red_reason.py agrees; two runs gave the same hash"
+    },
+    "services/detection/src/config.session.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/config.session.test.ts'",
+      "base": "task/27-1 (local stand-in for main after #25 and task 1) plus the frozen task-3 files; re-recorded on main after task 1 is merged",
+      "exitCode": 1,
+      "sha256": "59cfbffbc213de303adcd555f5140e3a3d724e1aaa0a3ba060dc26b76aac68f8",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: failing tests, no load error: 8 of 8 fail (sessionLifetimeSeconds undefined, invalid values not rejected), missing behaviour; tools/classify_red_reason.py agrees; two runs gave the same hash",
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/features/session.feature": {
+      "command": "COMPOSE_PROJECT_NAME=lfc-td-27 WS=@lfc/detection make test-integration",
+      "base": "task/27-1 (local stand-in for main after #25 and task 1) plus the frozen task-3 files; re-recorded on main after task 1 is merged",
+      "exitCode": 2,
+      "sha256": "b3d23f8ba96ba235df98804d6f04961c8c4af5449d382b96603d6c977022fc21",
+      "sha256Normalised": true,
+      "reason": "red for missing behaviour: 20 scenarios (4 passed, 16 failed), 160 steps; every Session scenario fails at its first request (POST /sessions answers 404 {\"error\":\"not found\"}). Passed: the 3 readiness scenarios of #25 and the AC11 check (compose.yml has no disk since T1). Hash over the output from '$ cucumber-js' on, without ANSI, blank lines and the duration line",
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "tests/api/features/segment-seam.feature": {
+      "command": "COMPOSE_PROJECT_NAME=lfc-td-27 make ci-secrets ci-stack-up test-api ci-stack-down",
+      "base": "task/27-1 (local stand-in for main after #25 and task 1) plus the frozen task-3 files; re-recorded on main after task 1 is merged",
+      "exitCode": 0,
+      "reason": "green on the base, as expected: AC13 is a regression guard (the edge's catch-all already answers 404 with X-Lfc-Edge: unrouted). 11 scenarios (11 passed), 4 of them from segment-seam.feature. Features are named only by tools/check_red_before_green.sh; recorded before the step helper moved to steps/support/edge-client.ts (behaviour unchanged, re-run in the PR)",
+      "sha256": "f2d5fab6ccb66ecce0904fb785a8903f93d06a9be2d457cb7ccc7a8ca58b9a76",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    }
+  },
+  "redRunHash": "sha256 over the output without ANSI codes, blank lines, the vitest lines 'Duration' and 'Start at' and per-test timings (' <n>ms' at line end; Cucumber: the duration line), /workspace replaced by <root>",
+  "sha256": {
+    "packages/contracts/src/segment.test.ts": "f8f74f44e0e466ea033b286e9ef188c3d185231bacea7126b06149439cb1c377",
+    "packages/contracts/src/json-schema.test.ts": "598b8af4f51e7401e2ec162c106951971c6043802a852e10e3876e87e9fb843d",
+    "packages/inputs/src/reference-transcript.test.ts": "aef2f235b5dcc1c0ecb5f3577b04d92ecef1e372814dac354d1c20c659a30ef7",
+    "packages/inputs/src/stt-recording.test.ts": "080186f4ca8d64554534fa3bc1cc6cb2ad2b8fb99eee5165c84fbefbc9218166",
+    "packages/inputs/src/replay.test.ts": "e15b277260c971010aed6bf80c42aa28ea654958fe81026382cfc351d29dcfc2",
+    "packages/inputs/src/testing/golden.ts": "1a9aeffb29c865d0cf6a83be1d34d234e2446cd03a43bc22125a0eaeb9845dc8",
+    "tests/fixtures/golden-window.mjs": "c720bffefbb418d554628ef173f11a1d33e4a73e6bc1088b07e2d2d8975d8d06",
+    "tests/fixtures/README.md": "92987e671724f268c9afc1293bc3e0b28e3f79b1b54b260d1bf1119f7a1c033e",
+    "services/detection/src/config.session.test.ts": "ea72bdd9f6d7ede3d865f69dd2b64baf72613a96aaa1af523889114cde7867d7",
+    "services/detection/features/session.feature": "754a58098c113be67a39ac6af816a55a8577f073f42600a3b3a4ad8e01bcdcf9",
+    "services/detection/features/steps/session.steps.ts": "efa1faaab4a313bb1562c533b1e2b8b6198ae6d76d4fc41fbf4da5a7bc862a0a",
+    "services/detection/features/support/service.ts": "85c1b3c4ce4aa88bd4e77724757da6ff3d57a045de228542fede5e63277ad580",
+    "tests/api/features/segment-seam.feature": "8c816bfd83ebddcddcfe56716fc3f8be847dc901abc551b0866bb76d386c0686",
+    "tests/api/steps/segment-seam.steps.ts": "a8745c1825bbc53016d90fc50e42274bade1f265fdcf6af61cd07f8e8614106b",
+    "tests/api/steps/support/edge-client.ts": "61607cab1bd69852a1924bdd98a1e3c08ec4b8c4e87908fa4fa098f737324c18",
+    "tests/acceptance/features/27/segment-seam.feature": "042248915e6323373681cda465411133c1bcc9c3798519306865106b3750a6ad",
+    "tests/acceptance/canaries/27.json": "dac8d9e8e0c6e9dcde9d925231d960a9d1de273c8896de2c493e871dcbf19704",
+    "packages/contracts/src/segment.limits.test.ts": "59692c47cc55c32ae38c7015b57dd13a850ceff0cce39a737d307053b157891e"
+  },
+  "addendumApprovedAt": "2026-10-29",
+  "unlocks": [
+    {
+      "file": "services/detection/features/steps/session.steps.ts",
+      "date": "2026-10-29",
+      "by": "owner",
+      "reason": "duplicate scenario compared against the rejected segment; two type errors (ioredis zrange stop type, possibly undefined event). Fixed by the test designer, production code unchanged."
+    },
+    {
+      "files": [
+        "services/detection/features/session.feature",
+        "services/detection/features/steps/session.steps.ts"
+      ],
+      "date": "2026-10-29",
+      "by": "owner",
+      "reason": "gate-1 addendum task 3: positive storage case, lifetime not renewed on rejection, no segment.accepted/word/label on rejection (reviewer mutants M1/M2/M13)"
+    },
+    {
+      "files": [
+        "services/detection/features/session.feature",
+        "services/detection/features/steps/session.steps.ts"
+      ],
+      "date": "2026-10-29",
+      "by": "owner",
+      "reason": "gate-1 addendum 3 for task 3, AC19 (added to the ticket 2026-10-29): five @ac-19 scenarios for SESSION_BYTE_BUDGET, MAX_SESSIONS and the index sessions:live; staggered lifetimes so that an index that never drops expired Sessions or is not renewed on append fails; filler with an umlaut so that a UTF-16 count fails at the byte boundary. Production code unchanged."
+    },
+    {
+      "file": "packages/inputs/src/reference-transcript.test.ts",
+      "date": "2026-11-03",
+      "by": "owner",
+      "reason": "case 'puts no Speaker name into any Segment' contradicted 'keeps the words of the reference transcript, in order and unchanged' (Hukgl Suubayy says 'Herr Haqy, ...' at 94.16 s); now checks every field of a Segment except the spoken text w, for every part of every Speaker name. Critic approved; redRun unchanged."
+    }
+  ]
+}

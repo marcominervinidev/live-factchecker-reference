@@ -1,0 +1,24 @@
+{
+  "name": "@lfc/providers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The model adapter port the four model roles of increment 1 call through, callValidated (validation and one repeat) and the deterministic mock adapter.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test:unit": "vitest run",
+    "test:mutation": "stryker run"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "10.1.1",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

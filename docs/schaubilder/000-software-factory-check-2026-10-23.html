@@ -1,0 +1,525 @@
+<!-- Quelle: https://claude.ai/artifact/UY183uY25qavWb8uym4SHX, exportiert 2026-10-23, Software-Factory-Check (Evaluation, kein Ticket) -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Software-Factory-Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: ein Lesestrang, 72ch Prosa, Tabellen dürfen breiter; Serie "live-factchecker Schaubilder" (Archivo, Atkinson, JetBrains Mono, Teal und Amber). */
+:root {
+  --bg: #f6f8f7;
+  --surface: #ffffff;
+  --surface-2: #edf2f0;
+  --fg: #1d3d5c;
+  --muted: #4d6479;
+  --line: #cfd9d6;
+  --teal: #0e7c7b;
+  --teal-soft: #d6efee;
+  --amber: #b4660a;
+  --amber-soft: #fbe9cc;
+  --red: #b2362f;
+  --red-soft: #f8dcd9;
+  --green: #2d7a3e;
+  --green-soft: #d8efdc;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101a21; --surface: #16232c; --surface-2: #1d2d38; --fg: #dce7ee; --muted: #a3b6c4; --line: #2f4350;
+    --teal: #4fc1bf; --teal-soft: #163c3c; --amber: #e3a04a; --amber-soft: #3d2c12; --red: #e8857d; --red-soft: #46211e;
+    --green: #7fcf8f; --green-soft: #1d3a24; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101a21; --surface: #16232c; --surface-2: #1d2d38; --fg: #dce7ee; --muted: #a3b6c4; --line: #2f4350;
+  --teal: #4fc1bf; --teal-soft: #163c3c; --amber: #e3a04a; --amber-soft: #3d2c12; --red: #e8857d; --red-soft: #46211e;
+  --green: #7fcf8f; --green-soft: #1d3a24; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.55; margin: 0; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 32px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: 2.2rem; font-weight: 700; }
+h2 { font-size: 1.45rem; font-weight: 600; margin-top: 56px; padding-top: 16px; border-top: 2px solid var(--line); }
+h3 { font-size: 1.1rem; font-weight: 600; margin-top: 28px; }
+p { max-width: 72ch; margin: 12px 0; }
+ul, ol { max-width: 76ch; padding-left: 1.3em; margin: 10px 0; }
+li { margin: 6px 0; }
+li::marker { color: var(--teal); }
+.eyebrow { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.15rem; max-width: 72ch; color: var(--fg); }
+.meta { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--surface-2); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-family: var(--mono); font-size: 0.82rem; line-height: 1.5; }
+.tablewrap { overflow-x: auto; margin: 14px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--display); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.02em; color: var(--muted); background: var(--surface-2); }
+td.num, th.num { text-align: right; font-family: var(--mono); font-size: 0.86rem; white-space: nowrap; }
+tr.sum td { font-weight: 700; border-top: 2px solid var(--line); }
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.74rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; font-weight: 500; }
+.p-ok { background: var(--green-soft); color: var(--green); }
+.p-warn { background: var(--amber-soft); color: var(--amber); }
+.p-bad { background: var(--red-soft); color: var(--red); }
+.p-info { background: var(--teal-soft); color: var(--teal); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin: 18px 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-width: 0; }
+.card h3 { margin-top: 0; }
+.card.good { border-left: 5px solid var(--green); }
+.card.bad { border-left: 5px solid var(--red); }
+.card.warn { border-left: 5px solid var(--amber); }
+.card.info { border-left: 5px solid var(--teal); }
+.score { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 18px 0; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+.tile .name { font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+.tile .why { color: var(--muted); font-size: 0.86rem; margin-top: 4px; }
+.tile.ok { border-top: 4px solid var(--green); }
+.tile.warn { border-top: 4px solid var(--amber); }
+.tile.bad { border-top: 4px solid var(--red); }
+figure { margin: 20px 0; }
+figure svg { max-width: 100%; height: auto; display: block; }
+figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 8px; max-width: 80ch; }
+.box { fill: var(--surface); stroke: var(--teal); stroke-width: 2; }
+.box.ok { fill: var(--teal-soft); stroke: var(--teal); }
+.box.wait { fill: var(--surface); stroke: var(--amber); stroke-width: 2.2; }
+.box.prose { fill: var(--surface); stroke: var(--muted); stroke-dasharray: 6 4; }
+.box.missing { fill: var(--red-soft); stroke: var(--red); stroke-dasharray: 3 3; }
+.lbl { font-family: var(--display); font-size: 12.5px; font-weight: 600; fill: var(--fg); }
+.sub { font-family: var(--body); font-size: 11.5px; fill: var(--muted); }
+.lane { font-family: var(--mono); font-size: 12px; fill: var(--muted); letter-spacing: 0.06em; }
+.edge { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+.edge-lbl { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px 22px; font-size: 0.88rem; color: var(--muted); margin-top: 8px; }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; border: 2px solid var(--teal); background: var(--teal-soft); }
+.legend .l-wait::before { background: var(--surface); border-color: var(--amber); }
+.legend .l-prose::before { background: var(--surface); border-style: dashed; border-color: var(--muted); }
+.legend .l-missing::before { background: var(--red-soft); border-color: var(--red); border-style: dotted; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 0.95rem; }
+.kv dt { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.kv dd { margin: 0; }
+.hand { background: var(--amber-soft); border-radius: 10px; padding: 16px 20px; border: 1px solid var(--line); }
+.hand h3 { margin-top: 0; }
+.toc { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 0.9rem; margin-top: 18px; }
+.toc a { color: var(--teal); text-decoration: none; border-bottom: 1px solid var(--line); }
+a { color: var(--teal); }
+small { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">live-factchecker · Evaluation aller Repos · Stand 23. Oktober 2026</div>
+  <h1>Software-Factory-Check</h1>
+  <p class="lede">Wie weit ist live-factchecker auf dem Weg vom Ticket bis in die Produktion, was läuft gut, was läuft schlecht, was kostet es, und was ist als Nächstes zu tun.</p>
+  <p class="meta">Geprüft: <code>live-factchecker-plan</code> (Planung), <code>live-factchecker-v2</code> (Produkt und Arbeitssystem, inklusive der ungemergten Eval-Branches), <code>live-factcheck-starter</code> (Toolbox ohne Git) und <code>Playwright</code> (Lernrepo). Das alte <code>live-factcheck</code> blieb außen vor. Grundlage sind drei Gutachten (Prozesskette, Entscheidungsdeckung, Kosten und Qualität) plus eigene Prüfläufe. Jede Zahl trägt in den Gutachten ihre Quelle; Einschätzungen sind als solche markiert.</p>
+  <nav class="toc" aria-label="Abschnitte">
+    <a href="#summary">Management-Summary</a>
+    <a href="#repos">Repos</a>
+    <a href="#kette">Kette Ticket bis Produktion</a>
+    <a href="#gut-schlecht">Gut und schlecht</a>
+    <a href="#fehler">Konkrete Fehler</a>
+    <a href="#kosten">Kosten</a>
+    <a href="#qualitaet">Qualität</a>
+    <a href="#monitoring">Monitoring</a>
+    <a href="#deckung">Entscheidungsdeckung</a>
+    <a href="#empfehlungen">Empfehlungen</a>
+    <a href="#hand">Deine Aufgaben</a>
+    <a href="#glossar">Glossar</a>
+  </nav>
+
+  <h2 id="summary">1. Management-Summary</h2>
+  <p><strong>Gesamturteil:</strong> Die Planungs- und Gate-Ebene ist ungewöhnlich vollständig und sauber geprüft. Die Bau-Ebene ist ein Gerüst, das an einem noch nicht existierenden Makefile und pnpm-Workspace hängt. Die Betriebs-Ebene ist bewusst leer. Nach 17 Tagen gibt es auf <code>main</code> von v2 keinen Produktcode, aber einen messbaren Erkennungs-Prototyp, der die Kostenschwelle dreifach unterbietet und in zwei von drei Gesprächsarten die Qualitätsziele erreicht.</p>
+
+  <div class="score" aria-label="Scorecard je Dimension">
+    <div class="tile warn"><div class="name">Planung und Architektur</div><div class="why">11 ADRs, 14 Specs. Erkennung komplett, Prüfung, Konten, Betrieb offen.</div></div>
+    <div class="tile ok"><div class="name">Arbeitsprozess und Gates</div><div class="why">Ruleset aktiv, Hooks mit 53 Testfällen, Tools mit 37 Tests. Nie end-to-end gelaufen.</div></div>
+    <div class="tile bad"><div class="name">Bau (Produktcode)</div><div class="why">0 Zeilen auf main. Inkrement 1 geschnitten, Issues nicht angelegt.</div></div>
+    <div class="tile warn"><div class="name">CI</div><div class="why">Läuft als No-op grün. Zwei Logikfehler in Checks, 17 Dateien referenziert, die fehlen.</div></div>
+    <div class="tile bad"><div class="name">Deployment und Release</div><div class="why">Kette endet bei Images in GHCR. Kein Deploy, kein Release, kein Rollback.</div></div>
+    <div class="tile bad"><div class="name">Monitoring im Betrieb</div><div class="why">Nichts fürs Produkt. Das Arbeitssystem selbst ist gut instrumentiert.</div></div>
+    <div class="tile warn"><div class="name">Kosten</div><div class="why">Arbeitssystem transparent: 213 bis 257 USD je Monat. Prüfung je Karte sprengt die Abo-Marge.</div></div>
+    <div class="tile warn"><div class="name">Qualität Erkennung</div><div class="why">Debatte und Alltag erfüllt. Talkshow und Latenz verfehlt.</div></div>
+    <div class="tile warn"><div class="name">Sicherheit und Lieferkette</div><div class="why">SHA-Pins, gitleaks, Semgrep, Trivy. Dependabot aus, kein SBOM, #22 offen.</div></div>
+    <div class="tile bad"><div class="name">Datensicherung</div><div class="why">Golden Set, Harness und 18 Research-Befunde nur auf deinem Mac.</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card good">
+      <h3>Was gut läuft</h3>
+      <ul>
+        <li>Entscheidungsdisziplin: datierte ADRs mit Nachträgen, Glossar mit Avoid-Listen, Specs mit Startwerten und Zieltickets.</li>
+        <li>Messen vor Wählen: Harness mit 143 grünen Tests, Checkpoints, Budgetdeckel, Richter kalibriert (49 von 50).</li>
+        <li>Gates sind echt: nur Squash per PR, Pflicht-Checks, Actions per Commit-SHA, gitleaks mit Prüfsumme, minimale Rechte.</li>
+        <li>Erkennung bei 0,020 USD je Minute gegen Schwelle 0,063. Haiku 5.5 plus Prüfstufe brachten Precision von 0,27 auf 0,68.</li>
+        <li>Kosten des Arbeitssystems sind modelliert; Max 20x deckt die Modelle, 200 USD API-Guthaben deckt die Evals.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>Was schlecht läuft</h3>
+      <ul>
+        <li>Prozess vor Code: Workflows, Hooks und CI zielen auf einen Workspace, den es nicht gibt. Drei Workflow-Skripte sind nie gelaufen.</li>
+        <li>Kein Backup: zwei Eval-Branches (12 und 7 ungepushte Commits) und 18 Research-Branches existieren nur lokal. Time Machine war nicht erreichbar.</li>
+        <li>Zwei Repos driften: rund 15 veraltete Querverweise, Sonar-Schlüssel und Richter-Stufe in Plan und v2 verschieden, 2.100 Zeilen Plan gegen 600 Zeilen Kurzfassung in v2.</li>
+        <li>Die Prüfung (Urteil auf der Karte) hat kein ADR, keinen Vertrag, keine Messung. Sie bestimmt aber die Minute: ein 9,99-EUR-Abo trägt bei Sendungen nur 25 bis 45 Minuten im Monat.</li>
+        <li>Eval-Ausgaben 178 USD statt geplanter 85 bis 120; der vorläufige Opus-Richter allein kostete 82 USD.</li>
+        <li>Betrieb hat keinen Auslöser: #15 blockiert kein Inkrement, Deployment kann unbemerkt in T1 rutschen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Die fünf wichtigsten Maßnahmen</h3>
+  <ol>
+    <li><strong>Heute sichern:</strong> alle Branches pushen (v2 <code>evals/pruefstufe</code>, <code>evals/golden-1.1</code>; Plan 18 <code>research/*</code>), dann Sammel-Merge der Research-Dateien nach <code>main</code>.</li>
+    <li><strong>Zwei Check-Fehler vor dem ersten Ticket beheben:</strong> Rot-vor-Grün wertet ein fehlendes Modul als falschen Rot-Grund; der Commit-Check sperrt Eigennamen wie "Sonar".</li>
+    <li><strong>#18 als kurzes Stack-ADR</strong> grillen: schaltet T1 formal frei und beendet die Lage, dass Prozess-Specs den Stack tragen.</li>
+    <li><strong>#42 Anwalt jetzt beauftragen</strong> und #13 plus Token-Teil von #22 als nächste Grilling-Runde; danach #15 mit Hosting, Deploy-Weg, Monitoring, Release und Rollback in einem ADR.</li>
+    <li><strong>Prüfung messen und rechnen:</strong> Check-Vertrag als Ticket, #39 Messaufbau, Unit-Economics-Modell je Abonnent. Ohne das ist der Preis von 9,99 EUR eine Hoffnung.</li>
+  </ol>
+
+  <h2 id="repos">2. Die Repos im Überblick</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Repo</th><th>Zweck</th><th>Stand</th><th>Befund</th></tr></thead>
+    <tbody>
+      <tr><td><code>live-factchecker-plan</code><br><small>privat, main synchron</small></td><td>Wayfinder-Maps, Glossar, ADRs, Specs</td><td>56 Issues (45 zu, 11 offen), 11 ADRs, 14 Specs, 24 Research-Befunde auf Branches</td><td><span class="pill p-bad">18 Branches nur lokal</span> Specs hinken den ADR-Nachträgen hinterher; CLAUDE.md des Repos nennt weder <code>docs/spec/</code> noch die Branch-Konvention.</td></tr>
+      <tr><td><code>live-factchecker-v2</code><br><small>privat, Ruleset aktiv seit 23.10.</small></td><td>Produkt und Arbeitssystem</td><td>19 Commits auf main, 1 PR; 11 Rollen, 12 Hooks, 11 Skills, 3 Workflows, 5 CI-Workflows, 8 Rules, 10 Tools; Evals nur auf Branch: 50 Python-Dateien, 10.284 Zeilen, 19 Ausschnitte, 95 min, 308 Labels, 127 MB</td><td><span class="pill p-bad">0 Produktcode</span> <span class="pill p-warn">Secrets: nur SONAR_TOKEN</span> Dependabot und Code Scanning aus; README ist der Einzeiler "live-factcheck_2".</td></tr>
+      <tr><td><code>live-factcheck-starter</code><br><small>kein Git</small></td><td>Toolbox-Kit und Wissens-Snapshot des alten Repos</td><td>241 Dateien: Agenten, Hooks, Skills, 23 alte ADRs, Research, Evidence</td><td><span class="pill p-info">Steinbruch</span> Quelle der v2-Hooks. Keine Versionierung; wird mit v2 überflüssig. Einfrieren oder löschen, sobald #18 die alten ADRs durchgesehen hat.</td></tr>
+      <tr><td><code>Playwright</code><br><small>privat, Feb. bis Juli 2026</small></td><td>BDD-Testframework mit Planner-, Generator-, Healer- und Critic-Agenten</td><td>CI rot seit März 2026, letzter Push Juli</td><td><span class="pill p-info">Lernrepo</span> Ohne Bezug zum Produkt. Archivieren oder als Portfolio-Stück mit grüner CI aufräumen. Die Healer-Rolle widerspricht deiner v2-Regel "es gibt nie einen Heiler".</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="kette">3. Die Kette vom Ticket bis in die Produktion</h2>
+  <p>Sechzehn Schritte, vier Bahnen. Farbe zeigt, was heute wirklich läuft. Die Kette endet nach Schritt 13 bei Images in GHCR; Schritt 16 existiert nicht.</p>
+  <figure>
+    <svg viewBox="0 0 1080 600" role="img" aria-label="Sechzehn Schritte vom Ticket bis zur Produktion in vier Bahnen; nur sieben laufen heute, acht warten auf Produktcode oder sind Prosa, der Schritt Produktion fehlt.">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+      </defs>
+      <!-- lane labels -->
+      <text class="lane" x="10" y="72">PLANEN</text>
+      <text class="lane" x="10" y="212">BAUEN</text>
+      <text class="lane" x="10" y="352">PRÜFEN</text>
+      <text class="lane" x="10" y="492">BETREIBEN</text>
+      <!-- row 1 -->
+      <rect class="box ok" x="120" y="40" width="190" height="64" rx="8"/><text class="lbl" x="132" y="64">1 Intake und Triage</text><text class="sub" x="132" y="84">Vorlage, Labels, Skill triage</text>
+      <rect class="box wait" x="370" y="40" width="190" height="64" rx="8"/><text class="lbl" x="382" y="64">2 cut-tickets</text><text class="sub" x="382" y="84">nie gelaufen, 9 Issues fehlen</text>
+      <rect class="box ok" x="620" y="40" width="190" height="64" rx="8"/><text class="lbl" x="632" y="64">3 Ticket und Refinement</text><text class="sub" x="632" y="84">AC, Risiko, Tasks, Hand: owner</text>
+      <rect class="box wait" x="870" y="40" width="190" height="64" rx="8"/><text class="lbl" x="882" y="64">4 Testdesign und Kritik</text><text class="sub" x="882" y="84">braucht Vitest, Cucumber</text>
+      <line class="edge" x1="310" y1="72" x2="368" y2="72" marker-end="url(#arr)"/>
+      <line class="edge" x1="560" y1="72" x2="618" y2="72" marker-end="url(#arr)"/>
+      <line class="edge" x1="810" y1="72" x2="868" y2="72" marker-end="url(#arr)"/>
+      <path class="edge" d="M965,104 L965,122 L215,122 L215,178" marker-end="url(#arr)"/>
+      <text class="edge-lbl" x="590" y="118" text-anchor="middle">Tor 1: Owner gibt Fälle und Verträge frei</text>
+      <!-- row 2 -->
+      <rect class="box wait" x="120" y="180" width="190" height="64" rx="8"/><text class="lbl" x="132" y="204">5 Manifest einfrieren</text><text class="sub" x="132" y="224">Hook sperrt; Schreiben ist Prosa</text>
+      <rect class="box wait" x="370" y="180" width="190" height="64" rx="8"/><text class="lbl" x="382" y="204">6 Implementierer</text><text class="sub" x="382" y="224">Worktree; scripts/tb, Makefile fehlen</text>
+      <rect class="box wait" x="620" y="180" width="190" height="64" rx="8"/><text class="lbl" x="632" y="204">7 Review-Kette</text><text class="sub" x="632" y="224">3 Reviewer parallel, nie gelaufen</text>
+      <rect class="box wait" x="870" y="180" width="190" height="64" rx="8"/><text class="lbl" x="882" y="204">8 Abnahme und Richter</text><text class="sub" x="882" y="224">make acceptance fehlt</text>
+      <line class="edge" x1="310" y1="212" x2="368" y2="212" marker-end="url(#arr)"/>
+      <line class="edge" x1="560" y1="212" x2="618" y2="212" marker-end="url(#arr)"/>
+      <line class="edge" x1="810" y1="212" x2="868" y2="212" marker-end="url(#arr)"/>
+      <path class="edge" d="M965,244 L965,262 L215,262 L215,318" marker-end="url(#arr)"/>
+      <text class="edge-lbl" x="590" y="258" text-anchor="middle">Draft-PR, Urteile als Kommentar</text>
+      <!-- row 3 -->
+      <rect class="box ok" x="120" y="320" width="190" height="64" rx="8"/><text class="lbl" x="132" y="344">9 PR mit Leitfaden</text><text class="sub" x="132" y="364">Größe, Titel, Belegtabelle, Bilanz</text>
+      <rect class="box ok" x="370" y="320" width="190" height="64" rx="8"/><text class="lbl" x="382" y="344">10 CI je Push</text><text class="sub" x="382" y="364">Repo-Checks laufen, Rest skip</text>
+      <rect class="box wait" x="620" y="320" width="190" height="64" rx="8"/><text class="lbl" x="632" y="344">11 CI je PR</text><text class="sub" x="632" y="364">Semgrep, Trivy, Stack: Makefile fehlt</text>
+      <rect class="box ok" x="870" y="320" width="190" height="64" rx="8"/><text class="lbl" x="882" y="344">12 Tor 2: Squash-Merge</text><text class="sub" x="882" y="364">Ruleset, 2 Pflicht-Checks, 0 Freigaben</text>
+      <line class="edge" x1="310" y1="352" x2="368" y2="352" marker-end="url(#arr)"/>
+      <line class="edge" x1="560" y1="352" x2="618" y2="352" marker-end="url(#arr)"/>
+      <line class="edge" x1="810" y1="352" x2="868" y2="352" marker-end="url(#arr)"/>
+      <path class="edge" d="M965,384 L965,402 L215,402 L215,458" marker-end="url(#arr)"/>
+      <text class="edge-lbl" x="590" y="398" text-anchor="middle">main.yml: Multi-Arch-Images :sha und :main</text>
+      <!-- row 4 -->
+      <rect class="box wait" x="120" y="460" width="190" height="64" rx="8"/><text class="lbl" x="132" y="484">13 Images nach GHCR</text><text class="sub" x="132" y="504">images.ts fehlt, läuft leer</text>
+      <rect class="box prose" x="370" y="460" width="190" height="64" rx="8"/><text class="lbl" x="382" y="484">14 Ticket schließen</text><text class="sub" x="382" y="504">"Code" ist ein Kommentar</text>
+      <rect class="box ok" x="620" y="460" width="190" height="64" rx="8"/><text class="lbl" x="632" y="484">15 Nacht und Trend</text><text class="sub" x="632" y="504">läuft; Deepgram-Key fehlt</text>
+      <rect class="box missing" x="870" y="460" width="190" height="64" rx="8"/><text class="lbl" x="882" y="484">16 Produktion</text><text class="sub" x="882" y="504">kein Deploy, Env, Release, Rollback</text>
+      <line class="edge" x1="310" y1="492" x2="368" y2="492" marker-end="url(#arr)"/>
+      <line class="edge" x1="560" y1="492" x2="618" y2="492" marker-end="url(#arr)"/>
+      <line class="edge" x1="810" y1="492" x2="868" y2="492" marker-end="url(#arr)" stroke-dasharray="4 4"/>
+      <text class="edge-lbl" x="840" y="548" text-anchor="middle">hier bricht die Kette ab: #15 Betriebsmodell ist offen und blockiert nichts</text>
+    </svg>
+    <figcaption>Stand <code>main</code> e177d0c. Teal gefüllt: läuft heute. Amber: Konfiguration existiert, wartet auf Produktcode oder fehlende Dateien. Gestrichelt: nur Prosa. Rot: nicht vorhanden.</figcaption>
+    <div class="legend"><span>läuft heute</span><span class="l-wait">wartet auf Code</span><span class="l-prose">nur Prosa</span><span class="l-missing">fehlt</span></div>
+  </figure>
+
+  <h3>Woran die Kette heute hängt</h3>
+  <p>Siebzehn referenzierte Dateien existieren nicht: <code>Makefile</code> (sechzehn Targets in Hooks, Workflows, Docs), <code>scripts/tb</code>, <code>scripts/ci/affected.ts</code>, <code>scripts/ci/images.ts</code>, <code>scripts/check-contract-change.sh</code>, <code>.nvmrc</code>, <code>package.json</code>, <code>pnpm-lock.yaml</code>, <code>pnpm-workspace.yaml</code>, <code>tsconfig.json</code>, Compose-Dateien, <code>deploy/</code>, <code>docs/adr/</code>, <code>.env.example</code>, <code>evals/run.py</code> auf main, <code>AGENTS.md</code>, <code>docs/SECURITY.md</code>. Das ist kein Fehler, sondern der Zustand vor T1. Es heißt aber: lefthook ist nicht installierbar, die Hooks sind die einzige lokale Schranke, CI plus Ruleset die einzige echte.</p>
+  <p>Die drei Workflow-Skripte (Testdesign, Review-Kette, Abnahme) sind Skelette und noch nie gelaufen. Ob die auf deutsche Prosa gepromp­teten Rollen das JSON-Schema der Skripte liefern, zeigt der erste Lauf. Die Abnahme schließt das Ticket nicht per Code, sondern per Kommentar an die Hauptsession.</p>
+
+  <h2 id="gut-schlecht">4. Was gut läuft, was schlecht läuft</h2>
+  <div class="grid">
+    <div class="card good">
+      <h3>Stärken mit Beleg</h3>
+      <ul>
+        <li><strong>CI-Hygiene:</strong> alle Actions per Commit-SHA mit Versionskommentar, gitleaks-Binary mit SHA256, <code>permissions</code> minimal, Timeouts und Concurrency überall. Das ist über dem Durchschnitt professioneller Teams.</li>
+        <li><strong>Gates passen zum Solo-Owner:</strong> Pflicht-PR ohne Pflicht-Freigabe (ein Autor kann sich nicht selbst freigeben), dafür zwei Pflicht-Checks, lineare Historie, kein Bypass.</li>
+        <li><strong>Prüfbarkeit des Prozesses:</strong> Hooks haben 53 Testfälle, Tools 37 Tests, der Kontextbudget-Check hält CLAUDE.md unter 120 Zeilen. Alles grün beim Nachlauf.</li>
+        <li><strong>Harness:</strong> simulierte Uhr, Checkpoints mit Konfigurations-Hash, Fortsetzen nach Abbruch, Budgetdeckel je Lauf und je Monat, Nachrichten mit anderem Richter, Merge von Wiederholungen. 143 Tests in 2,8 Sekunden.</li>
+        <li><strong>Lernschleife:</strong> Lessons-Tabelle mit Status, Regel erst bei zweitem Vorkommen, Check vor Prosa; zwei Lessons sind bereits Hooks geworden.</li>
+        <li><strong>Planung:</strong> jede Entscheidung wandert als "Aus …"-Kommentar in die offenen Tickets; wer #13 öffnet, sieht alle Randbedingungen.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>Schwächen mit Beleg</h3>
+      <ul>
+        <li><strong>Überbau vor dem Frontend:</strong> Stufen 2b und 4, Playwright, Lighthouse, Browser-Rotation, E2E-Sharding und Stryker im PR sind bis Inkrement 2 Platzhalter. Drei Werkzeuge prüfen Zyklen und toten Code.</li>
+        <li><strong>Acht Modellaufrufe je Ticket</strong> vor dem ersten Blick des Owners, zwei davon auf Fable 5.1. Für neun kleine Tickets gegen den Mock-Arm ist das viel Prozess je Zeile Code.</li>
+        <li><strong>Sonar ab Tag eins</strong> mit Free-Terms (kein DPA, Trainingsklausel) bei einem datenschutzkritischen Produkt, obwohl <code>sonar.sources</code> auf leere Verzeichnisse zeigt.</li>
+        <li><strong>Beratende Fristen ohne Datum:</strong> "Sonar vier Wochen advisory", "Stryker bis die Retro break setzt". Kein Startdatum, kein Erinnerungs-Issue.</li>
+        <li><strong>Elf Schaubilder</strong> liegen als claude.ai-Artifacts außerhalb beider Repos. Ein repo-internes Architekturbild fehlt.</li>
+        <li><strong>Kopplung per relativem Pfad:</strong> v2 zeigt auf <code>../live-factchecker-plan/CONTEXT.md</code> ohne Commit-Bindung; "Repos nach dem PoC zusammenlegen" steht an vier Stellen, hat aber kein Ticket und kein Kriterium für "PoC durch".</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 id="fehler">5. Konkrete Fehler und Drift</h2>
+  <div class="grid">
+    <div class="card bad">
+      <h3>Fehler 1: Rot-vor-Grün blockiert neue Module</h3>
+      <p><code>tools/check_red_before_green.sh</code> Zeile 31 wertet "Cannot find module" und "Failed to resolve import" als <em>falschen</em> Rot-Grund. Die Testdesigner-Rolle (Zeile 36) definiert ein fehlendes Modul als den <em>richtigen</em> Grund. Jeder rote Unit-Test für ein noch nicht existierendes Modul, also der Normalfall in T3 und T4, würde in CI blockieren. Das Skript hat keinen Test.</p>
+    </div>
+    <div class="card bad">
+      <h3>Fehler 2: Commit-Check sperrt Eigennamen</h3>
+      <p><code>tools/check_commits.py</code> Zeile 40 lehnt jedes Subject ab, dessen erstes Wort groß geschrieben ist. Beim Nachlauf über die letzten fünf Commits auf main: zwei rote Befunde ("Sonar project key …"). Auf PR-Titeln wird das zur Sperre. Der Check lief für diese Commits nie, weil ci.yml ihn auf main überspringt und lefthook nicht installiert ist.</p>
+    </div>
+  </div>
+  <h3>Drift zwischen Doku und Konfiguration (Auswahl, rund 15 Stellen)</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Stelle</th><th>Sagt</th><th>Tatsächlich</th></tr></thead>
+    <tbody>
+      <tr><td><code>CODEOWNERS</code> Zeile 1, <code>pr-format.md</code> Zeile 49</td><td>Review per Ruleset erzwungen</td><td>Ruleset: <code>require_code_owner_review: false</code>; pr-format Zeile 57 sagt das selbst</td></tr>
+      <tr><td>Plan <code>docs/spec/process/pr-format.md</code> 9.3</td><td>Sonar-Projekt <code>…_live-factchecker-v2</code></td><td>v2: <code>…_live-factcheck_2</code>, Name des alten Repos</td></tr>
+      <tr><td>Plan <code>docs/spec/process/rollen.md</code></td><td>Abnahme-Richter Stufe "stark", Abnahme nach Tor 2</td><td>ADR-Nachtrag, testteam.md, models.json: Fable 5.1, Abnahme im PR vor Tor 2</td></tr>
+      <tr><td><code>reviewer.md</code>, <code>security-reviewer.md</code>, <code>retro/SKILL.md</code></td><td>lesen <code>AGENTS.md</code> und <code>.ai/lessons.md</code></td><td>beide Dateien gibt es nicht; richtig: <code>CLAUDE.md</code>, <code>docs/lessons.md</code></td></tr>
+      <tr><td><code>implementer.md</code> Zeile 36</td><td>Commits: contract, logic, wiring, tests, docs</td><td>CLAUDE.md, pr-format, open-pr: contract, <em>red tests</em>, logic, wiring, docs</td></tr>
+      <tr><td><code>rollen.md</code> 26 bis 28, <code>test-strategy.md</code> 70</td><td>ci.yml, pr.yml, nightly, Fallow, Knip, Stryker "noch nicht hier"</td><td>alle vorhanden</td></tr>
+      <tr><td><code>rollen.md</code> Zeile 11, ADR 0011</td><td>"Ticket-Schluss ist Code"</td><td><code>acceptance.js</code> postet einen Kommentar, die Hauptsession schließt</td></tr>
+      <tr><td><code>lernpfad.md</code>, <code>platform.md</code></td><td>nightly.yml ist der erste Hand-Task</td><td>nightly.yml existiert mit 176 Zeilen; gemeint ist wohl der Toolbox-Build</td></tr>
+      <tr><td><code>commitlint.config.mjs</code></td><td>Scope <code>gateway</code></td><td>kommt in keinem ADR und keiner Spec vor; stammt aus dem alten Repo; T1 nennt einen "detection service" ohne Scope</td></tr>
+      <tr><td><code>ci.md</code> Zeile 27</td><td>"jeder Check hat einen Test"</td><td>drei ohne: sync_agent_models, nightly_trend, check_red_before_green; Limit-Wächter-Tests laufen nicht in CI</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="kosten">6. Kosten</h2>
+  <h3>6.1 Bisher ausgegeben für die Evals</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Stufe</th><th>Datum</th><th class="num">Anthropic USD</th><th class="num">Gemini USD</th><th>Gelernt</th></tr></thead>
+    <tbody>
+      <tr><td>Stufe A: 5 Arme, Opus-Richter</td><td>18.10.</td><td class="num">43,80</td><td class="num">0</td><td>Baseline Haiku 4.5 verfehlt fast alles; Hebel liegt beim Extraktor</td></tr>
+      <tr><td>Kalibrierung Opus-Richter</td><td>18.10.</td><td class="num">4,93</td><td class="num">0</td><td>50 von 50 nach Nachprüfung; Referenzsatz für jeden Richter</td></tr>
+      <tr><td>Runde 3: Haiku 5.5, Prompt v2</td><td>19./20.10.</td><td class="num">17,51</td><td class="num">0</td><td>Haiku 5.5 erfüllt Recall für 0,006 USD/min</td></tr>
+      <tr><td>Stufe B: baseline-v2 plus 6 Arme</td><td>20.10.</td><td class="num">75,57</td><td class="num">0</td><td>Precision ist das Kernproblem; Richter 78 % der Kosten</td></tr>
+      <tr><td>Gemini-Nachrichten, Kalibrierung, Zweitlabel</td><td>20.10.</td><td class="num">0</td><td class="num">9,56</td><td>Gemini 3.8 Flash 49 von 50, kostet 1,5 statt 6 bis 7 USD je Lauf</td></tr>
+      <tr><td>Prüfstufe: Sonnet, Jev, Sonnet-b</td><td>21.10.</td><td class="num">7,56</td><td class="num">2,06</td><td>Alltag-Fehlalarme von 33 auf 0,9; Pipeline-Fehler gefunden; Jev taugt nicht</td></tr>
+      <tr><td>Liste je Turn, Prüfset-Lauf</td><td>22.10.</td><td class="num">3,47</td><td class="num">0,89</td><td>Schalter verworfen; Prüfset schwankt stark</td></tr>
+      <tr><td>Golden 1.1 nachgerichtet</td><td>22.10.</td><td class="num">0</td><td class="num">4,46</td><td>14 neue Labels bewegen kaum etwas</td></tr>
+      <tr><td>Stufe C: 3 Wiederholungen</td><td>22./23.10.</td><td class="num">6,39</td><td class="num">1,38</td><td>Debatte, Alltag, Kosten erfüllt; Talkshow, Latenz verfehlt</td></tr>
+      <tr class="sum"><td>Summe</td><td></td><td class="num">≈ 159</td><td class="num">≈ 18</td><td>≈ 178 USD; geplant waren 85, später 120</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Der vorläufige Opus-Richter kostete 82 USD, also die Hälfte aller Anthropic-Ausgaben. Der Monatsdeckel in <code>budget.json</code> zeigt 93 von 200 USD, weil Stufe A, Kalibrierung und Runde 3 (66 USD) vor der Einführung des Deckels liefen. Der Deckel kennt außerdem nur Anthropic; Gemini läuft daneben.</p>
+
+  <h3>6.2 Laufende Kosten des Arbeitssystems je Monat</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Posten</th><th>Art</th><th class="num">2 Tickets/Woche</th><th class="num">5</th><th class="num">10</th></tr></thead>
+    <tbody>
+      <tr><td>Claude Max 20x (darin 200 USD API-Guthaben)</td><td>fix</td><td class="num">200</td><td class="num">200</td><td class="num">200</td></tr>
+      <tr><td>GitHub Pro (für Rulesets im privaten Repo)</td><td>fix</td><td class="num">4</td><td class="num">4</td><td class="num">4</td></tr>
+      <tr><td>Sonar Free, Fallow, Knip, Stryker, Semgrep, Trivy, gitleaks</td><td>fix</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>Modelle in Claude Code (im Abo; API-Äquivalent 480 / 1.190 / 2.390)</td><td>fix</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>GitHub Actions über 3.000 Minuten</td><td>variabel</td><td class="num">6,80</td><td class="num">22,09</td><td class="num">47,59</td></tr>
+      <tr><td>Golden-Set-Regression (aus dem API-Guthaben: 42 / 64 / 102)</td><td>variabel</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>Gemini-Richter</td><td>variabel</td><td class="num">2 bis 5</td><td class="num">2 bis 5</td><td class="num">2 bis 5</td></tr>
+      <tr><td>Deepgram-Probe nachts (Startguthaben)</td><td>variabel</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr class="sum"><td>Summe</td><td></td><td class="num">≈ 213 bis 216</td><td class="num">≈ 228 bis 231</td><td class="num">≈ 254 bis 257</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Nicht im Modell: Hosting (31 bis 73 EUR), Deepgram im Betrieb (0,0068 USD je Gesprächsminute), Brave (0,015 USD je Prüfung), Zahlungsdienstleister (0,52 bis 1,26 EUR je 9,99-EUR-Abo), Identitätsanbieter (0 bis 25 USD), Anwalt und DSFA (unbeziffert), AWS- und Google-Konto für EU-Inferenz (+10 % je Aufruf), Apple Developer Program (99 USD je Jahr, Annahme). Die Nacht allein braucht rund 81 % des Pro-Kontingents an Actions-Minuten.</p>
+
+  <h3>6.3 Unit Economics je Gesprächsminute</h3>
+  <p>Gemessen ist nur die Erkennung. Prüfung, STT und Suche sind Startwerte und Listenpreise. Annahmen: jede Karte wird geprüft, 0,065 USD je Prüfung inklusive Suche, EU-Endpunkt, kein Cache über Sitzungen hinweg.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Profil</th><th class="num">Karten/min</th><th class="num">STT + Erkennung</th><th class="num">Prüfung</th><th class="num">USD je Minute</th><th class="num">Break-even bei 9,99 EUR (Store)</th></tr></thead>
+    <tbody>
+      <tr><td>Alltag (Podcast-Gespräch)</td><td class="num">0,53</td><td class="num">0,044</td><td class="num">0,034</td><td class="num">0,078</td><td class="num">≈ 102 min/Monat</td></tr>
+      <tr><td>Mischung wie Golden Set</td><td class="num">2,04</td><td class="num">0,044</td><td class="num">0,133</td><td class="num">0,176</td><td class="num">≈ 45 min/Monat</td></tr>
+      <tr><td>Debatte</td><td class="num">2,96</td><td class="num">0,044</td><td class="num">0,192</td><td class="num">0,236</td><td class="num">≈ 34 min/Monat</td></tr>
+      <tr><td>Talkshow</td><td class="num">4,48</td><td class="num">0,044</td><td class="num">0,291</td><td class="num">0,335</td><td class="num">≈ 24 min/Monat</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>Lesart:</strong> Die Erkennung kostet 0,020 USD je Minute (Gate-Zahl; mit Resolver 0,034, über Bedrock oder Vertex 0,037) und ist kein Kostentreiber mehr. Die Minute wird von der Prüfung je Karte bestimmt, und die hat weder ADR noch Vertrag noch Messaufbau. Hebel: nur Karten mit hoher Prüfwürdigkeit prüfen, Urteilscache über Sitzungen, weniger Suchanfragen, Sonnet statt Opus im Urteil, Nutzungsdeckel je Abo. Ohne Hebel trägt ein 9,99-EUR-Abo bei Sendungen nur 25 bis 45 Minuten im Monat. Hosting und Fixkosten sind hier noch nicht enthalten.</p>
+
+  <h3>6.4 EU-Hosting, Minimal-Setup</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Option</th><th class="num">EUR je Monat</th><th>Betrieb für eine Person</th></tr></thead>
+    <tbody>
+      <tr><td>OVHcloud Managed Kubernetes, Free-Plan (Frankfurt, Warschau)</td><td class="num">≈ 31</td><td>mittel, Control Plane verwaltet</td></tr>
+      <tr><td>Compose auf einer Hetzner-VM mit Coolify oder Dokploy</td><td class="num">≈ 40</td><td>niedrig, ein Ausfallpunkt</td></tr>
+      <tr><td>Scaleway Kapsule (Paris, Amsterdam, Warschau)</td><td class="num">≈ 51</td><td>mittel, Managed Postgres und Redis extra</td></tr>
+      <tr><td>k3s selbst auf Hetzner (3 Knoten, LB, Speicher)</td><td class="num">≈ 73</td><td>hoch, alles selbst</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Kubernetes ist laut Recherche nicht zwingend. Unabhängig vom Hoster braucht Claude mit EU-Inferenz ein AWS- oder Google-Konto; beide sind laut deiner Entscheidung vom 12.10. aufgeschoben.</p>
+
+  <h2 id="qualitaet">7. Qualität der Erkennung (Stufe C, Textmodus, 3 Wiederholungen, Gemini-Richter)</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Teil</th><th>Zahl</th><th class="num">Schwelle</th><th class="num">Stufe A</th><th class="num">Stufe C Median (Spanne)</th><th>Stand</th></tr></thead>
+    <tbody>
+      <tr><td>Talkshow</td><td>Recall hoch</td><td class="num">≥ 0,75</td><td class="num">0,664</td><td class="num">0,688 (0,648 bis 0,704)</td><td><span class="pill p-bad">verfehlt</span></td></tr>
+      <tr><td>Talkshow</td><td>Precision</td><td class="num">≥ 0,80</td><td class="num">0,439</td><td class="num">0,677 (0,638 bis 0,721)</td><td><span class="pill p-bad">verfehlt</span></td></tr>
+      <tr><td>Talkshow</td><td>Latenz p95 Treffer</td><td class="num">≤ 15 s</td><td class="num">17,7 s</td><td class="num">19,7 s (14,2 bis 22,7)</td><td><span class="pill p-bad">verfehlt</span></td></tr>
+      <tr><td>Debatte</td><td>Recall hoch</td><td class="num">≥ 0,75</td><td class="num">0,692</td><td class="num">0,808 (0,808 bis 0,885)</td><td><span class="pill p-ok">erfüllt</span></td></tr>
+      <tr><td>Debatte</td><td>Precision</td><td class="num">≥ 0,80</td><td class="num">0,720</td><td class="num">0,808 (0,778 bis 0,920)</td><td><span class="pill p-ok">erfüllt</span></td></tr>
+      <tr><td>Debatte</td><td>Latenz p95 Treffer</td><td class="num">≤ 15 s</td><td class="num">25,7 s</td><td class="num">13,3 s (12,5 bis 16,5)</td><td><span class="pill p-ok">erfüllt</span></td></tr>
+      <tr><td>Alltag</td><td>Fehlalarme je 10 min</td><td class="num">≤ 2</td><td class="num">32,7</td><td class="num">1,65 (1,10 bis 1,65)</td><td><span class="pill p-ok">erfüllt</span></td></tr>
+      <tr><td>Gesamt</td><td>Zuschreibung</td><td class="num">≥ 0,95</td><td class="num">0,994</td><td class="num">1,000</td><td><span class="pill p-ok">erfüllt</span> (im Textmodus trivial)</td></tr>
+      <tr><td>Gesamt</td><td>Latenz p95 Treffer</td><td class="num">≤ 15 s</td><td class="num">20,0 s</td><td class="num">17,8 s (16,6 bis 22,7)</td><td><span class="pill p-bad">verfehlt</span></td></tr>
+      <tr><td>Gesamt</td><td>Kosten USD je Minute</td><td class="num">≤ 0,063</td><td class="num">0,074</td><td class="num">0,020 (0,020 bis 0,021)</td><td><span class="pill p-ok">erfüllt</span></td></tr>
+      <tr><td>Gesamt</td><td>Dubletten</td><td class="num">≤ 0,10</td><td class="num">0,126</td><td class="num">0,098 (0,091 bis 0,117)</td><td><span class="pill p-warn">knapp</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>Nächster Hebel laut Analysen:</strong> das Nachholen des Extraktors. Alle zwölf Talkshow-Treffer über 15 Sekunden stammen aus einem späteren Aufruf als dem ersten, der den Wortlaut sah; die Prüfstufe selbst kostet nur 2,1 Sekunden je Karte. Ohne Nachholen läge p95 bei 10,8 Sekunden. Prompt v3 liegt als Arm auf dem Branch, ungemessen. Die Latenzschwelle selbst liegt bei dir (#30). Alle Zahlen sind Textmodus; die Schwellen gelten im Audiomodus, und der STT-Verlust ist ungemessen.</p>
+
+  <h2 id="monitoring">8. Monitoring</h2>
+  <div class="grid">
+    <div class="card info">
+      <h3>Arbeitssystem: vorhanden</h3>
+      <ul>
+        <li>Limit-Wächter: 5-Stunden- und 7-Tage-Fenster des Max-Abos, Kontextfüllstand je Session, Hooks sperren das Agent-Tool bei Grenzwerten.</li>
+        <li>Token und API-Äquivalent je Rolle aus den Session-Logs; Agent-Bilanz je PR; Nacht-Trend als Kommentar.</li>
+        <li>Harness: Kosten je Aufrufklasse, Cache-Trefferquote, Schema-Fehlerrate, Monatsdeckel.</li>
+        <li>Sonar Free für Code-Qualität, sobald es Code gibt.</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>Produkt im Betrieb: nichts</h3>
+      <ul>
+        <li>Kein Logging-Stack, keine Metriken, keine Traces, keine Alarmierung, keine SLOs, keine Statusseite. Die Suche nach Prometheus, OpenTelemetry, Sentry, Healthcheck trifft nur eine Compose-Vorlage.</li>
+        <li>Entschieden ist nur die Aufbewahrung: Logs und Metriken 30 Tage, nie Transkripttext.</li>
+        <li>Kein Laufzeit-Failover bei Ausfall von Deepgram, Claude oder Brave; nur Wechselpfade in ADR 0006.</li>
+        <li>Kein Weg für "Kunde meldet Fehlurteil".</li>
+      </ul>
+    </div>
+  </div>
+  <h3>Lücken in der Kostenmessung</h3>
+  <ul>
+    <li>Die Gate-Zahl "Kosten je Minute" der Berichte enthält den Resolver nicht (0,014 USD je Minute). Erkennung kostet real 0,034, nicht 0,020.</li>
+    <li><code>pricing.json</code> auf dem Eval-Branch rechnet Sonnet-Cache-Lesen mit 0,20 statt 0,10 USD; <code>usage_from_logs.py</code> ist korrigiert.</li>
+    <li>Der Monatsdeckel kennt nur Anthropic; <code>budget.json</code> auf dem Branch trägt nur die sieben Stufe-B-Einträge, der Rest steht nur in #30.</li>
+    <li>Keine laufende Messung der Actions-Minuten; die Rechnung stützt sich auf eine Einmalmessung im alten Repo.</li>
+  </ul>
+
+  <h2 id="deckung">9. Entscheidungsdeckung für das Produkt</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Bereich</th><th>Stand</th><th>Lücke</th></tr></thead>
+    <tbody>
+      <tr><td>Erkennung, Topic und Vorrecherche, Sprecher, Inputs und STT</td><td><span class="pill p-ok">ADR + Spec + Messung</span></td><td>Talkshow und Latenz verfehlt; Modellwahl je Rolle wartet auf Golden Set v2</td></tr>
+      <tr><td>Datenschutz und Einwilligung</td><td><span class="pill p-ok">ADR + Spec</span></td><td>rechtlich ungeprüft; DSFA und Verzeichnis existieren nicht (#42)</td></tr>
+      <tr><td>Clients (Web, Store)</td><td><span class="pill p-ok">ADR + Spec</span></td><td>Live-Ansicht ohne gewählte Variante (#16)</td></tr>
+      <tr><td>Teststrategie und Arbeitsprozess</td><td><span class="pill p-ok">ADR + 6 Specs + Dateien</span></td><td>nie end-to-end gelaufen; Issues für Inkrement 1 fehlen</td></tr>
+      <tr><td>Produktstack und Monorepo</td><td><span class="pill p-warn">nur angenommen</span></td><td>TypeScript, Node, pnpm, Caddy, Compose stehen in Prozess-Specs, nicht in einem ADR; Stack-Alternativen nie betrachtet (#18)</td></tr>
+      <tr><td>Konten, Mandanten, Abrechnung</td><td><span class="pill p-warn">Research, Ticket offen</span></td><td>Identitätsanbieter, Mandant, Token-Modell, PSP, Kontingent: alles offen (#13); blockiert jedes Client-Inkrement</td></tr>
+      <tr><td>Sicherheitsarchitektur</td><td><span class="pill p-warn">Research, Ticket offen</span></td><td>Threat Model, Auth am WebSocket, Secrets-Rotation, Datenpanne (#22)</td></tr>
+      <tr><td>Hosting und Deployment</td><td><span class="pill p-warn">Research, Ticket offen</span></td><td>Anbieter, Kubernetes ja oder nein, Deploy-Weg, Schlüsselablage, Postgres-Hosting (#15)</td></tr>
+      <tr><td>Prüfung und Urteil (Check)</td><td><span class="pill p-bad">nur Startwerte</span></td><td>kein ADR, kein Vertrag für Verdict, Evidence, Card, Konfidenz, Warteschlange; #39 ohne Check-Vertrag-Ticket</td></tr>
+      <tr><td>Beobachtbarkeit, Alarmierung, Support, Anbieterausfall</td><td><span class="pill p-bad">offen ohne Research</span></td><td>drei der fünf Fragen in #15 haben keine Grundlage</td></tr>
+      <tr><td>Recht und DSFA</td><td><span class="pill p-bad">Launch-Schranke</span></td><td>Beauftragung nicht dokumentiert; die 13 Anwaltsfragen liegen auf einem lokalen Branch</td></tr>
+      <tr><td>Showcase und Portfolio</td><td><span class="pill p-bad">nirgends</span></td><td>keine Aussage, ob und wie v2 je öffentlich wird</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>Kritischer Pfad:</strong> Bau von Inkrement 1 hängt an #18 (Stack-ADR vor T1), #30 (Modellwahl für T7), #41 (Harness für T8), #25 (Golden Set v2 für T9) und dem ersten Lauf von <code>cut-tickets</code>. Launch hängt zusätzlich an #42 (längste externe Vorlaufzeit), #13 plus #22, #39, #15 und #16. Die Destination der Map ist für Inkrement 1 fast erreicht; für das vermarktbare Produkt fehlen genau die Bereiche, die sie ausdrücklich nennt: Konten, Abo, Mandanten, Betrieb mit Support.</p>
+
+  <h2 id="empfehlungen">10. Empfehlungen, priorisiert</h2>
+  <h3>Diese Woche (alles klein)</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>Maßnahme</th><th>Nutzen</th><th>Aufwand</th><th>Wer</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Alle Branches pushen; Research-Dateien per Sammel-Merge nach <code>docs/research/</code> auf main; Map-Zeilen "Befund: Branch …" auf Dateipfade umstellen</td><td>Verlustrisiko weg; Agenten in frischen Clones sehen die Grundlagen</td><td>S</td><td>Push: du; Merge-PR: Agent</td></tr>
+      <tr><td>2</td><td>Rot-vor-Grün reparieren: fehlendes Modul innerhalb der Task-Pfade ist richtiger Rot-Grund; Testdatei dazu</td><td>sonst blockiert jedes Ticket mit neuem Modul</td><td>S</td><td>Agent</td></tr>
+      <tr><td>3</td><td>Commit-Check: Eigennamen-Allowlist oder Regel präzisieren; Testfall</td><td>keine falschen Sperren auf PR-Titeln</td><td>S</td><td>Agent</td></tr>
+      <tr><td>4</td><td><code>.github/dependabot.yml</code> für github-actions (wöchentlich, gruppiert); Vulnerability Alerts einschalten; npm und pip beim ersten Lockfile</td><td>SHA-Pins altern sonst unbemerkt</td><td>S</td><td>Datei: Agent; Repo-Einstellung: du</td></tr>
+      <tr><td>5</td><td>Doku-Drift in einem PR: die rund 15 Stellen aus Abschnitt 5, README, Sonar-Schlüssel und Richter-Stufe in den Plan-Specs; Leseregel "ADR-Nachtrag schlägt Spec" in beide CLAUDE.md</td><td>Agenten laden diese Dateien; jeder falsche Zeiger kostet Suche</td><td>S</td><td>Agent</td></tr>
+      <tr><td>6</td><td>Beratende Fristen datieren: Sonar-Gate und Stryker-break als zwei Erinnerungs-Issues mit Datum</td><td>Gates werden nicht aus Vergessen scharf oder stumpf</td><td>S</td><td>Agent</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Vor Inkrement 1</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>Maßnahme</th><th>Nutzen</th><th>Aufwand</th><th>Wer</th></tr></thead>
+    <tbody>
+      <tr><td>7</td><td>#18 in zwei Lieferungen: (a) kurzes Stack-ADR mit Sprache, Laufzeit, Paketmanager, Workspace-Namen inklusive Entscheidung über <code>gateway</code>, Kante, Laufzeit bis PoC; (b) Prinzipien-Tabelle aus der Vorlage in <code>research/adr-inventar</code></td><td>schaltet T1 formal frei; die Begründung existiert sonst nie</td><td>M</td><td>Grilling mit dir</td></tr>
+      <tr><td>8</td><td>v2-Ticket "Harness und Golden Set nach main" als Blocker von T8 und T9; Makefile-Targets und <code>scripts/*</code> als explizite Liste in T1</td><td>ci.yml und nightly.yml werden real; zehn hängende Referenzen lösen sich an einer Stelle</td><td>M</td><td>Agent</td></tr>
+      <tr><td>9</td><td>CI für Inkrement 1 verschlanken: Shards auf [1], Stryker nur nachts, Stufen 2b und 4, Lighthouse und Browser-Rotation in der Teststrategie als "ab Inkrement 2" markieren; Sonar-Aktivierung an den ersten Service koppeln</td><td>weniger Minuten und Rauschen, kein Verlust</td><td>S</td><td>Agent</td></tr>
+      <tr><td>10</td><td>Betriebsminimum ab T1 in die Service-Vorlage: strukturiertes JSON-Logging, <code>/health</code>, Token und Kosten je Aufruf als Metrik; Release in einem Absatz definieren (Tag-Schema, welches Image-Tag deploybar ist, Rollback = vorheriges <code>:sha</code>)</td><td>sonst holt #15 es nicht mehr ein</td><td>S</td><td>Agent</td></tr>
+      <tr><td>11</td><td>Lieferketten-Minimum: <code>provenance</code> und <code>sbom</code> am Publish-Schritt; hadolint, semgrep, trivy per Digest pinnen</td><td>Images nachvollziehbar, bevor jemand sie deployt</td><td>S</td><td>Agent</td></tr>
+      <tr><td>12</td><td>Erste Retro nach drei Tickets statt am Inkrement-Ende; Agent-Bilanz auswerten und Architektur-Reviewer an Wirkradius koppeln</td><td>acht Modellaufrufe je Ticket werden früh gegen Nutzen gemessen</td><td>S</td><td>Agent, Entscheidung du</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Vor dem Launch</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>Maßnahme</th><th>Nutzen</th><th>Aufwand</th><th>Wer</th></tr></thead>
+    <tbody>
+      <tr><td>13</td><td>#42 Anwalt jetzt beauftragen; Vorlage ist fertig, <code>rechtslage</code> vorher pushen</td><td>längste externe Vorlaufzeit auf dem Launch-Pfad</td><td>extern</td><td>du</td></tr>
+      <tr><td>14</td><td>#13 Konten mit dem Token-Teil von #22 in einer Runde; danach #15 Betriebsmodell als ein ADR: Hosting, Deploy-Workflow, Environments, Release und Rollback, Monitoring und Alarmierung, Support, Anbieterausfall. #15 eine Blockierkante zu Inkrement 2 geben</td><td>schaltet Datenmodell, Kontingent, Live-Vertrag und Deployment frei</td><td>L</td><td>Grilling mit dir</td></tr>
+      <tr><td>15</td><td>Check-Vertrag als Ticket (Verdict, Evidence, Card, Konfidenz, Warteschlange), dann #39 Messaufbau der Prüfung; Unit-Economics-Modell je Abonnent inklusive Hosting, Identität, PSP</td><td>die Prüfung bestimmt die Minute; ohne Messung ist 9,99 EUR nicht belegt</td><td>L</td><td>Grilling mit dir</td></tr>
+      <tr><td>16</td><td>Latenzschwelle in #30 entscheiden; Nachholen des Extraktors als nächsten Arm messen (Prompt v3, segment_window mit Haiku 5.5)</td><td>Talkshow-Recall und Latenz sind die letzten verfehlten Gates</td><td>M</td><td>Entscheidung du, Lauf Agent</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="hand">11. Was nur du tun kannst</h2>
+  <div class="hand">
+    <h3>Hand-Aufgaben, sortiert nach Dringlichkeit</h3>
+    <ol>
+      <li><strong>Pushen (10 Minuten):</strong> in v2 <code>git push -u origin evals/pruefstufe evals/golden-1.1</code>; im Plan-Repo alle 18 lokalen <code>research/*</code>-Branches. Danach kann ein Agent den Sammel-Merge als PR vorbereiten.</li>
+      <li><strong>GitHub-Einstellungen (5 Minuten):</strong> in v2 Dependabot Alerts und Security Updates einschalten; prüfen, ob Time Machine oder ein anderes Backup des Macs läuft.</li>
+      <li><strong>Entscheiden:</strong> Latenzschwelle (#30); ob Sonar erst mit dem ersten Service aktiv wird; ob das Playwright-Repo archiviert wird.</li>
+      <li><strong>Terminieren:</strong> Grilling #18 (eine Sitzung, Stack-ADR); danach #13 mit #22; Anwalt für #42 beauftragen.</li>
+      <li><strong>Prüfen:</strong> ob das 200-USD-API-Guthaben des Max-Abos mit der Console-Organisation verknüpft ist (laut Kostenrecherche offen).</li>
+    </ol>
+  </div>
+
+  <h2 id="glossar">12. Glossar</h2>
+  <dl class="kv">
+    <dt>ADR</dt><dd>Architecture Decision Record, datierte Entscheidung mit Optionen und Folgen</dd>
+    <dt>CI</dt><dd>Continuous Integration, automatische Prüfung je Push und je Pull Request</dd>
+    <dt>PR</dt><dd>Pull Request, Änderungsvorschlag mit Review vor dem Merge</dd>
+    <dt>Ruleset</dt><dd>GitHub-Schutzregel für den Branch main: nur per PR, nur Squash, Pflicht-Checks</dd>
+    <dt>GHCR</dt><dd>GitHub Container Registry, Ablage der Docker-Images</dd>
+    <dt>SBOM</dt><dd>Software Bill of Materials, Stückliste der Abhängigkeiten eines Images</dd>
+    <dt>Golden Set</dt><dd>19 echte Gesprächsausschnitte (95 Minuten) mit von Hand geprüften erwarteten Behauptungen</dd>
+    <dt>Harness</dt><dd>Python-Werkzeug, das die Erkennung über das Golden Set spielt und misst</dd>
+    <dt>Richter</dt><dd>Modell einer anderen Familie (Gemini), das Fund und Label vergleicht</dd>
+    <dt>Prüfstufe</dt><dd>zweite Modellstufe (Sonnet 5.5), die je Behauptung entscheidet, ob sie eine Karte wird</dd>
+    <dt>Recall, Precision</dt><dd>Anteil gefundener erwarteter Behauptungen; Anteil richtiger unter den gezeigten</dd>
+    <dt>p95</dt><dd>95 % der Karten sind schneller als dieser Wert</dd>
+    <dt>STT</dt><dd>Speech to Text, Spracherkennung (Deepgram)</dd>
+    <dt>DSFA</dt><dd>Datenschutz-Folgenabschätzung nach Art. 35 DSGVO</dd>
+    <dt>PSP</dt><dd>Zahlungsdienstleister (zum Beispiel Stripe)</dd>
+    <dt>T1 bis T9</dt><dd>die neun Tickets von Inkrement 1 (Erkennung ab der Segment-Naht, ohne Client und Prüfung)</dd>
+  </dl>
+  <p class="meta">Quellen: drei Gutachten im Session-Scratchpad (<code>eval/prozess-v2.md</code>, <code>eval/plan-deckung.md</code>, <code>eval/kosten-qualitaet.md</code>), eigene Prüfläufe (Hook-Tests, Tool-Tests, Harness-Tests, GitHub-API), Tickets #30 und #56, Research-Branches <code>kosten-arbeitssystem</code>, <code>eu-hosting</code>, <code>identitaet-zahlung-eu</code>.</p>
+</div>
+
+</body></html>

@@ -1,0 +1,360 @@
+<!-- Quelle: https://claude.ai/artifact/S7e3jCMMg4twFdQpA7XWQd, exportiert 2026-10-23, Ticket #47 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PR-Format und Gates</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubild in voller Breite: der Weg eines Branches vom ersten Commit bis zum Merge, Gates als Code grün, Marcos Tor bernstein; dieselben Tokens wie die anderen Seiten der Prozess-Map; Schrift nie schwarz. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ok2);margin:0 0 2px}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-warn{stroke:var(--warn)}
+.d .ln-dash{stroke-dasharray:5 4}
+@media (prefers-reduced-motion: reduce){*{animation:none;transition:none}}
+a{color:inherit}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Prozess-Map · Ticket „PR-Format, Größe, Commits und Gates“ · Schaubild der Entscheidung · 2026-10-19</div>
+<h1>PR-Format und Gates</h1>
+<p class="lead">Entschieden in zwei Runden: ein Task je PR mit gemessener Größe, keine Stapel, Draft bis alles grün ist, Squash-Merge, Conventional Commits mit Pflicht-Scope in Hook und CI, Required Checks „ci passed“ und „pr passed“ mit Fallow, SonarQube Cloud ab Tag 1, Richterbericht als Kommentar vor Tor 2, Agent-Bilanz mit deinen Kästchen. Spezifikation <code>docs/spec/process/pr-format.md</code>; Dateien in live-factchecker-v2, Branch <code>process/rollen</code>, Commit 46efa36.</p>
+<nav class="nav"><a href="#weg">Schaubild</a><a href="#alt">Altes Repo</a><a href="#uebergaben">Übergaben</a><a href="#werkzeuge">Werkzeuge</a><a href="#v2">Was liegt</a><a href="#fragen">Fragen</a></nav>
+</header>
+
+<h2 id="weg">Der Weg eines Branches</h2>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 420" role="img" aria-label="Von links nach rechts: Branch task je Issue und Task, Commits in Review-Reihenfolge mit lefthook und commitlint, Push löst ci.yml aus mit Stufen 0 bis 2b, Rot-vor-Grün, Doku- und Kontextchecks; dann Review-Kette und Abnahmelauf mit Richter; der PR öffnet mit Vorlage; pr.yml mit Vertragscheck, Semgrep, gitleaks, Trivy, Stufen 3 und 4, Stryker inkrementell, Fallow-Audit, Eval-Bericht-Check, pr passed; Tor 2 Marco liest Diff, Leitfaden und Urteile und merged; danach main.yml mit Image-Push und Ticket-Schluss. Unten die Nacht.">
+  <rect class="zone" x="10" y="10" width="980" height="330" rx="8"/>
+  <text class="lab" x="24" y="32">Vom Commit zum Merge</text>
+
+  <rect class="box" x="24" y="52" width="130" height="62" rx="6"/>
+  <text class="t" x="34" y="72">Branch und Commits</text>
+  <text class="t3" x="34" y="87">task/&lt;issue&gt;-&lt;task&gt;</text>
+  <text class="t3" x="34" y="100">Review-Reihenfolge, Q3</text>
+  <text class="t3" x="34" y="113">lefthook, commitlint</text>
+
+  <rect class="box box-ok" x="178" y="52" width="150" height="62" rx="6"/>
+  <text class="t" x="188" y="72">Push → ci.yml</text>
+  <text class="t3" x="188" y="87">Stufen 0, 1, 2a, 2b</text>
+  <text class="t3" x="188" y="100">Rot-vor-Grün, Doku, Budget</text>
+  <text class="t3" x="188" y="113">Golden-Mock · „ci passed“</text>
+
+  <rect class="box box-ok" x="352" y="52" width="150" height="62" rx="6"/>
+  <text class="t" x="362" y="72">Review-Kette</text>
+  <text class="t3" x="362" y="87">3 Reviewer parallel</text>
+  <text class="t3" x="362" y="100">fallow-review als Vorstufe</text>
+  <text class="t3" x="362" y="113">Abnahmelauf + Richter</text>
+
+  <rect class="box" x="526" y="52" width="140" height="62" rx="6"/>
+  <text class="t" x="536" y="72">PR öffnet</text>
+  <text class="t3" x="536" y="87">Vorlage, Q4</text>
+  <text class="t3" x="536" y="100">Merge-Gefahr, Leitfaden,</text>
+  <text class="t3" x="536" y="113">Belegt durch, Urteile</text>
+
+  <rect class="box box-ok" x="690" y="52" width="150" height="62" rx="6"/>
+  <text class="t" x="700" y="72">pr.yml</text>
+  <text class="t3" x="700" y="87">Verträge, Semgrep, gitleaks,</text>
+  <text class="t3" x="700" y="100">Trivy, Stufe 3+4, Stryker,</text>
+  <text class="t3" x="700" y="113">Fallow, Eval-Check · „pr passed“</text>
+
+  <rect class="box box-warn" x="864" y="52" width="116" height="62" rx="6"/>
+  <text class="t" x="874" y="72">Tor 2 · Marco</text>
+  <text class="t3" x="874" y="87">Diff, Leitfaden,</text>
+  <text class="t3" x="874" y="100">Urteile; Q8</text>
+  <text class="t3" x="874" y="113">merged</text>
+
+  <path class="ln" d="M154 83 H178"/><path class="ln" d="M328 83 H352"/><path class="ln" d="M502 83 H526"/><path class="ln" d="M666 83 H690"/><path class="ln" d="M840 83 H864"/>
+
+  <rect class="box" x="690" y="150" width="150" height="54" rx="6"/>
+  <text class="t" x="700" y="170">Nach dem Merge</text>
+  <text class="t3" x="700" y="185">main.yml: Images nach GHCR,</text>
+  <text class="t3" x="700" y="198">Stufe 3+4 gegen Images; Ticket zu</text>
+  <path class="ln ln-warn" d="M922 114 V177 H840"/>
+
+  <rect class="box" x="24" y="150" width="300" height="54" rx="6"/>
+  <text class="t" x="34" y="170">Größe und Stapel, Q1 und Q2</text>
+  <text class="t3" x="34" y="185">alt: ein Task je PR, etwa 400 Zeilen Produktionscode;</text>
+  <text class="t3" x="34" y="198">höchstens ein Stapel-PR als Draft (viermal gestrandet)</text>
+
+  <rect class="box" x="352" y="150" width="314" height="54" rx="6"/>
+  <text class="t" x="362" y="170">Required Checks und Schutz, Q5 bis Q7</text>
+  <text class="t3" x="362" y="185">Ruleset: ci passed + pr passed; CODEOWNERS für Verträge,</text>
+  <text class="t3" x="362" y="198">.github, deploy; Auto-Merge frühestens nach 20 PRs (ADR 0011)</text>
+
+  <text class="t3" x="24" y="240">Gates sind Code: ein roter Check blockiert; Reviewer-Befunde kommentieren und blockieren nur in ihren Blockierregeln (ADR 0011); der Richter berät Tor 2.</text>
+  <text class="t3" x="24" y="258">Jeder Commit läuft durch lefthook (Budget 30 s); CI wiederholt alles, weil --no-verify den Hook umgeht. Die Hauptsession pusht, öffnet den PR und bereitet den Merge vor; sonst niemand.</text>
+  <text class="t3" x="24" y="276">Privates Repo: keine Fork-PRs, kein Öffentlichkeits-Check, bis v2 einen öffentlichen Rand hat; SARIF-Upload braucht Advanced Security, Kommentare und Annotations nicht.</text>
+
+  <rect class="zone" x="10" y="300" width="980" height="30" rx="6"/>
+  <text class="lab lab-ok" x="24" y="320">Nacht 02:23</text>
+  <text class="t3" x="130" y="320">Stryker geänderte Pakete (sonntags alle) · ein Browser im Wechsel · Lighthouse · Trivy voll · Golden-Mock · Fallow · Knip · Deepgram-Probe · Trend-Kommentar</text>
+
+  <text class="t3" x="24" y="372">Entschieden in Nachbartickets: Rollen und Blockierregeln (ADR 0011), Hooks und Deny-Liste (Agentenregeln), Stufen und Gates (Testteam). Hier: Form, Größe, Commits, Werkzeugwahl, Required Checks, Tor 2.</text>
+  <text class="t3" x="24" y="390">Ergebnis des Tickets: PR-Vorlage, Commit-Regeln, ci.yml, pr.yml, main.yml, nightly.yml, lefthook.yml, Skill open-pr, Ruleset-Checkliste für Marco; alles in live-factchecker-v2.</text>
+</svg>
+</div>
+<figcaption>Grün umrandet ist, was als Code prüft; bernstein ist Marcos Tor. Die Fragen der Runde hängen an den Kästen: Größe und Stapel (Q1, Q2), Commits (Q3), Vorlage (Q4), Checks und Werkzeuge (Q5, Q6), Schutz und Auto-Merge (Q7), Tor 2 (Q8).</figcaption>
+</figure>
+
+<h2 id="alt">Das Format des alten Repos (bewährt, mit Befund)</h2>
+<div class="tbl"><table>
+<tr><th>Regel</th><th>Stand im alten Repo</th><th>Befund</th></tr>
+<tr><td>Größe</td><td>ein Plan-Task je PR, etwa 400 geänderte Zeilen Produktionscode; Tests, Belege, Lockfiles zählen nicht</td><td>bewährt, nach Owner-Intervention „so viel“ (Lesson 12); nie als Check</td></tr>
+<tr><td>Commits</td><td>Review-Reihenfolge Vertrag → Logik → Verdrahtung → Tests → Docs; Conventional Commits ohne Durchsetzung, `wip:` erlaubt</td><td>ohne commitlint; Scopes nie festgelegt</td></tr>
+<tr><td>Stapel</td><td>höchstens ein Stapel-PR, öffnet als Draft, verlässt Draft erst nach Retarget auf main</td><td>viermal in der gemergten Basis gestrandet (#39, #48, #68, #73); mechanischer Fix „delete head branches“ nie gesetzt</td></tr>
+<tr><td>Vorlage</td><td>Merge-Gefahr-Block (Risiko, Revertierbarkeit, Wirkradius, Nutzen, Review-Tiefe), Link zur visuellen Review-Anleitung, deutscher Leitfaden (Was und warum mit Struktur-Skizze, Hier hinschauen ≤5, Überspringen, Entscheidungen, Merge-Reihenfolge), eingeklappt: Belegt durch, Bilder, So geprüft, Agent-Bilanz, Details (English)</td><td>bewährt; Marco will es wieder; Inventar A31, A33, A39</td></tr>
+<tr><td>Visuelle Anleitung</td><td>privates HTML-Artifact je PR seit 2026-10-02 (vorher nur UI und Risiko ≥ mittel), Schlüsselbild auch im PR</td><td>bewährt; „privat, weil Repo öffentlich“ entfällt, der Nutzen bleibt</td></tr>
+<tr><td>Vor „ready“</td><td>`make sast` (Semgrep), SonarCloud-Gate lesen, Mock-Abnahmelauf (UAT), Reviewer und Security-Reviewer parallel</td><td>drei Sonar-Gates fielen erst nach dem Öffnen (Lesson); in v2 ist die Abnahme Teil der Kette</td></tr>
+<tr><td>CI-Layout (ADR 0005 alt)</td><td>`ci.yml` push (0, 1, 2a, 2b, „ci passed“), `pr.yml` pull_request (Verträge, hadolint, Semgrep, Images + Trivy, Stufen 3 und 4 via `stack-tests.yml`, „pr passed“), `main.yml` (Multi-Arch, GHCR, 3 und 4 gegen Images), `nightly.yml`, `codeql.yml`; Actions per SHA gepinnt, minimale permissions, concurrency je Ref</td><td>bewährt; eine Sammel-Prüfung je Workflow als Required Check, weil Matrix-Jobnamen wandern</td></tr>
+<tr><td>lefthook</td><td>pre-commit parallel: gitleaks, prettier, eslint, typecheck, Unit betroffener Pakete, depcruise; Budget 30 s; Toolbox-Shim</td><td>bewährt; kein commit-msg-Hook</td></tr>
+<tr><td>CODEOWNERS</td><td>`/packages/contracts/`, `/.github/`, `/deploy/`, `/infra/`, CODEOWNERS selbst → Marco</td><td>bewährt; Ruleset „Require review from Code Owners“</td></tr>
+<tr><td>Agent-Bilanz</td><td>`scripts/agent-usage.py --since <Branch-Beginn>`: Tokens je Modell, Top-Werkzeuge mit Fehlerquote, Wiederholungen</td><td>offen, ob das Skript mit dem heutigen Log-Format rechnet (ADR 0011, Abschnitt 9)</td></tr>
+</table></div>
+
+<h2 id="uebergaben">Übergaben aus den Nachbartickets</h2>
+<div class="two">
+<div class="card"><h3>Rollen (ADR 0011)</h3><ul>
+<li>Blockierregeln stehen; Marco merged in Inkrement 1 immer; Auto-Merge frühestens nach zwanzig PRs mit Kennzahlen.</li>
+<li>Review-Kette als `review-chain.js`; Manifest ist die Tabelle „Belegt durch“; Manifest-Änderung ist Reviewer-Blocker.</li>
+<li>Agenten-Bilanz: Loops bis grün, Tokens je Rolle, Befunde je Reviewer mit Anteil berechtigt, Richter-Quote, Rücklauf an Tor 1.</li>
+</ul></div>
+<div class="card"><h3>Agentenregeln</h3><ul>
+<li>Skill `open-pr` ist Gerüst; Hook `git-pipe`, Deny-Liste; Commit-Durchsetzung hier zu entscheiden.</li>
+<li>Offen von dort: Öffentlichkeits-Check, „Commit auf offenem PR sofort gepusht oder PR Draft“ (Lesson 39).</li>
+</ul></div>
+<div class="card"><h3>Testteam</h3><ul>
+<li>Stufen 0 bis 2b je Push, 3 und 4 im PR (neue Szenarien dreimal), Rot-vor-Grün-Job, Stryker inkrementell mit Mutanten-Liste, Check „Eval-Bericht fehlt“, Trivy CRITICAL mit Fix.</li>
+<li>PR-Abschnitte: Richterbericht (ein Zitat, höchstens zwei Bilder je Fall), Mutanten-Liste, Manifest als „Belegt durch“.</li>
+<li>Nacht: Stryker geändert (sonntags alle), ein Browser im Wechsel, Lighthouse, Trivy voll, Golden-Mock, Fallow, Knip, Deepgram-Probe, Trend-Kommentar.</li>
+</ul></div>
+<div class="card"><h3>Matts Skills (1.3.1)</h3><ul>
+<li>`pr`: Summary als Skizze (Pseudocode, Aufrufbaum, Dateibaum), Evidence vorher/nachher, Merge Danger mit „Door“ und Blast Radius; dünner als die alte Vorlage, die Skizzenregel ist gut.</li>
+<li>`code-review`: zwei Achsen (Standards, Spec) in parallelen Subagenten; überschneidet sich mit Reviewer und Kritiker.</li>
+</ul></div>
+</div>
+
+<h2 id="werkzeuge">Werkzeuge im Gate (Befund Review-Werkzeuge, 2026-10-18)</h2>
+<div class="tbl"><table>
+<tr><th>Werkzeug</th><th>Was</th><th>Preis</th><th>Daten</th><th>Vorschlag des Befunds</th></tr>
+<tr><td>Fallow</td><td>toter Code, Zyklen, Grenzen, Duplikate, Komplexität; `audit --gate new-only` Exit 0/1/2; Action mit PR-Kommentar; MCP; Commit-Hook; Skill `fallow-review`</td><td class="num">0 €</td><td>lokal, Telemetrie aus</td><td>Gate und lokal; jung (seit 2026-03, eine Person): Knip und dependency-cruiser als Rückfall</td></tr>
+<tr><td>Knip, dependency-cruiser</td><td>toter Code auf Export-Ebene; Modulkanten, Zyklen, Schichtregeln</td><td class="num">0 €</td><td>lokal</td><td>depcruise in Stufe 0, bis Fallow-Boundaries die Regeln tragen; Knip nachts</td></tr>
+<tr><td>Semgrep, gitleaks, Trivy, hadolint</td><td>SAST, Secrets in der Historie, Image-Schwachstellen, Dockerfile-Lint</td><td class="num">0 €</td><td>lokal/CI</td><td>wie alt, im PR blockierend</td></tr>
+<tr><td>CodeQL</td><td>SAST von GitHub</td><td class="num">offen</td><td>GitHub</td><td>im privaten Repo nur mit Advanced Security; offen</td></tr>
+<tr><td>SonarQube Cloud Free</td><td>Quality Gate, Taint, Secrets; Frankfurt</td><td class="num">0 €</td><td>Free-Terms ohne DPA, Training auf Customer Data erlaubt</td><td>nur, wenn Sicherheit (#22) die Terms akzeptiert</td></tr>
+<tr><td>CodeScene MCP</td><td>Code Health lokal, kein PR-Gate im Einzeltarif</td><td class="num">8 €</td><td>Usage-Events</td><td>optional, kein Gate</td></tr>
+<tr><td>Greptile Starter</td><td>LLM-PR-Review</td><td class="num">0 $</td><td>Code in den USA, Training standardmäßig an</td><td>nur mit Opt-out; eigene Reviewer sind der datensparsamste Pfad</td></tr>
+</table></div>
+
+<h2 id="v2">Was in v2 schon liegt (Branch process/rollen)</h2>
+<ul>
+<li>Reviewer-Rollen mit festgenageltem Scope, `review-chain.js`, `acceptance.js` mit Richterbericht; `open-pr` als Gerüst; Skill `evidence`.</li>
+<li>Hooks: `git-pipe` (kein git/gh in Pipes, kein `--no-verify`), `owner-stack`, `frozen-manifest`, `test-integrity`; Deny-Liste in `settings.json`.</li>
+<li>`docs/process/test-strategy.md` mit der Tabelle Stufe zu Workflow (`ci.yml`, `pr.yml`, `nightly.yml`); Checks `check_docs_coverage.py`, `check_context_budget.py`, `sync_agent_models.py --check`, `test-hooks.sh`.</li>
+<li>CLAUDE.md Git-Block: nie auf main, Conventional Commits klein, Review-Reihenfolge, Pre-Commit-Hook Pflicht, Push und PR nur in der Hauptsession.</li>
+</ul>
+
+<h2 id="runde1">Entschieden in Runde 1 (Marco, 2026-10-19)</h2>
+<div class="tbl"><table>
+<tr><th>Frage</th><th>Entscheidung</th></tr>
+<tr><td>Q1 Größe</td><td>a) Ein Task je PR; Check zählt Produktionszeilen, warnt über 400, blockiert über 800.</td></tr>
+<tr><td>Q2 Stapel</td><td>a) Keine Stapel; „Automatically delete head branches“ am Tag 1.</td></tr>
+<tr><td>Q3 Commits</td><td>a) Scopes = Workspaces, feste Typen, commitlint in lefthook und CI, Release Notes per git-cliff erst zum Release.</td></tr>
+<tr><td>Q4 Vorlage</td><td>a) Alte Vorlage mit Skizzenregel, Richter-Urteilen und Mutanten-Abschnitt; Artifact nur bei UI oder Risiko ab mittel.</td></tr>
+<tr><td>Q5 Checks</td><td>a) „ci passed“ und „pr passed“ mit Fallow <code>audit --gate new-only</code>; dependency-cruiser in Stufe 0.</td></tr>
+<tr><td>Q6 Cloud</td><td><strong>c) sofort:</strong> eigene Reviewer plus SonarQube Cloud Free ab Tag 1 (Frankfurt, Quality Gate als Required Check nach Einstimmphase). Marco nimmt die Free-Terms (kein DPA, Trainingsklausel) in Kauf; Sicherheit (#22) führt es als bekanntes Risiko und prüft den Wechsel auf Team, sobald das Repo personenbezogene Daten enthalten könnte. Kein Greptile, kein CodeScene.</td></tr>
+<tr><td>Q7 Schutz</td><td>a) Ruleset mit PR-Pflicht, beiden Sammel-Checks, Code-Owner-Review; kein Auto-Merge vor zwanzig PRs.</td></tr>
+<tr><td>Q8 Tor 2</td><td>a) In GitHub, Commit für Commit; die drei Leitfaden-Fragen je Stelle im PR.</td></tr>
+</table></div>
+
+<h2 id="fragen">Fragen, Runde 2</h2>
+<p>Je Frage steht die Empfehlung zuerst.</p>
+<div class="qs">
+
+<div class="q"><h3><span class="n">Q9</span>Draft und Push-Regel</h3>
+<ul>
+<li><strong>a) Jeder PR öffnet als Draft</strong> und wird erst „ready“, wenn Review-Kette, Abnahmelauf und beide Sammel-Checks grün sind; „ready“ heißt: jetzt bist du dran. Jeder Commit auf einem offenen PR wird sofort gepusht (Lesson 39); die Hauptsession prüft vor „ready“ mit <code>git status</code> und <code>git log origin/&lt;branch&gt;..HEAD</code>, dass nichts Lokales fehlt.</li>
+<li><strong>b) Sofort „ready“</strong> öffnen, Checks laufen danach.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Du liest nur PRs, die fertig sind; die drei Sonar-Gates, die im alten Repo erst nach dem Öffnen fielen, fallen so vor deinem Blick.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q10</span>Richterbericht: Kommentar oder Abschnitt</h3>
+<ul>
+<li><strong>a) Als PR-Kommentar</strong> der Hauptsession, je Lauf einer (Lauf-Datum, je Fall Urteil, Zitat, höchstens zwei Bilder); der PR-Body hält nur eine Zeile „Urteile: 7 passt, 0 passt nicht, Kanarienvogel erkannt“ mit Link auf den Kommentar. Ein Wiederholungslauf ist ein neuer Kommentar, die Historie bleibt lesbar.</li>
+<li><strong>b) Nur im PR-Body,</strong> bei Wiederholung überschrieben.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Ein überschriebener Body verliert, warum der erste Lauf rot war.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q11</span>Merge-Methode</h3>
+<ul>
+<li><strong>a) Squash-Merge:</strong> ein Commit je Task auf main, Titel ist der Conventional Commit des PR (Scope = Workspace), Body listet die Einzel-Commits; lineare Historie; git-cliff liest die Squash-Titel. Die Review-Reihenfolge der Commits lebt im PR, nicht auf main.</li>
+<li><strong>b) Rebase-Merge:</strong> alle Commits bleiben auf main; mehr Rauschen in Historie und Release Notes, bisect feiner.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Mit höchstens 400 Zeilen je PR ist der Squash-Commit die richtige Bisect-Einheit; die Einzel-Commits bleiben im PR erhalten.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q12</span>lefthook</h3>
+<ul>
+<li><strong>a) pre-commit parallel unter 30 s:</strong> gitleaks auf Staged, prettier und eslint auf Staged, typecheck, Unit-Tests betroffener Pakete, dependency-cruiser, Doku-Deckung, Kontextbudget, Modell-Sync; <strong>commit-msg:</strong> commitlint; <strong>kein pre-push</strong> (CI wiederholt alles). Läuft im Toolbox-Container über den Shim, wie alt.</li>
+<li><strong>b) Dazu pre-push mit Stufe 2a</strong> und Fallow-Audit; langsamer, fängt mehr vor der CI.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Das 30-Sekunden-Budget hat sich bewährt; Fallow läuft lokal schon als Commit-Hook von Claude Code (<code>fallow hooks install --target agent</code>) und in der CI.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q13</span>Agent-Bilanz: Quelle und Inhalt</h3>
+<ul>
+<li><strong>a) Aus Workflow-Ergebnissen plus Session-Logs:</strong> <code>tools/agent_balance.py</code> liest die JSON-Ergebnisse von <code>test-design.js</code>, <code>review-chain.js</code>, <code>acceptance.js</code> und die Implementierer-Berichte (Loops bis grün je Task) und ergänzt Tokens je Modell aus den Claude-Code-Logs (Port des alten <code>agent-usage.py</code>, erster Schritt: prüfen, ob das heutige Log-Format trägt). Abschnitt im PR: Loops je Task, Tokens und Kosten je Rolle, Befunde je Reviewer mit Kästchen „berechtigt“, das du beim Lesen ankreuzt, Richter-Quote, Rücklauf an Tor 1. Die Retro summiert.</li>
+<li><strong>b) Nur Workflow-Ergebnisse,</strong> ohne Token-Zahlen.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Die Kästchen sind die einzige Stelle, an der „Anteil berechtigt“ je Reviewer entsteht; ohne sie kann die Retro keine Modelle umstufen.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q14</span>Sonar als Gate: ab wann blockierend</h3>
+<ul>
+<li><strong>a) Vier Wochen beratend,</strong> dann Quality Gate „Sonar way“ auf neuem Code als Required Check (Coverage-Bedingung aus dem Gate entfernt, weil Coverage hier kein Gate ist; Mutation ist es).</li>
+<li><strong>b) Sofort blockierend</strong> mit dem Standard-Gate.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Dieselbe Einstimmphase wie bei Stryker; ein unkalibriertes Gate am Tag 1 erzeugt Ausnahmen statt Qualität.</div>
+</div>
+
+</div>
+
+<h3>Runde 1 zum Nachlesen</h3>
+<div class="qs">
+
+<div class="q"><h3><span class="n">Q1</span>PR-Größe</h3>
+<ul>
+<li><strong>a) Alte Regel, jetzt gemessen:</strong> ein Task je PR; ein CI-Check zählt geänderte Zeilen Produktionscode (ohne Tests, Fixtures, Lockfiles, generierte Dateien, Docs): über 400 warnt der Check im PR, über 800 blockiert er; die Hauptsession teilt vorher.</li>
+<li><strong>b) 400 hart</strong> als Blocker.</li>
+<li><strong>c) Keine Zahl,</strong> nur „ein Task je PR“.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Die Zahl aus dem alten Repo stammt aus deiner Intervention; als Warnung hält sie den Druck, als harte Grenze erzeugt sie künstliche Schnitte bei Verdrahtungs-Tasks.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q2</span>Stapel-PRs</h3>
+<ul>
+<li><strong>a) Keine Stapel:</strong> ein PR je Task, der nächste Task desselben Tickets wartet auf den Merge; unabhängige Tasks laufen parallel in Worktrees auf getrennten Dateien; Repo-Setting „Automatically delete head branches“ am Tag 1.</li>
+<li><strong>b) Höchstens ein Stapel als Draft</strong> wie alt, mit Retarget-Regel.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Viermal gestrandet ist Befund genug; du mergst in Inkrement 1 ohnehin jeden PR selbst, die Wartezeit ist kurz.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q3</span>Conventional Commits: Scopes, Durchsetzung, Changelog</h3>
+<ul>
+<li><strong>a) Scopes = Workspace-Namen</strong> (`gateway`, `contracts`, `web`, `evals`, `tests`, `ci`, `process`, `docs`); Typen `feat`, `fix`, `test`, `refactor`, `docs`, `chore`, `ci`, `perf`; `wip:` nur auf Task-Branches, nie im PR; Durchsetzung durch commitlint im lefthook `commit-msg` und als CI-Check über alle Commits des PR; kein Changelog-Datei bis zum ersten Release, dann Release Notes aus den Commits (git-cliff).</li>
+<li><strong>b) Dazu CHANGELOG.md ab Tag 1</strong> per git-cliff bei jedem Merge.</li>
+<li><strong>c) Ohne Durchsetzung,</strong> nur Regel.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Der CI-Check fängt, was der Hook durch `--no-verify` verliert; ein Changelog ohne Release ist Pflege ohne Leser.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q4</span>Die PR-Vorlage</h3>
+<ul>
+<li><strong>a) Alte Vorlage, drei Ergänzungen:</strong> Merge-Gefahr-Block, deutscher Leitfaden mit Struktur-Skizze (Skizzenregel aus Matts `pr`: Pseudocode, Aufrufbaum oder Dateibaum, das kleinste Bild), Hier hinschauen, Überspringen, Entscheidungen; eingeklappt Belegt durch (aus dem Manifest, mit Stufe), <strong>Urteile des Richters</strong>, <strong>überlebende Mutanten</strong>, So geprüft, Agent-Bilanz, Details (English). Visuelle Anleitung als privates Artifact nur bei UI-Änderung oder Risiko ≥ mittel; sonst reicht die Skizze im PR.</li>
+<li><strong>b) Visuelle Anleitung bei jedem PR</strong> wie seit 2026-10-02.</li>
+<li><strong>c) Matts `pr`-Vorlage allein.</strong></li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Die Artifact-Seite kostet je PR Tokens und Minuten; bei einem Backend-Task mit niedrigem Risiko trägt die Skizze dasselbe.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q5</span>Required Checks</h3>
+<ul>
+<li><strong>a) Zwei Sammel-Checks:</strong> „ci passed“ (Stufen 0 bis 2b, Rot-vor-Grün, Doku-Deckung, Kontextbudget, Modell-Sync, Hook-Tests, Golden-Mock, commitlint) und „pr passed“ (Vertragscheck, hadolint, Semgrep, gitleaks, Image-Build und Trivy CRITICAL mit Fix, Stufen 3 und 4 mit `--repeat-each=3` für neue Szenarien, Stryker inkrementell als Bericht, <strong>Fallow `audit --gate new-only`</strong>, Check „Eval-Bericht fehlt“, PR-Größe). dependency-cruiser in Stufe 0, bis Fallow-Boundaries die Regeln tragen. CodeQL bleibt offen (Advanced Security).</li>
+<li><strong>b) Wie a, ohne Fallow im Gate:</strong> Knip und dependency-cruiser allein; Fallow nur lokal und nachts, bis es ein Jahr alt ist.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). `new-only` blockiert nur, was der PR neu einführt; fällt Fallow aus, nimmt der Task Review-Werkzeuge einrichten es aus dem Gate, ohne dass etwas anderes bricht.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q6</span>Cloud- und LLM-Werkzeuge</h3>
+<ul>
+<li><strong>a) Nur eigene Reviewer, 0 €:</strong> die drei Reviewer-Rollen plus Kritiker und Richter, mit Skill `fallow-review` als deterministischer Vorstufe; kein Greptile, kein SonarQube Cloud (Free-Terms erlauben Training auf deinem Code, kein DPA), kein CodeScene.</li>
+<li><strong>b) Dazu Greptile Starter</strong> (0 $, Opt-out setzen, Code in den USA).</li>
+<li><strong>c) Dazu SonarQube Cloud Free,</strong> sobald Sicherheit (#22) die Terms akzeptiert.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Das ist die Antwort auf deine Sonar-Frage: nein, solange die Free-Terms so lauten. Die Reviewer-Rollen laufen beim Anbieter, den du ohnehin nutzt.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q7</span>Branch-Schutz und Auto-Merge</h3>
+<ul>
+<li><strong>a) Ruleset auf main:</strong> PR Pflicht, Required Checks „ci passed“ und „pr passed“, Code-Owner-Review für `packages/contracts`, `.github`, `deploy`, `.claude`; lineare Historie (Squash oder Rebase, Q in Runde 2); kein Auto-Merge in Inkrement 1; nach zwanzig PRs entscheidet die Retro mit den Kennzahlen, ob niedriger Wirkradius auto-merged. Du setzt das Ruleset nach einer Checkliste, die das Ticket liefert.</li>
+<li><strong>b) Auto-Merge bei niedrigem Wirkradius sofort</strong> nach grünen Gates.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Entspricht ADR 0011; die zwanzig PRs liefern erst die Zahlen, an denen du Auto-Merge beurteilen kannst.</div>
+</div>
+
+<div class="q"><h3><span class="n">Q8</span>Tor 2: wie du liest</h3>
+<ul>
+<li><strong>a) In GitHub, Commit für Commit:</strong> die Review-Reihenfolge der Commits ist die Lesereihenfolge; der Leitfaden nennt die drei Fragen des Leitfadens je Stelle unter „Hier hinschauen“ (Was ändert sich fachlich? Was würde ich anders bauen? Was muss ich später wissen?); kein lokales Staging.</li>
+<li><strong>b) Lokal mit `git add -p`</strong> Datei für Datei, wie der Leitfaden es beschreibt.</li>
+</ul>
+<div class="rec"><div class="lbl">Empfehlung</div>a). Das Datei-für-Datei-Staging des Leitfadens setzt voraus, dass der Mensch committet; hier committet der Agent und du liest. Die drei Fragen bleiben, der Ort wechselt in den PR.</div>
+</div>
+
+</div>
+</div>
+
+</body></html>

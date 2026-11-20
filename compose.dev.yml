@@ -1,0 +1,20 @@
+# `make dev` (the owner's stack, ticket #26): compose.yml plus this file. The detection service runs from the
+# Dockerfile's dev stage (node with the build stage's install, not distroless) on its sources, mounted read-only;
+# node --watch restarts it on a change. Built locally under its own tag, never pulled or pushed; CI and the test
+# stacks never load this file. Check: docker compose -f compose.yml -f compose.dev.yml config
+services:
+  detection:
+    image: lfc/detection:${LFC_TAG:-local}-dev
+    build:
+      target: dev
+    volumes:
+      - ./services/detection/src:/repo/services/detection/src:ro
+      - ./packages/service-kit/src:/repo/packages/service-kit/src:ro
+      - ./packages/contracts/src:/repo/packages/contracts/src:ro
+    # Same probe as compose.yml; node is on the PATH here, not at the distroless /nodejs/bin/node.
+    healthcheck:
+      test: !override
+        - CMD
+        - node
+        - -e
+        - 'fetch(`http://127.0.0.1:$${process.env.PORT}/health`).then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))'

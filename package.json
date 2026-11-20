@@ -1,0 +1,30 @@
+{
+  "name": "live-factchecker-v2",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && pnpm -r --if-present typecheck",
+    "lint": "eslint . --max-warnings 0",
+    "format:check": "prettier --check .",
+    "depcruise": "depcruise --config .dependency-cruiser.cjs .",
+    "test:unit": "vitest run"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
+    "dependency-cruiser": "18.7.0",
+    "eslint": "10.14.0",
+    "fast-check": "4.10.2",
+    "globals": "17.13.0",
+    "knip": "6.44.1",
+    "lefthook": "2.2.2",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.0.5"
+  }
+}

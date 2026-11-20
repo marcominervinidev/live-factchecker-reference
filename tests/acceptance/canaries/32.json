@@ -1,0 +1,5 @@
+{
+  "title": "The tag list of a Session can be read through the edge",
+  "expected": "Wenn ich über den Eingang per HTTPS /detection/sessions/32a0c0de-0000-4000-8000-000000000003/tag-list abfrage, antwortet der Erkennungsdienst mit 200 und liefert die Themenliste der Session als Liste; sie beginnt mit dem Thema aus dem Setting, Status aktiv, ohne Oberthema.",
+  "whyWrong": "The tag list lives in the Session state and the Topic events on the internal detection stream (ADR 0005, addendum 2026-10-25; docs/spec/datenschutz.md 2); ticket #32 adds no route, and the edge routes only GET /detection/health and /detection/ready (#25). The edge answers this path itself with 404 and X-Lfc-Edge: unrouted; no Topic leaves the backend."
+}

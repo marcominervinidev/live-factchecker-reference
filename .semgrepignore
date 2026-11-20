@@ -1,0 +1,43 @@
+# Semgrep (pr.yml, sast). A .semgrepignore replaces semgrep's default exclusions, so they are listed here to keep
+# the scan scope as before; git-ignored files stay out too.
+:include .gitignore
+node_modules/
+build/
+dist/
+vendor/
+.env/
+.venv/
+.tox/
+*.min.js
+.npm/
+.yarn/
+test/
+tests/
+*_test.go
+.semgrep
+.semgrep_logs/
+
+# The Golden Set pages: generated HTML that times out on one rule
+# (generic.secrets.security.detected-username-and-password-in-uri) even at --timeout 30 (pre-run 1 of #200,
+# 2026-11-19), with no finding from any other rule. Owner decision 2026-11-20 ("Alles wie empfohlen.", #200
+# question 2): out of the Semgrep scan in make ci-local and in pr.yml; gitleaks still checks them for secrets.
+evals/golden/*/korrektur.html
+
+# Frozen tests are never edited (gate 1, .claude/frozen/25.json); their findings are throwaway test tokens
+# (pw-25-..., url.username = 'default'). Main-session decision 2026-10-28, same rule as the ESLint override
+# (owner decision E1); owner confirms at gate 2.
+# services/detection/src/config.session.test.ts is frozen too (gate 1, .claude/frozen/27.json); its finding is a
+# throwaway test value (pw-27-...), rule ajinabraham.njsscan.generic.hardcoded_secrets.node_secret. Main-session
+# decision 2026-10-30; owner confirms at gate 2. Remove when #27 closes.
+# Same rule for gate 1 of .claude/frozen/26.json: model-call.test.ts uses Math.random for throwaway test Session
+# ids (ajinabraham.njsscan.crypto.crypto_node.node_insecure_random_generator). Main-session decision 2026-10-30;
+# owner confirms at gate 2. Remove when #26 closes.
+# Same rule for gate 1 of .claude/frozen/26.json: flaky.test.ts names a const PASSES that holds a scenario title,
+# not a password (ajinabraham.njsscan.generic.hardcoded_secrets.node_password). Main-session decision 2026-10-30;
+# owner confirms at gate 2. Remove when #26 closes.
+services/detection/features/steps/detection.steps.ts
+services/detection/src/config.session.test.ts
+services/detection/src/config.test.ts
+services/detection/src/main.test.ts
+packages/service-kit/src/model-call.test.ts
+scripts/ci/flaky.test.ts

@@ -1,0 +1,312 @@
+# Push pipeline: repository checks, stage 0, stages 1, 2a, 2b for affected workspaces, red-before-green,
+# Golden Set mock run, SonarQube Cloud analysis; aggregate `ci passed` (docs/process/pr-format.md, ADR 0005 of
+# live-factcheck kept: ci.yml on push only, pr.yml on pull_request only).
+# Until the first workspace exists (no pnpm-lock.yaml) only the repository checks run; the rest is skipped and
+# `ci passed` stays green. `make ci-local` runs the same checks before a push (ticket #68 AC6).
+name: ci
+
+on:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+# A new push cancels the running run of the same branch, i.e. of its PR; on main every push keeps its own group
+# (the run id) and is never cancelled, not even while pending (ticket #68 AC1).
+concurrency:
+  group: ci-${{ github.ref != 'refs/heads/main' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  GITLEAKS_VERSION: 8.30.1
+  GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+
+jobs:
+  repo-checks:
+    name: repository checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    outputs:
+      has_code: ${{ steps.probe.outputs.has_code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: probe
+        run: |
+          if [ -f pnpm-lock.yaml ]; then echo "has_code=true" >> "$GITHUB_OUTPUT"; else echo "has_code=false" >> "$GITHUB_OUTPUT"; fi
+      - name: hook regression test
+        run: sh .claude/hooks/test-hooks.sh
+      - name: agent models in sync
+        run: python3 -I tools/sync_agent_models.py --check
+      - name: docs coverage
+        run: python3 -I tools/check_docs_coverage.py
+      - name: context budget
+        run: python3 -I tools/check_context_budget.py
+      - name: tool image pins agree (workflows and make ci-local)
+        run: python3 -I tools/check_ci_pins.py
+      - name: tool tests
+        run: python3 -I -m unittest discover -s tools/tests
+      - name: limit watcher tests
+        run: python3 -I -m unittest discover -s tools/limit-waechter/tests
+      - name: commit messages (Conventional Commits, scopes from commitlint.config.mjs)
+        if: github.ref != 'refs/heads/main'
+        run: python3 -I tools/check_commits.py "origin/main..HEAD"
+      - name: gitleaks (full history)
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o gitleaks.tgz
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          ./gitleaks git --redact --no-banner .
+
+  changes:
+    name: affected workspaces
+    needs: repo-checks
+    if: needs.repo-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      backend: ${{ steps.affected.outputs.backend }}
+      frontend: ${{ steps.affected.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: affected
+        # On main everything runs; on branches only what changed since main, plus dependents.
+        env:
+          BASE: ${{ github.ref != 'refs/heads/main' && 'origin/main' || '' }}
+        run: node scripts/ci/affected.ts ${BASE:+"$BASE"}
+
+  static:
+    name: static (stage 0)
+    needs: repo-checks
+    if: needs.repo-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm depcruise
+
+  backend:
+    name: backend · ${{ matrix.workspace.name }} · ${{ matrix.workspace.stage }}
+    needs: [repo-checks, changes]
+    if: needs.repo-checks.outputs.has_code == 'true' && needs.changes.outputs.backend != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(needs.changes.outputs.backend) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - env:
+          WORKSPACE: ${{ matrix.workspace.name }}
+        run: pnpm install --frozen-lockfile --filter "${WORKSPACE}..."
+      - name: test (${{ matrix.workspace.stage }})
+        if: matrix.workspace.stage != '2a'
+        env:
+          WORKSPACE: ${{ matrix.workspace.name }}
+          SCRIPT: ${{ matrix.workspace.script }}
+        run: pnpm --filter "${WORKSPACE}" run "${SCRIPT}"
+      # Stage 2a builds the toolbox (compose service toolbox-it, `--build`). Its layers come from the Buildx cache in
+      # GitHub Actions (scope toolbox-<ISO week>; a branch reads main's entries) into this job's builder, exported
+      # nowhere (cacheonly: nobody uses an image of this step); Compose builds with that builder (BUILDX_BUILDER) and
+      # finds every layer there instead of rebuilding (ticket #68 AC3). Should Compose rebuild on GitHub all the same
+      # (lazy layers of the remote cache), `load: true` here pulls them into the builder.
+      - name: buildx builder for the toolbox cache
+        id: buildx
+        if: matrix.workspace.stage == '2a'
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          use: false
+          # BuildKit pinned like every tool image (review round 2, S4); bump it with the other pins.
+          driver-opts: image=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
+      # Node from .nvmrc, as the Makefile passes it. The cache scope changes every ISO week: the week's first build runs
+      # apt-get and the pnpm download afresh, so security updates reach the toolbox at least weekly (review round 2,
+      # S3).
+      - name: toolbox build inputs (node version, cache week)
+        id: toolbox
+        if: matrix.workspace.stage == '2a'
+        run: |
+          echo "node=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
+          echo "week=$(date -u +%G-W%V)" >> "$GITHUB_OUTPUT"
+      - name: toolbox layers from the GitHub Actions cache
+        if: matrix.workspace.stage == '2a'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: docker/toolbox
+          build-args: NODE_VERSION=${{ steps.toolbox.outputs.node }}
+          outputs: type=cacheonly
+          cache-from: type=gha,scope=toolbox-${{ steps.toolbox.outputs.week }}
+          cache-to: type=gha,scope=toolbox-${{ steps.toolbox.outputs.week }},mode=max
+      # Stage 2a: a throwaway Redis without host port; the tests run in a one-off toolbox on its network.
+      - name: test (2a, throwaway Redis)
+        if: matrix.workspace.stage == '2a'
+        timeout-minutes: 6
+        env:
+          WS: ${{ matrix.workspace.name }}
+          COMPOSE_PROJECT_NAME: lfc-ci-${{ github.run_id }}-${{ strategy.job-index }}
+          BUILDX_BUILDER: ${{ steps.buildx.outputs.name }}
+        run: make test-integration
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: coverage-${{ matrix.workspace.name }}-${{ matrix.workspace.stage }}
+          path: ${{ matrix.workspace.dir }}/coverage/lcov.info
+          if-no-files-found: ignore
+
+  frontend:
+    name: frontend · ${{ matrix.workspace.name }} · ${{ matrix.workspace.stage }}
+    needs: [repo-checks, changes]
+    if: needs.repo-checks.outputs.has_code == 'true' && needs.changes.outputs.frontend != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: ${{ fromJSON(needs.changes.outputs.frontend) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - env:
+          WORKSPACE: ${{ matrix.workspace.name }}
+        run: pnpm install --frozen-lockfile --filter "${WORKSPACE}..."
+      - name: browsers for stage 2b
+        if: matrix.workspace.stage == '2b'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: test (${{ matrix.workspace.stage }}, preview server with the edge's CSP)
+        env:
+          WORKSPACE: ${{ matrix.workspace.name }}
+          SCRIPT: ${{ matrix.workspace.script }}
+        run: pnpm --filter "${WORKSPACE}" run "${SCRIPT}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: playwright-${{ matrix.workspace.name }}-${{ matrix.workspace.stage }}
+          path: ${{ matrix.workspace.dir }}/playwright-report
+          if-no-files-found: ignore
+
+  red-before-green:
+    name: red before green (frozen tests fail on the base)
+    needs: repo-checks
+    if: needs.repo-checks.outputs.has_code == 'true' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: sh tools/check_red_before_green.sh origin/main
+
+  golden-mock:
+    name: Golden Set stage 1 (harness tests, mock run)
+    needs: repo-checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: harness present?
+        id: harness
+        run: |
+          if [ -f evals/run.py ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+      - name: harness tests
+        if: steps.harness.outputs.present == 'true'
+        working-directory: evals
+        run: python3 -I -m unittest discover -s tests
+      - name: mock run over all approved excerpts
+        if: steps.harness.outputs.present == 'true'
+        working-directory: evals
+        run: python3 -I run.py run --config configs/baseline.json --golden golden --out "${RUNNER_TEMP}/reports" --mock
+
+  sonar:
+    name: sonarqube cloud
+    needs: [repo-checks, backend, frontend]
+    if: ${{ !cancelled() && needs.repo-checks.outputs.has_code == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: coverage-*
+          path: coverage-reports
+      - name: analysis parameters
+        id: params
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          args=()
+          lcov=$(find coverage-reports -name lcov.info 2>/dev/null | sort | paste -sd, -)
+          if [ -n "$lcov" ]; then args+=("-Dsonar.javascript.lcov.reportPaths=$lcov"); fi
+          pr=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
+            --jq '[.[] | select(.state == "open" and .head.ref == env.BRANCH)][0] // empty | "\(.number) \(.base.ref)"' || true)
+          if [ -n "$pr" ]; then
+            read -r number base <<< "$pr"
+            args+=("-Dsonar.pullrequest.key=$number" "-Dsonar.pullrequest.branch=$BRANCH" "-Dsonar.pullrequest.base=$base")
+          elif [ "$BRANCH" != main ]; then
+            args+=("-Dsonar.branch.name=$BRANCH")
+          fi
+          echo "args=${args[*]}" >> "$GITHUB_OUTPUT"
+      - uses: SonarSource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: ${{ steps.params.outputs.args }}
+
+  ci-passed:
+    name: ci passed
+    needs: [repo-checks, changes, static, backend, frontend, red-before-green, golden-mock, sonar]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - env:
+          NEEDS: ${{ toJSON(needs) }}
+        # Sonar is advisory until 2026-11-16 (docs/process/pr-format.md, #122); its result is not required here.
+        run: |
+          printf '%s' "$NEEDS" | node -e "
+            const needs = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+            const advisory = new Set(['sonar']);
+            const bad = Object.entries(needs).filter(([k, v]) => !advisory.has(k) && !['success', 'skipped'].includes(v.result));
+            if (bad.length) { console.error('failed:', bad.map(([k, v]) => k + '=' + v.result).join(', ')); process.exit(1); }
+            console.log('all stages green');"

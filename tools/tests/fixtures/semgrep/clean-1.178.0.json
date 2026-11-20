@@ -1,0 +1,14 @@
+{
+ "version": "1.178.0",
+ "results": [],
+ "errors": [],
+ "paths": {
+  "scanned": [
+   "Dockerfile",
+   "src/broken.ts"
+  ]
+ },
+ "engine_requested": "OSS",
+ "skipped_rules": [],
+ "profiling_results": []
+}

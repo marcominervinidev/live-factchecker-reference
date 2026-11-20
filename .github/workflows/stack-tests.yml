@@ -1,0 +1,167 @@
+# Reusable: stages 3 (API) and 4 (E2E) against the Compose stack with mock providers, project lfc-ci-<run>.
+# Called by pr.yml (images built from the PR), main.yml (pushed GHCR images) and nightly.yml (browser rotation,
+# repeat-each=3, Lighthouse). The make targets and compose files come with the first platform ticket.
+# Flaky rule (owner, 2026-10-25): every run gets at most one retry (RETRIES=1); new scenarios are no longer
+# repeated in the PR. The make targets write each test that failed and passed on its retry, one per line, to
+# tests/<stage>/reports/flaky.txt; it travels in the stack-reports artifact and pr.yml opens an issue per test.
+# Nightly keeps repeat-all (--repeat-each=3) as the flake finder.
+name: stack-tests
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        description: 'Image registry prefix; "lfc" builds the images locally.'
+        type: string
+        default: lfc
+      tag:
+        description: Image tag (only used when pulling from a registry).
+        type: string
+        default: local
+      shards:
+        description: JSON array of E2E shard numbers, e.g. "[1, 2]".
+        type: string
+        default: '[1]'
+      e2e-args:
+        description: Extra Cucumber/Playwright arguments, e.g. a project selection.
+        type: string
+        default: ''
+      repeat-all:
+        description: Run every scenario three times (nightly).
+        type: boolean
+        default: false
+      lighthouse:
+        description: Also run Lighthouse CI against the stack (stage 5).
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Per caller and PR (github.* is the caller's here): a new push to the PR cancels the running stack tests; main and
+# nightly get one group per run and are never cancelled (ticket #68 AC1). The name differs from the caller's group,
+# which would deadlock.
+concurrency:
+  group: stack-tests-${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  run:
+    name: shard ${{ matrix.shard }}/${{ strategy.job-total }}
+    runs-on: ubuntu-24.04
+    # Increment 1: about 5 minutes uncached (images, toolbox, stack, stage 3; no E2E yet). Raise it with the first
+    # E2E suite (nightly repeats every scenario three times) and give the reason here (ticket #68 AC5).
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      checks: write
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(inputs.shards) }}
+    env:
+      COMPOSE_PROJECT_NAME: lfc-ci-${{ github.run_id }}-${{ matrix.shard }}
+      LFC_REGISTRY: ${{ inputs.registry }}
+      LFC_TAG: ${{ inputs.tag }}
+      LFC_STACK_TEST: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @lfc/api-tests --filter @lfc/e2e-tests
+      - name: throwaway secrets
+        run: make ci-secrets
+      - name: log in to GHCR (pushed images)
+        if: inputs.registry != 'lfc'
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # The stage 3 and 4 clients are one-off toolboxes (`--build`). Their layers come from the Buildx cache in GitHub
+      # Actions (scope toolbox-<ISO week>, shared with stage 2a in ci.yml) into this job's builder, exported nowhere
+      # (cacheonly, as in ci.yml); Compose builds the clients with that builder (BUILDX_BUILDER) and finds every layer
+      # there (ticket #68 AC3). The stage 3 and 4 steps below pass this builder to make test-api and make test-e2e as
+      # BUILDX_BUILDER; the clients that build with it are Compose services such as stack-client of #25 task 3.
+      - name: buildx builder for the toolbox cache
+        id: buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          use: false
+          # BuildKit pinned like every tool image (review round 2, S4); bump it with the other pins.
+          driver-opts: image=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
+      # Node from .nvmrc, as the Makefile passes it. The cache scope changes every ISO week: the week's first build runs
+      # apt-get and the pnpm download afresh, so security updates reach the toolbox at least weekly (review round 2,
+      # S3).
+      - name: toolbox build inputs (node version, cache week)
+        id: toolbox
+        run: |
+          echo "node=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
+          echo "week=$(date -u +%G-W%V)" >> "$GITHUB_OUTPUT"
+      - name: toolbox layers from the GitHub Actions cache
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: docker/toolbox
+          build-args: NODE_VERSION=${{ steps.toolbox.outputs.node }}
+          outputs: type=cacheonly
+          cache-from: type=gha,scope=toolbox-${{ steps.toolbox.outputs.week }}
+          cache-to: type=gha,scope=toolbox-${{ steps.toolbox.outputs.week }},mode=max
+      - name: start the stack
+        run: make ci-stack-up
+      # make test-api always writes flaky.txt (empty when nothing was flaky); without it the flaky list is broken.
+      - name: stage 3 – API
+        env:
+          RETRIES: '1'
+          BUILDX_BUILDER: ${{ steps.buildx.outputs.name }}
+        run: |
+          status=0
+          make test-api || status=$?
+          if [ ! -f tests/api/reports/flaky.txt ]; then
+            echo "::error::make test-api wrote no tests/api/reports/flaky.txt"
+            exit 1
+          fi
+          exit "$status"
+      - name: stage 4 – E2E
+        env:
+          SHARD: ${{ matrix.shard }}
+          TOTAL: ${{ strategy.job-total }}
+          E2E_ARGS: ${{ inputs.e2e-args }}
+          RETRIES: '1'
+          REPEAT_ALL: ${{ inputs.repeat-all && '1' || '' }}
+          BUILDX_BUILDER: ${{ steps.buildx.outputs.name }}
+        run: make test-e2e
+      - name: stage 5 – Lighthouse CI
+        if: inputs.lighthouse
+        run: make lighthouse
+      - name: test reports
+        if: always()
+        uses: mikepenz/action-junit-report@8a133bfa3ecb0ea9024c1e2ae788b4c25f6cdb9d # v6.6.2
+        with:
+          report_paths: 'tests/**/reports/junit*.xml'
+          check_name: stack tests (${{ github.workflow }}) shard ${{ matrix.shard }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: stack-reports-${{ github.workflow }}-${{ matrix.shard }}
+          path: |
+            tests/api/reports
+            tests/e2e/reports
+          if-no-files-found: ignore
+      - name: stack logs on failure
+        if: failure()
+        run: docker compose logs --no-color > stack.log
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: stack-logs-${{ github.workflow }}-${{ matrix.shard }}
+          path: stack.log
+      - name: stop the stack
+        if: always()
+        run: make ci-stack-down

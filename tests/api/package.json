@@ -1,0 +1,16 @@
+{
+  "name": "@lfc/api-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Stage 3: Cucumber over HTTPS against the Compose stack through the edge; never imports service code.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "cucumber-js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "13.3.0",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3"
+  }
+}

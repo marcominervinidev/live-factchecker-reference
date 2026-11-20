@@ -1,0 +1,8 @@
+{
+  "default": {
+    "paths": ["features/**/*.feature"],
+    "import": ["steps/**/*.ts"],
+    "format": ["progress", "junit:reports/junit.xml"],
+    "strict": true
+  }
+}

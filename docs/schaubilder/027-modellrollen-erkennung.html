@@ -1,0 +1,457 @@
+<!-- Quelle: https://claude.ai/artifact/Ps2qrGgV5biSDrgPB5c2nk, exportiert 2026-10-23, Ticket #27 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Erkennungseinheit und Modellrollen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; Stufe 1 (im Takt) teal, Stufe 2 (Eskalation) bernstein, Gestrichenes gestrichelt; dieselben Tokens wie "Messaufbau der Erkennung". */
+:root{
+  --bg:#f4f6f7; --fg:#1b2127; --muted:#5a6672; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --audio:#0e7876; --text:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td.qn{font-family:var(--font-mono);font-size:12.5px;color:var(--audio);white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.s1{color:var(--audio);border-color:var(--audio)} .tag.s2{color:var(--text);border-color:var(--text)}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.done{border-left:4px solid var(--ok);padding:6px 0 6px 14px;margin:12px 0;max-width:80ch;font-size:15px}
+/* Fragen */
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--audio);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--audio);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px 8px 12px;margin-top:4px}
+.q .rec .lbl{color:var(--audio);margin-top:0}
+.q .ab{font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:currentColor;stroke-width:1.2}
+.d .box-s1{stroke:var(--audio);stroke-width:1.8}
+.d .box-s2{stroke:var(--text);stroke-width:1.8}
+.d .box-ok{stroke:var(--ok);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.8}
+.d .box-muted{stroke:var(--muted);stroke-dasharray:4 3;stroke-width:1.1}
+.d .box-src{fill:var(--soft)}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11px}
+.d .t3{fill:var(--muted);font-size:10.5px}
+.d .tin{fill:var(--panel);font-size:11px;font-weight:700}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+.d .lab-s1{fill:var(--audio)} .d .lab-s2{fill:var(--text)}
+.d .ln{stroke:currentColor;stroke-width:1.3;fill:none}
+.d .ln-s1{stroke:var(--audio)} .d .ln-s2{stroke:var(--text)} .d .ln-ok{stroke:var(--ok)} .d .ln-bad{stroke:var(--bad)} .d .ln-muted{stroke:var(--muted)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:currentColor} .d .m-s1{fill:var(--audio)} .d .m-s2{fill:var(--text)} .d .m-ok{fill:var(--ok)} .d .m-bad{fill:var(--bad)} .d .m-muted{fill:var(--muted)}
+.d .bar-soft{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .bar-s1{fill:var(--audio)} .d .bar-s2{fill:var(--text)}
+.d .axis{stroke:var(--muted);stroke-width:1}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 27 · Grilling vom 2026-10-09 und 2026-10-12 · festgehalten in ADR 0004, docs/spec/erkennung-modellrollen.md und CONTEXT.md</div>
+  <h1>Erkennungseinheit und Modellrollen</h1>
+  <p class="lead">Das Ticket legt fest, <strong>welche Modelle welche Rolle spielen</strong> und <strong>was der Behauptungs-Extraktor je Analyse sieht</strong>: ein LLM-Pfad in zwei Stufen, kein Vortor, feste Kontextregeln, ein append-only Prompt. Was Messung braucht, geht als Schalter an den Vergleichsprototyp.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#entschieden">Festgelegt</a><a href="#takt">Der Takt</a><a href="#themen">Themen-Extraktor</a><a href="#latenz">Latenzbudget</a><a href="#arme">Variablen</a><a href="#glossar">Glossar</a><a href="#wohin">Was wo liegt</a><a href="#fakten">Fakten</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="entschieden">1 · Festgelegt</h2>
+<p>Zwei Runden: am 2026-10-09 die zehn Sachfragen, am 2026-10-12 Variablenliste, Glossar und Festhalten. Die Q-Nummern tauchen in den Schaubildern wieder auf.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="qn">Q1</td><td>Hauptpfad</td><td>LLM-Extraktion mit JSON-Schema als Vertrag; der Harness validiert, der Provider-Adapter erzwingt (Structured Outputs, Tool-Use oder Prompt). Prompt append-only: stabiler Präfix, Redebeitrag als angehängte Blöcke. Schema-Fehlerrate als Diagnosezahl.</td></tr>
+    <tr><td class="qn">Q2</td><td>Vortor</td><td>Gestrichen. Wiedervorlage nur mit Auslöser: Stufe 1 reißt Kosten- oder Latenzschwelle, oder der Alltagsteil liegt über 2 Fehlalarmen je 10 Minuten.</td></tr>
+    <tr><td class="qn">Q3</td><td>Eskalation</td><td>Zwei Stufen. Stufe 1 gibt je Kandidat <code>claim</code> oder <code>unresolved</code> mit Grund aus (Bezug außerhalb des Kontexts, Tatsachenkern unklar, Sprecher unklar). Stufe 2 löst außerhalb des Takts mit stärkerem Modell und weiterem Kontext auf; Rest wird protokolliert, nie gezeigt. Keine Karte vor der Auflösung. Eskalierte zählen in p95; die Eskalationsrate wird gemessen.</td></tr>
+    <tr><td class="qn">Q4</td><td>Kontext</td><td>Die letzten N Redebeiträge vor dem aktuellen, egal welcher Sprecher, mit Namen. N = 2, Deckel etwa 600 Token.</td></tr>
+    <tr><td class="qn">Q5</td><td>Gedächtnis</td><td>Behauptungsliste je Gespräch statt je Redebeitrag: Id, Sprecher, Satz; append-only; Deckel 100. Keine generierte Zusammenfassung.</td></tr>
+    <tr><td class="qn">Q6</td><td>Themen-Extraktor</td><td>Einstufig. Zweistufig ist kein Arm; bleibt Nebel bis Topic und Vorrecherche.</td></tr>
+    <tr><td class="qn">Q7</td><td>Themen-Eingabe</td><td>Tag-Liste plus Neues seit der letzten Analyse plus Fenster von etwa 60 s.</td></tr>
+    <tr><td class="qn">Q8</td><td>Werturteile</td><td>Reine Meinung, Prognose, Appell, Frage werden keine Behauptung; im Produkt entsteht nichts. Nur im Diagnosemodus eine <code>verworfen</code>-Liste mit Grund. Meinung mit Tatsachenkern: nur der Kern.</td></tr>
+    <tr><td class="qn">Q9</td><td>Stufe 1</td><td>Anforderung statt Modellwahl: p95 ≤ 5 s je Aufruf, beide Extraktoren unter 0,063 USD/min, Thinking aus oder <code>low</code>. Kandidaten Haiku 4.5, Sonnet 5.5, Haiku 5.5 nur wenn Thinking abschaltbar. Opus 5.5 nur Stufe 2.</td></tr>
+    <tr><td class="qn">Q10</td><td>Takt-Mechanik</td><td>Abschlussanalyse am Turn-Ende immer, kein Längenfilter. Läuft ein Aufruf noch, wird der Takt übersprungen. Turn-Startwerte: Pause ≥ 3 s, Höchstlänge 3 min, Einwurf unter 2 s mit Überlappung beendet den Turn nicht. Turn-Definition im Glossar geschärft.</td></tr>
+    <tr><td class="qn">Q11</td><td>Variablen</td><td>Die Liste in Abschnitt 5 geht an den Vergleichsprototyp: Baseline aus den Standardwerten, je Lauf ein Schalter; erst Baseline in beiden Modi auf Golden Set Version 1, Entscheidung auf Version 2.</td></tr>
+    <tr><td class="qn">Q12</td><td>Glossar</td><td>Fünf neue Begriffe in <code>CONTEXT.md</code>: Tick, Claim Extractor, Candidate, Resolver, Topic Extractor; Turn um den Einwurf geschärft. Vortor, Präfix, Caching, Variable und Arm bleiben Spec-Begriffe.</td></tr>
+    <tr><td class="qn">Q13</td><td>Festhalten</td><td>ADR 0004 "Modellrollen der Erkennung: ein LLM-Extraktor in zwei Stufen, kein Vortor" plus Spezifikation <code>docs/spec/erkennung-modellrollen.md</code>. Das ADR ergänzt ADR 0002: Behauptungsliste je Gespräch statt je Redebeitrag.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="takt">2 · Der Takt: was der Behauptungs-Extraktor sieht und was daraus wird</h2>
+<p>So sieht die Erkennung jetzt aus. Die Q-Nummern verweisen auf die Festlegungen oben; der gestrichelte Kasten ist der gestrichene Vortor.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 420" role="img" aria-label="Turn-Bildung liefert den wachsenden Redebeitrag an den Takt. Alle fünf Sekunden ruft der Takt Stufe 1, den Behauptungs-Extraktor, der Präfix, kumulativen Redebeitrag und Kontext liest. Er gibt Behauptungen aus, die sofort zur Karte werden, oder markiert Kandidaten als unresolved; die gehen an Stufe 2, den Klärer, der sie auflöst oder protokolliert. Ein gestrichelter Vortor zwischen Takt und Stufe 1 ist als gestrichen markiert.">
+<defs>
+  <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="a1s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s1"/></marker>
+  <marker id="a1s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s2"/></marker>
+  <marker id="a1ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-ok"/></marker>
+  <marker id="a1mu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-muted"/></marker>
+</defs>
+
+<rect x="250" y="10" width="150" height="40" rx="6" class="box box-muted"/>
+<text x="325" y="26" text-anchor="middle" class="t2">Vortor Behauptung</text>
+<text x="325" y="41" text-anchor="middle" class="t3">Q2 · gestrichen</text>
+<polyline points="275,90 275,52" class="ln ln-muted ln-dash"/>
+<polyline points="400,30 490,30 490,88" class="ln ln-muted ln-dash" marker-end="url(#a1mu)"/>
+<circle cx="445" cy="30" r="9" class="box box-bad"/>
+<text x="445" y="34" text-anchor="middle" class="t" style="font-size:11px">✕</text>
+
+<rect x="20" y="90" width="150" height="56" rx="6" class="box"/>
+<text x="95" y="112" text-anchor="middle" class="t">Turn-Bildung</text>
+<text x="95" y="130" text-anchor="middle" class="t2">Segmente → Redebeitrag · Q10</text>
+
+<rect x="200" y="90" width="150" height="56" rx="6" class="box box-s1"/>
+<text x="275" y="112" text-anchor="middle" class="t">Takt</text>
+<text x="275" y="130" text-anchor="middle" class="t2">alle 5 s Redezeit + Turn-Ende</text>
+
+<rect x="400" y="90" width="180" height="56" rx="6" class="box box-s1"/>
+<text x="490" y="112" text-anchor="middle" class="t">Stufe 1 · Extraktor</text>
+<text x="490" y="130" text-anchor="middle" class="t2">LLM im Takt · Q1 · Q9</text>
+
+<rect x="640" y="90" width="150" height="56" rx="6" class="box box-ok"/>
+<text x="715" y="108" text-anchor="middle" class="t">Behauptung</text>
+<text x="715" y="124" text-anchor="middle" class="t2">Satz · Wortlaut · Ids</text>
+<text x="715" y="139" text-anchor="middle" class="t2">Typ · Prüfwürdigkeit</text>
+
+<rect x="830" y="90" width="120" height="56" rx="6" class="box"/>
+<text x="890" y="112" text-anchor="middle" class="t">Karte</text>
+<text x="890" y="130" text-anchor="middle" class="t2">sofort, Urteil später</text>
+
+<line x1="170" y1="118" x2="198" y2="118" class="ln" marker-end="url(#a1)"/>
+<line x1="350" y1="118" x2="398" y2="118" class="ln ln-s1" marker-end="url(#a1s1)"/>
+<line x1="580" y1="118" x2="638" y2="118" class="ln ln-ok" marker-end="url(#a1ok)"/>
+<line x1="790" y1="118" x2="828" y2="118" class="ln" marker-end="url(#a1)"/>
+<text x="184" y="162" text-anchor="middle" class="t3">wächst</text>
+<text x="374" y="162" text-anchor="middle" class="t3">je Analyse</text>
+<text x="609" y="162" text-anchor="middle" class="t3">claim</text>
+<text x="809" y="162" text-anchor="middle" class="t3">sofort</text>
+
+<line x1="135" y1="180" x2="510" y2="180" class="ln"/>
+<line x1="135" y1="210" x2="135" y2="180" class="ln"/>
+<line x1="325" y1="210" x2="325" y2="180" class="ln"/>
+<line x1="510" y1="210" x2="510" y2="180" class="ln"/>
+<line x1="490" y1="180" x2="490" y2="150" class="ln" marker-end="url(#a1)"/>
+<text x="482" y="172" text-anchor="end" class="t3">Eingabe je Analyse</text>
+
+<rect x="50" y="210" width="170" height="56" rx="6" class="box box-src"/>
+<text x="135" y="228" text-anchor="middle" class="t">Präfix, stabil</text>
+<text x="135" y="244" text-anchor="middle" class="t2">Anweisung · Schema · Setting</text>
+<text x="135" y="259" text-anchor="middle" class="t3">cachebar · Q1</text>
+
+<rect x="240" y="210" width="170" height="56" rx="6" class="box box-src"/>
+<text x="325" y="228" text-anchor="middle" class="t">Redebeitrag, kumulativ</text>
+<text x="325" y="244" text-anchor="middle" class="t2">append-only Blöcke</text>
+<text x="325" y="259" text-anchor="middle" class="t3">wächst je 5 s · Q1</text>
+
+<rect x="430" y="210" width="160" height="56" rx="6" class="box box-src"/>
+<text x="510" y="228" text-anchor="middle" class="t">Kontext</text>
+<text x="510" y="244" text-anchor="middle" class="t2">letzte 2 Redebeiträge · Q4</text>
+<text x="510" y="259" text-anchor="middle" class="t3">Behauptungsliste je Gespräch · Q5</text>
+
+<polyline points="580,136 610,136 610,338 638,338" class="ln ln-s2" marker-end="url(#a1s2)"/>
+<text x="618" y="250" class="t3">unresolved</text>
+<text x="618" y="264" class="t3">+ Grund · Q3</text>
+
+<rect x="640" y="310" width="180" height="56" rx="6" class="box box-s2"/>
+<text x="730" y="330" text-anchor="middle" class="t">Stufe 2 · Klärer</text>
+<text x="730" y="346" text-anchor="middle" class="t2">stärkeres Modell, 5 Redebeiträge</text>
+<text x="730" y="360" text-anchor="middle" class="t3">außerhalb des Takts · Q3</text>
+
+<line x1="715" y1="308" x2="715" y2="150" class="ln ln-s2" marker-end="url(#a1s2)"/>
+<text x="722" y="235" class="t3">aufgelöst → claim</text>
+
+<line x1="820" y1="338" x2="848" y2="338" class="ln" marker-end="url(#a1)"/>
+<rect x="850" y="310" width="120" height="56" rx="6" class="box box-muted"/>
+<text x="910" y="330" text-anchor="middle" class="t">Protokoll</text>
+<text x="910" y="346" text-anchor="middle" class="t2">nicht aufgelöst,</text>
+<text x="910" y="360" text-anchor="middle" class="t2">nicht gezeigt</text>
+
+<text x="20" y="400" class="t3">Q10: Die Abschlussanalyse am Turn-Ende läuft immer; läuft ein Aufruf noch, wird der Takt übersprungen. Latenz zählt vom letzten Wort bis zur Karte, eskalierte Behauptungen eingeschlossen.</text>
+</svg>
+</div>
+<figcaption>Zwei Stufen statt Vortor plus Klassifikator: Stufe 1 läuft im Takt und muss schnell und billig sein, Stufe 2 läuft nur für das, was Stufe 1 nicht auflösen kann. Die Behauptungsliste im Kontext wird aus den ausgegebenen Behauptungen fortgeschrieben.</figcaption>
+</figure>
+<h3>So ist der Prompt der Stufe 1 gebaut</h3>
+<p>Was früh steht, ändert sich selten; was spät steht, ändert sich je Tick. So bleibt der längste gleiche Anfang cachebar. Details in der Spezifikation, Abschnitt 3.</p>
+<div class="tbl"><table>
+  <thead><tr><th>#</th><th>Block</th><th>Ändert sich</th><th>Inhalt</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td>Präfix</td><td>je Gespräch einmal</td><td>Anweisung, Ausgabeschema, Setting mit Sprechern, Rollen und Anfangs-Topic; mindestens 512 Token, bei Haiku 4.5 auf 4.096 auffüllen</td></tr>
+    <tr><td class="num">2</td><td>Behauptungsliste des Gesprächs</td><td>je Turn-Beginn</td><td>alle bisher ausgegebenen Behauptungen als <code>id · Sprecher · Satz</code>, Deckel 100</td></tr>
+    <tr><td class="num">3</td><td>Kontext-Turns</td><td>je Turn-Beginn</td><td>die letzten zwei Redebeiträge, egal wer, mit Namen und Zeiten, Deckel 600 Token</td></tr>
+    <tr><td class="num">4</td><td>Turn-Blöcke</td><td>je Tick ein neuer</td><td>nur der Zuwachs seit dem letzten Tick, mit Segment-Ids und Wortzeiten; ein gesendeter Block ändert sich nie</td></tr>
+    <tr><td class="num">5</td><td>Delta-Behauptungen</td><td>je Tick</td><td>was in diesem Turn schon ausgegeben wurde</td></tr>
+    <tr><td class="num">6</td><td>Schlussanweisung</td><td>fest</td><td>nur Neues ausgeben, Wiederholungen mit <code>repeatOf</code></td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="themen">3 · Themen-Extraktor: einstufig mit Fenster</h2>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 240" role="img" aria-label="Der Takt ruft den Themen-Extraktor, der Tag-Liste, das Neue seit der letzten Analyse und ein Fenster von etwa sechzig Sekunden liest und die Tag-Liste fortschreibt, die die Vorrecherche steuert. Ein gestrichelter Vortor Themenwechsel ist als kein Arm in Version 1 markiert.">
+<defs>
+  <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="a2s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-s1"/></marker>
+  <marker id="a2mu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-muted"/></marker>
+</defs>
+<rect x="220" y="4" width="180" height="40" rx="6" class="box box-muted"/>
+<text x="310" y="20" text-anchor="middle" class="t2">Vortor Themenwechsel</text>
+<text x="310" y="35" text-anchor="middle" class="t3">Q6 · zweistufig: kein Arm in Version 1</text>
+<polyline points="95,60 95,24 218,24" class="ln ln-muted ln-dash"/>
+<polyline points="400,24 480,24 480,58" class="ln ln-muted ln-dash" marker-end="url(#a2mu)"/>
+
+<rect x="20" y="60" width="150" height="56" rx="6" class="box box-s1"/>
+<text x="95" y="82" text-anchor="middle" class="t">Takt</text>
+<text x="95" y="100" text-anchor="middle" class="t2">alle 5 s, wie oben</text>
+<rect x="400" y="60" width="180" height="56" rx="6" class="box box-s1"/>
+<text x="490" y="82" text-anchor="middle" class="t">Themen-Extraktor</text>
+<text x="490" y="100" text-anchor="middle" class="t2">LLM, einstufig · Q6</text>
+<rect x="640" y="60" width="150" height="56" rx="6" class="box box-ok"/>
+<text x="715" y="82" text-anchor="middle" class="t">Tag-Liste</text>
+<text x="715" y="100" text-anchor="middle" class="t2">Topics und Unter-Topics</text>
+<rect x="830" y="60" width="150" height="56" rx="6" class="box"/>
+<text x="905" y="82" text-anchor="middle" class="t">Vorrecherche</text>
+<text x="905" y="100" text-anchor="middle" class="t2">Quellen je Topic laden</text>
+<line x1="170" y1="88" x2="398" y2="88" class="ln ln-s1" marker-end="url(#a2s1)"/>
+<text x="284" y="80" text-anchor="middle" class="t3">Redetext</text>
+<line x1="580" y1="88" x2="638" y2="88" class="ln ln-s1" marker-end="url(#a2s1)"/>
+<text x="609" y="80" text-anchor="middle" class="t3">neu · weiter · zurück</text>
+<line x1="790" y1="88" x2="828" y2="88" class="ln" marker-end="url(#a2)"/>
+<text x="809" y="80" text-anchor="middle" class="t3">steuert</text>
+
+<line x1="310" y1="132" x2="670" y2="132" class="ln"/>
+<line x1="310" y1="150" x2="310" y2="132" class="ln"/>
+<line x1="490" y1="150" x2="490" y2="132" class="ln"/>
+<line x1="670" y1="150" x2="670" y2="132" class="ln"/>
+<line x1="490" y1="132" x2="490" y2="120" class="ln" marker-end="url(#a2)"/>
+<rect x="230" y="150" width="160" height="56" rx="6" class="box box-src"/>
+<text x="310" y="172" text-anchor="middle" class="t">Tag-Liste</text>
+<text x="310" y="190" text-anchor="middle" class="t2">das Gedächtnis des Gesprächs</text>
+<rect x="410" y="150" width="160" height="56" rx="6" class="box box-src"/>
+<text x="490" y="172" text-anchor="middle" class="t">Neues</text>
+<text x="490" y="190" text-anchor="middle" class="t2">seit der letzten Analyse</text>
+<rect x="590" y="150" width="160" height="56" rx="6" class="box box-src"/>
+<text x="670" y="172" text-anchor="middle" class="t">Fenster ≈ 60 s</text>
+<text x="670" y="190" text-anchor="middle" class="t2">der Anschluss · Q7</text>
+<polyline points="715,116 715,222 310,222 310,208" class="ln ln-dash" marker-end="url(#a2)"/>
+<text x="512" y="234" text-anchor="middle" class="t3">die Tag-Liste wird fortgeschrieben und ist beim nächsten Takt wieder Eingabe</text>
+</svg>
+</div>
+<figcaption>Die Tag-Liste ersetzt das ganze Gespräch als Gedächtnis; das Fenster gibt dem Modell den Anschluss, um "weitergeht" von "kehrt zurück" zu unterscheiden. Ein Vortor für den Themenwechsel wäre erst messbar, wenn das Golden Set Themengrenzen trägt.</figcaption>
+</figure>
+
+<h2 id="latenz">4 · Latenzbudget: warum Opus nur Stufe 2 sein kann</h2>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 250" role="img" aria-label="Drei Zeitleisten von null bis dreißig Sekunden. Ohne Eskalation: STT-Finalisierung bis vier Sekunden, Warten auf den Takt bis neun, Stufe 1 bis dreizehn, Karte bei dreizehn Sekunden. Mit Eskalation an Sonnet: Karte bei siebzehn Sekunden. Mit Eskalation an Opus: Karte bei sechsundzwanzig Sekunden. Die Schwelle p95 kleiner gleich fünfzehn Sekunden steht als gestrichelte Linie.">
+<defs>
+  <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+</defs>
+<line x1="500" y1="34" x2="500" y2="222" class="ln ln-bad ln-dash"/>
+<text x="506" y="30" class="t3" style="fill:var(--bad)">Schwelle p95 ≤ 15 s (ADR 0003)</text>
+
+<text x="60" y="52" class="lab">Ohne Eskalation</text>
+<rect x="60" y="58" width="117" height="26" class="bar-soft"/>
+<text x="118" y="75" text-anchor="middle" class="t2">STT-Finalisierung</text>
+<rect x="177" y="58" width="147" height="26" class="bar-soft"/>
+<text x="250" y="75" text-anchor="middle" class="t2">Warten auf den Takt</text>
+<rect x="324" y="58" width="117" height="26" class="bar-s1"/>
+<text x="382" y="75" text-anchor="middle" class="tin">Stufe 1</text>
+<line x1="441" y1="52" x2="441" y2="90" class="ln"/>
+<text x="446" y="96" class="t3">Karte bei 13 s</text>
+
+<text x="60" y="118" class="lab">Eskalation an Sonnet 5.5</text>
+<rect x="60" y="124" width="117" height="26" class="bar-soft"/>
+<rect x="177" y="124" width="147" height="26" class="bar-soft"/>
+<rect x="324" y="124" width="117" height="26" class="bar-s1"/>
+<text x="382" y="141" text-anchor="middle" class="tin">Stufe 1</text>
+<rect x="441" y="124" width="118" height="26" class="bar-s2"/>
+<text x="500" y="141" text-anchor="middle" class="tin">Stufe 2</text>
+<line x1="559" y1="118" x2="559" y2="156" class="ln"/>
+<text x="564" y="162" class="t3">Karte bei 17 s</text>
+
+<text x="60" y="184" class="lab">Eskalation an Opus 5.5</text>
+<rect x="60" y="190" width="117" height="26" class="bar-soft"/>
+<rect x="177" y="190" width="147" height="26" class="bar-soft"/>
+<rect x="324" y="190" width="117" height="26" class="bar-s1"/>
+<text x="382" y="207" text-anchor="middle" class="tin">Stufe 1</text>
+<rect x="441" y="190" width="382" height="26" class="bar-s2"/>
+<text x="632" y="207" text-anchor="middle" class="tin">Stufe 2 · 10 bis 13 s</text>
+<line x1="823" y1="184" x2="823" y2="222" class="ln"/>
+<text x="828" y="200" class="t3">Karte bei 26 s</text>
+
+<line x1="60" y1="222" x2="940" y2="222" class="axis"/>
+<line x1="60" y1="222" x2="60" y2="228" class="axis"/><text x="60" y="242" text-anchor="middle" class="t3">0 s</text>
+<line x1="207" y1="222" x2="207" y2="228" class="axis"/><text x="207" y="242" text-anchor="middle" class="t3">5</text>
+<line x1="353" y1="222" x2="353" y2="228" class="axis"/><text x="353" y="242" text-anchor="middle" class="t3">10</text>
+<line x1="500" y1="222" x2="500" y2="228" class="axis"/><text x="500" y="242" text-anchor="middle" class="t3">15</text>
+<line x1="647" y1="222" x2="647" y2="228" class="axis"/><text x="647" y="242" text-anchor="middle" class="t3">20</text>
+<line x1="793" y1="222" x2="793" y2="228" class="axis"/><text x="793" y="242" text-anchor="middle" class="t3">25</text>
+<line x1="940" y1="222" x2="940" y2="228" class="axis"/><text x="940" y="242" text-anchor="middle" class="t3">30 s</text>
+</svg>
+</div>
+<figcaption>Ungünstiger Fall, gerechnet aus der Kostenresearch: letztes Wort, bis zu 4 s STT-Finalisierung, bis zu 5 s Warten auf den nächsten Takt, 2 bis 4 s Stufe 1. Opus als Klärer passt nur, wenn Eskalationen unter 5 % bleiben, weil p95 die seltenen Fälle verzeiht. Deshalb wird die Eskalationsrate gemessen, bevor das Modell der Stufe 2 fällt.</figcaption>
+</figure>
+
+<h2 id="arme">5 · Variablenliste für den Vergleichsprototyp</h2>
+<p>Die drei Arme der Konkurrenzanalyse sind Schalter einer Pipeline geworden: A ist die Variable "Einheit", B ist die Baseline, C steckt im Setting-Präfix (Metadaten) und im gestrichenen Vortor. Der Vergleichsprototyp fährt erst die Baseline in beiden Messmodi auf Golden Set Version 1, dann je Lauf einen Schalter (Q11, 2026-10-12).</p>
+<div class="tbl"><table>
+  <thead><tr><th>Variable</th><th>Baseline</th><th>Weitere Werte</th><th>Aus</th><th>Was sie zeigt</th></tr></thead>
+  <tbody>
+    <tr><td>Einheit</td><td>kumulativer Redebeitrag</td><td>neuestes Segment plus Fenster 20</td><td>Arm A</td><td>Ob ADR 0002 den verbesserten alten Weg schlägt</td></tr>
+    <tr><td>Modell Stufe 1</td><td>Haiku 4.5</td><td>Sonnet 5.5 <code>low</code> mit Cache; Haiku 5.5, falls Thinking abschaltbar</td><td>Q9</td><td>Qualität gegen Kosten und Latenz</td></tr>
+    <tr><td>Eskalation</td><td>an, Stufe 2 Sonnet 5.5</td><td>aus; Stufe 2 Opus 5.5</td><td>Q3</td><td>Eskalationsrate, Gewinn an Recall, Preis in p95</td></tr>
+    <tr><td>Kontext N</td><td>2</td><td>1, 4</td><td>Q4</td><td>Ob mehr Nachbartext hilft oder stört</td></tr>
+    <tr><td>Behauptungsliste</td><td>je Gespräch, Deckel 100</td><td>je Redebeitrag (ADR 0002 wörtlich)</td><td>Q5</td><td>Dubletten über Turns hinweg</td></tr>
+    <tr><td>Themen-Fenster</td><td>60 s</td><td>0 s, 180 s</td><td>Q7</td><td>nur mitgeschrieben, kein Soll (ADR 0003)</td></tr>
+    <tr><td>Turn-Parameter</td><td>Pause 3 s, max 3 min, Einwurf 2 s</td><td>nur bei Befund</td><td>Q10</td><td>Turn-Bildung im Audiomodus</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li><strong>Immer berichtet, egal welcher Schalter:</strong> Eskalationsrate, Schema-Fehlerrate, Anteil <code>unresolved</code> je Grund, Dubletten über Turns, die <code>verworfen</code>-Liste im Textmodus, Thinking-Token je Aufruf.</li>
+  <li><strong>Tag eins des Prototyps:</strong> per Models-API prüfen, ob Haiku 5.5 Thinking abschalten kann; mit <code>count_tokens</code> die echte Token-Zahl je Wort Deutsch messen (die Kostenresearch rechnet mit Annahmen).</li>
+  <li><strong>Kein Schalter:</strong> der Vortor (Q2, nur mit Auslöser), die Erzwingung des Schemas (Adapter-Sache), die Kadenz von 5 s (ADR 0002).</li>
+</ul>
+
+<h2 id="glossar">6 · Ins Glossar aufgenommen (Q12)</h2>
+<p>So stehen die Begriffe jetzt in <code>CONTEXT.md</code>, Englisch kanonisch, in Klammern das Wort für deutsche Prosa.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Begriff (kanonisch)</th><th>Deutsch</th><th>Definition</th><th>Vermeiden</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Claim Extractor</strong></td><td>Behauptungs-Extraktor</td><td>The model call that runs on every Tick, reads the current Speaker's Turn so far with its context, and returns zero or more Claims or Candidates. It is the first of two stages; it must be fast and cheap enough to run every Tick.</td><td>Detector, Classifier, Klassifikator, Detection</td></tr>
+    <tr><td><strong>Topic Extractor</strong></td><td>Themen-Extraktor</td><td>The model call that runs on every Tick and maintains the list of Topics of a Conversation: it decides whether the newest speech starts a Topic, continues one or returns to one.</td><td>Topic classifier, Themenerkennung</td></tr>
+    <tr><td><strong>Resolver</strong></td><td>Klärer</td><td>The second stage: a stronger model call outside the Tick that receives a Candidate with more context and turns it into a Claim or decides that it is none. What the Resolver cannot resolve is recorded and never shown.</td><td>Stufe 2 (as a name), Eskalation (that is the act of handing over), Fallback</td></tr>
+    <tr><td><strong>Candidate</strong></td><td>Kandidat</td><td>A passage the Claim Extractor takes for a possible Claim but cannot resolve on its own, with the reason why: a reference outside its context, an unclear factual core, or an unclear Speaker. A Candidate goes to the Resolver and never to a Card.</td><td>Draft claim, vorläufige Behauptung, unsichere Behauptung</td></tr>
+    <tr><td><strong>Tick</strong></td><td>Takt</td><td>The moment both extractors run: after every five seconds of speech of the current Speaker, and once more when the Turn ends. A Tick is skipped while the previous extractor call of the same Turn is still running.</td><td>Interval, Window, Fenster, Zyklus</td></tr>
+    <tr><td><strong>Turn</strong> (geschärft)</td><td>Redebeitrag</td><td>The connected speech of one Speaker, from the moment they start until the Speaker changes, a longer pause occurs or a maximum length is reached. A brief interjection by another Speaker that overlaps the ongoing speech does not end the Turn; the interjection is a Turn of its own.</td><td>unverändert: Absatz, Paragraph, Statement, Beitrag</td></tr>
+  </tbody>
+</table></div>
+<p class="muted">Werte wie 5 Sekunden, 3 Sekunden Pause oder 3 Minuten Höchstlänge stehen in der Spezifikation, nicht im Glossar; das Glossar nennt nur, was ein Begriff bedeutet.</p>
+
+<h2 id="wohin">7 · Was wo liegt, und was offen ist</h2>
+<div class="two">
+  <div class="card"><h3>live-factchecker-plan (dieses Repo)</h3><ul>
+    <li>ADR 0004 "Modellrollen der Erkennung": die Entscheidungen und die verworfenen Wege</li>
+    <li><code>docs/spec/erkennung-modellrollen.md</code>: Rollen, Tick und Turn, Prompt-Aufbau, Schema, Resolver, Topic Extractor, Anforderungen, Parameter, Variablen, Diagnosemodus</li>
+    <li><code>CONTEXT.md</code>: Tick, Claim Extractor, Candidate, Resolver, Topic Extractor; Turn geschärft</li>
+  </ul></div>
+  <div class="card"><h3>Vergleichsprototyp Erkennung (#30)</h3><ul>
+    <li>Ticket trägt jetzt Variablenliste, Baseline, Reihenfolge und die Tag-eins-Prüfungen (Haiku 5.5 Thinking, Token je Wort)</li>
+    <li>Baut Harness und Pipeline in <code>live-factchecker-v2</code>; Entscheidung erst auf Golden Set Version 2</li>
+  </ul></div>
+  <div class="card"><h3>Anbieterentscheidungen (#12)</h3><ul>
+    <li>Kommentar mit den Anforderungen: Stufe 1 p95 ≤ 5 s und Kostenschwelle, Stufe 2 nach Eskalationsrate, Schema-Erzwingung je Anbieter, Caching-Minima, Familienregel für Richter und Zweitlabel</li>
+  </ul></div>
+  <div class="card"><h3>Nebel und spätere Tickets</h3><ul>
+    <li>Themen-Vortor und Topic-Labels: Topic und Vorrecherche (#24)</li>
+    <li>Vortor für Behauptungen: nur mit Auslöser aus ADR 0004, kein Ticket</li>
+    <li>Zusammenfassung je Sprecher: erst bei Turns über 5 Minuten</li>
+    <li>Prompt-Injection-Schutz, der mit dem stabilen Präfix verträglich ist: Sicherheitsentscheidung</li>
+  </ul></div>
+</div>
+<h3>Noch offen</h3>
+<ul>
+  <li><strong>Konkrete Modelle</strong> für Stufe 1, Resolver, Topic Extractor, Richter und Zweitlabel: Anbieterentscheidungen, mit den Zahlen aus dem Vergleichsprototyp.</li>
+  <li><strong>Haiku 5.5:</strong> ob Thinking abschaltbar ist, entscheidet, ob er überhaupt Kandidat für Stufe 1 ist.</li>
+  <li><strong>Kostenschwelle 0,063 USD/min</strong> gilt für beide Extraktoren allein und ist enger als die alte Gesamtzahl; Änderung erst nach dem ersten Praxistest (ADR 0003).</li>
+  <li><strong>Diarisierungsfehler</strong>, die Turns falsch teilen oder verschmelzen: Befund aus dem Audiomodus abwarten.</li>
+</ul>
+
+<h2 id="fakten">8 · Die Fakten, auf denen die Entscheidung steht</h2>
+<p class="muted">Geschätzt, USD je Gesprächsminute in der Debatte, beide Extraktoren zusammen, Listenpreise vom 2026-10-09. Schwelle aus ADR 0003: 0,063 USD/min. Latenz je Aufruf bei 100 bis 300 Ausgabetoken.</p>
+<div class="tbl"><table>
+  <thead><tr><th>Modell</th><th>ohne Cache</th><th>mit Cache</th><th>EU-Endpunkt (+10 %)</th><th>Latenz je Aufruf</th><th>Rolle</th></tr></thead>
+  <tbody>
+    <tr><td>Haiku 4.5</td><td class="num">0,032</td><td class="num">0,032 <span class="muted">(0,022 mit aufgefülltem Präfix)</span></td><td class="num">0,035</td><td>1,6 bis 4,0 s; gemessen p50 1,2 s, p95 2,9 s</td><td><span class="tag s1">Stufe 1, Baseline</span></td></tr>
+    <tr><td>Haiku 5.5</td><td class="num">0,0042</td><td class="num">0,0019</td><td class="num">0,0020</td><td>etwa 10 s bei <code>effort: low</code>, weil Thinking mitläuft; ob abschaltbar, ist undokumentiert</td><td><span class="tag">Stufe 1 nur ohne Thinking</span></td></tr>
+    <tr><td>Sonnet 5.5</td><td class="num">0,084</td><td class="num">0,035</td><td class="num">0,038</td><td>1,9 bis 3,9 s bei <code>effort: low</code></td><td><span class="tag s1">Stufe 1</span> <span class="tag s2">Stufe 2</span></td></tr>
+    <tr><td>Opus 5.5</td><td class="num">0,169</td><td class="num">0,069</td><td class="num">0,076</td><td>10 bis 13 s, Thinking nicht abschaltbar</td><td><span class="tag s2">nur Stufe 2</span></td></tr>
+  </tbody>
+</table></div>
+<div class="tbl"><table>
+  <thead><tr><th>Vortor-Option</th><th>Kosten je Talkshow-Stunde</th><th>Latenz</th><th>EU-Verarbeitung</th><th>Warum gestrichen</th></tr></thead>
+  <tbody>
+    <tr><td>Jev (TypeSafe)</td><td class="num">0,041 USD</td><td>p50 316 ms</td><td><span class="tag bad">nein</span></td><td>US-Firma ohne EU-Endpunkt</td></tr>
+    <tr><td>Feinabgestimmter Encoder, selbst gehostet</td><td class="num">0,027 EUR</td><td>40 bis 175 ms</td><td><span class="tag ok">ja</span></td><td>braucht Trainingslabels, die vom Golden Set abgehen; kein Datensatz mit Mehrsprecher-Gesprächen</td></tr>
+    <tr><td>Kleines LLM über EU-Endpunkt</td><td class="num">0,13 bis 1,52 USD</td><td>unbelegt</td><td><span class="tag ok">ja</span></td><td>spart nichts, was nötig wäre: die Haiku-Klasse liegt ohne Vortor bei der Hälfte der Schwelle</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>Im Talkshow-Test des alten Repos fielen 16 von 25 Segmenten an Klassifikator-Stufen, bevor ein Modell formulieren durfte.</li>
+  <li>Caching braucht einen Präfix über 512 Token (Haiku 4.5: 4.096) und den Redebeitrag als angehängte Blöcke; Thinking mit 200 Token je Aufruf verdoppelt die Kosten der 5.5-Modelle.</li>
+  <li>Für den Themenwechsel gibt es kein belegtes Echtzeitverfahren für Deutsch und keine Themengrenzen-Labels im Golden Set.</li>
+  <li>Bedrock kann keine Structured Outputs, Vertex <code>eu</code>, Gemini, Mistral und GPT können sie.</li>
+</ul>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Takt (Tick)</dt><dd>Der Moment, in dem beide Extraktoren laufen: alle fünf Sekunden Redezeit des aktuellen Sprechers und einmal am Turn-Ende.</dd>
+  <dt>Analyse</dt><dd>Ein Lauf eines Extraktors in einem Takt: ein Modellaufruf mit Präfix, Redebeitrag und Kontext.</dd>
+  <dt>Stufe 1, Behauptungs-Extraktor (Claim Extractor)</dt><dd>Das LLM, das im Takt aus dem kumulativen Redebeitrag Behauptungen zieht. Muss schnell und billig sein.</dd>
+  <dt>Stufe 2, Klärer (Resolver)</dt><dd>Stärkeres Modell mit weiterem Kontext, das nur die Kandidaten bekommt, die Stufe 1 nicht auflösen konnte. Läuft außerhalb des Takts.</dd>
+  <dt>Kandidat (Candidate)</dt><dd>Eine Stelle, die Stufe 1 für eine mögliche Behauptung hält, aber nicht auflösen kann; mit Grund. Geht an den Klärer, nie auf eine Karte.</dd>
+  <dt>Vortor</dt><dd>Ein billiger Ja/Nein-Klassifikator vor einem Extraktor, der entscheidet, ob der Extraktor überhaupt läuft. Im alten Repo war das Jev. Hier gestrichen.</dd>
+  <dt>Präfix, append-only</dt><dd>Der stabile Anfang des Prompts (Anweisung, Schema, Setting), hinter den der Redebeitrag nur angehängt wird. Nur so trifft das Prompt-Caching.</dd>
+  <dt>Prompt-Caching</dt><dd>Der Anbieter speichert einen Prompt-Anfang für fünf Minuten und berechnet ihn beim nächsten Aufruf zum Bruchteil des Preises; jeder Treffer verlängert die Frist.</dd>
+  <dt>Structured Outputs</dt><dd>Der Anbieter garantiert, dass die Antwort einem JSON-Schema folgt. Auf Bedrock gibt es das nicht, nur den Umweg über ein erzwungenes Tool.</dd>
+  <dt>Thinking, effort</dt><dd>Interne Denkschritte des Modells vor der Antwort; kosten Ausgabetoken und Zeit. <code>effort: low</code> hält sie kurz, bei Opus 5.5 lassen sie sich nicht abschalten.</dd>
+  <dt>TTFT</dt><dd>Time to first token, die Zeit bis zum ersten Antwortzeichen; bei Thinking-Modellen einschließlich Denkzeit.</dd>
+  <dt>p95</dt><dd>Der Wert, unter dem 95 % aller Messungen liegen; die seltensten 5 % dürfen darüber liegen.</dd>
+  <dt>Baseline</dt><dd>Die Pipeline mit allen Standardwerten aus Runde 1; jeder weitere Lauf legt genau einen Schalter um.</dd>
+  <dt>Variable</dt><dd>Ein Schalter der Pipeline, dessen Wert der Vergleichsprototyp ändert, während alles andere gleich bleibt.</dd>
+  <dt>Golden Set</dt><dd>Echte Aufnahmen mit abgenommenen Labels; die einzige Quelle für Qualitätszahlen (ADR 0003).</dd>
+</dl>
+</div>
+
+</body></html>

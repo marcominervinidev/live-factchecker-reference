@@ -1,0 +1,53 @@
+{
+ "version": "1.178.0",
+ "results": [],
+ "errors": [
+  {
+   "code": 3,
+   "level": "warn",
+   "type": [
+    "PartialParsing",
+    [
+     {
+      "path": "src/broken.ts",
+      "start": {
+       "line": 1,
+       "col": 1,
+       "offset": 0
+      },
+      "end": {
+       "line": 2,
+       "col": 11,
+       "offset": 30
+      }
+     }
+    ]
+   ],
+   "message": "Syntax error at line src/broken.ts:1:\n `export const x = (;\nfunction {` was unexpected",
+   "path": "src/broken.ts",
+   "spans": [
+    {
+     "file": "src/broken.ts",
+     "start": {
+      "line": 1,
+      "col": 1,
+      "offset": 0
+     },
+     "end": {
+      "line": 2,
+      "col": 11,
+      "offset": 30
+     }
+    }
+   ]
+  }
+ ],
+ "paths": {
+  "scanned": [
+   "src/broken.ts"
+  ]
+ },
+ "engine_requested": "OSS",
+ "skipped_rules": [],
+ "profiling_results": []
+}

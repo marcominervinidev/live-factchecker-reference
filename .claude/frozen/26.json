@@ -1,0 +1,121 @@
+{
+  "issue": 26,
+  "approvedAt": "2026-10-29T08:22:07Z",
+  "ticketSha256": "0a8655b222c75a4a068ceb3eb78a788f9f6178d2cc724c1e78cb1a5a498cb26c",
+  "paths": [
+    "packages/service-kit/src/model-call.test.ts",
+    "packages/service-kit/src/logger.edge.test.ts",
+    "packages/service-kit/src/model-call.metric.test.ts",
+    "scripts/ci/flaky.test.ts",
+    "scripts/ci/fixtures/flaky/fails-once-retry-1.ndjson",
+    "scripts/ci/fixtures/flaky/fails-always-retry-1.ndjson",
+    "scripts/ci/fixtures/flaky/fails-once-no-retry.ndjson",
+    "tools/tests/test_make_targets.py",
+    "tests/acceptance/features/26/owner-stack.feature",
+    "tests/acceptance/owner/26/owner-stack.feature",
+    "tests/acceptance/canaries/26.json"
+  ],
+  "pyramidNote": "Stage 1 only: 134 vitest cases at run time (model-call.test.ts 49 with it.each rows and three fast-check properties, logger.edge.test.ts 12, scripts/ci/flaky.test.ts 10, model-call.metric.test.ts 63 with it.each rows and two fast-check properties, gate-1 addendum 2026-10-29) and, not counted by tools/check_test_pyramid.py, 6 stdlib unittest cases with 27 subtests in tools/tests/test_make_targets.py (stage 1 by nature: make with a docker stub in a throwaway copy; AC8 to AC10 and the valid classes of AC5 and AC7). No stage 2a, 3 or 4 case: the ticket adds no route, no contract and no service behaviour, and stage 4 has no client before increment 2. Owner decision Q2 (gate 1, 2026-10-29): AC5 to AC7 are shown at stage 1 on real recorded Cucumber message reports instead of the ticket's stage-3 'fixture scenario that fails exactly once', because such a scenario in tests/api/features would put a line into flaky.txt on every PR and pr.yml (job flaky-issues) would keep a 'flaky:' issue open for it; the wiring is proven once in the PR of task 2 (verify.2). Acceptance: 1 case for make acceptance (AC11 through the edge) and 8 owner-run cases for AC10 (secrets-init dry run) and AC11 to AC15 (ticket #26, Assumptions: hooks owner-stack and guard-secrets).",
+  "tasks": {
+    "1": [
+      "packages/service-kit/src/model-call.test.ts",
+      "packages/service-kit/src/logger.edge.test.ts",
+      "packages/service-kit/src/model-call.metric.test.ts"
+    ],
+    "2": [
+      "scripts/ci/flaky.test.ts",
+      "scripts/ci/fixtures/flaky/fails-once-retry-1.ndjson",
+      "scripts/ci/fixtures/flaky/fails-always-retry-1.ndjson",
+      "scripts/ci/fixtures/flaky/fails-once-no-retry.ndjson",
+      "tools/tests/test_make_targets.py",
+      "tests/acceptance/features/26/owner-stack.feature",
+      "tests/acceptance/owner/26/owner-stack.feature",
+      "tests/acceptance/canaries/26.json"
+    ]
+  },
+  "verify": {
+    "1": "scripts/tb pnpm --filter @lfc/service-kit run test:unit (all of model-call.test.ts, logger.edge.test.ts and model-call.metric.test.ts green; logger.test.ts and logger.limits.test.ts of #25 stay green with the widened field list of logger.ts)",
+    "2": "Frozen: scripts/tb pnpm exec vitest run scripts/ci/flaky.test.ts and python3 -I -m unittest discover -s tools/tests -p test_make_targets.py. Proven once in the PR of task 2, not frozen (owner decision Q2): the wiring RETRIES -> Cucumber retry -> tests/api/reports/flaky.txt with a real Cucumber run on lfc-26-2 and a temporary scenario that is not committed: RETRIES=1 with a scenario that fails once (run green, its name once in flaky.txt), RETRIES=1 with one that fails every time (run red, flaky.txt empty), RETRIES unset with one that fails once (run red, no retry, flaky.txt empty); command output in the PR."
+  },
+  "taskRequirements": {
+    "2": [
+      "make test-api always writes tests/api/reports/flaky.txt, empty when nothing was flaky; stack-tests.yml treats a missing flaky.txt as an error (owner decision Q2). Frozen at stage 1 only for the extractor CLI (scripts/ci/flaky.test.ts: the file is written, also for an empty messages report); at the make level it is not frozen, because what follows the stack client cannot run against the docker stub of test_make_targets.py (scripts/tb needs a git checkout, the host has no node), so the PR evidence of verify.2 shows it.",
+      "RETRIES: unset and empty mean the default 0; only 0 and 1 are allowed (critic W9).",
+      "One name for the secrets directory: LFC_SECRETS_DIR (owner decision Q6); SECRETS_DIR remains only as a fallback in the hook guard-secrets.",
+      "Production paths added to the ticket's task 2 (owner decision Q7; not frozen): services/detection/Dockerfile (new stage dev: source mount, not distroless) and compose.dev.yml; also .github/workflows/stack-tests.yml (missing flaky.txt is an error) and one line on tests/acceptance/owner/ in tests/acceptance/README.md (Q3)."
+    ]
+  },
+  "acceptanceNote": "Owner decision Q3 (gate 1, 2026-10-29): the owner-run cases stay in tests/acceptance/owner/26/owner-stack.feature, which make acceptance does not load. The judge briefing marks AC11 to AC15 (and the secrets-init dry run of AC10) as owner cases and takes the terminal output Marco pastes as their evidence; the AC11 case of tests/acceptance/features/26/owner-stack.feature is judged from report.json as usual.",
+  "redRun": {
+    "packages/service-kit/src/model-call.test.ts": {
+      "task": "1",
+      "command": "scripts/tb pnpm exec vitest run --root packages/service-kit src/model-call.test.ts",
+      "base": "678a0b8 (task/25-3, local stand-in for main after #25) plus the frozen task-1 files; re-recorded on main after #25 is merged (2026-11-01)",
+      "exitCode": 1,
+      "sha256": "8cf96b84efac41379109d7a92b94a417c83c13d77459a9d36b7bfda1e8f0fa12",
+      "provableBy": "manual, recorded by the main session (F1 option b, as for #25)",
+      "reason": "expected: red for the right reason, \"Cannot find module './model-call.ts' imported from /workspace/packages/service-kit/src/model-call.test.ts\" (module under test), Test Files 1 failed, no tests ran; tools/classify_red_reason.py: 'missing module ./model-call.ts'. Checked by the test designer on d6eba00 on 2026-10-29 after the gate-1 decisions, not recorded",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "packages/service-kit/src/logger.edge.test.ts": {
+      "task": "1",
+      "command": "scripts/tb pnpm exec vitest run --root packages/service-kit src/logger.edge.test.ts",
+      "base": "678a0b8 (task/25-3, local stand-in for main after #25) plus the frozen task-1 files; re-recorded on main after #25 is merged (2026-11-01)",
+      "exitCode": 1,
+      "sha256": "47d863a8c14908fddef9506804e355313b8f91e483ac87ffec2229fd2a442cbd",
+      "provableBy": "manual, recorded by the main session (F1 option b, as for #25)",
+      "reason": "expected: red for missing behaviour, Tests 1 failed | 11 passed (12): 'createLogger: amounts > refuses durationMs as a non-integer, names it and writes nothing' fails with 'expected [Function] to throw an error' (the T1 logger accepts 0.5). The 11 passing rows pin #25 gate-1 decision 4 that the T1 logger already meets. tools/classify_red_reason.py: 'failing tests, no load error (missing behaviour)'. Checked by the test designer on d6eba00 on 2026-10-29 after the gate-1 decisions, not recorded",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "packages/service-kit/src/model-call.metric.test.ts": {
+      "task": "1",
+      "command": "scripts/tb pnpm exec vitest run --root packages/service-kit src/model-call.metric.test.ts",
+      "base": "main after #25 plus the frozen task-1 files; model-call.ts absent",
+      "exitCode": 1,
+      "sha256": "",
+      "provableBy": "manual, recorded by the main session (F1 option b, as for #25)",
+      "reason": "expected: red for the right reason, \"Cannot find module './model-call.ts' imported from /workspace/packages/service-kit/src/model-call.metric.test.ts\" (module under test), Test Files 1 failed, no tests ran; tools/classify_red_reason.py: 'missing module ./model-call.ts'. Checked by the test designer on task/26-1 (f73ef4a3) with model-call.ts moved aside on 2026-10-29, not recorded",
+      "addendum": "gate-1 addendum 2026-10-29, reviewer mutants M1/M4-M7 and security S1-S3/S5"
+    },
+    "scripts/ci/flaky.test.ts": {
+      "task": "2",
+      "command": "scripts/tb pnpm exec vitest run scripts/ci/flaky.test.ts",
+      "base": "task/26-1 (local stand-in for main after #25 and task 1) plus the frozen task-2 files; re-recorded on main after task 1 is merged",
+      "exitCode": 1,
+      "sha256": "36591a0c4ede94797813646de8fafd1202b8f0304443e5c730bbe8401d28e7ee",
+      "provableBy": "manual, recorded by the main session (F1 option b, as for #25)",
+      "reason": "expected: red for the right reason, \"Cannot find module './flaky.ts' imported from /workspace/scripts/ci/flaky.test.ts\" (module under test), Test Files 1 failed, no tests ran; tools/classify_red_reason.py: 'missing module ./flaky.ts'. Checked by the test designer on d6eba00 on 2026-10-29 after the gate-1 decisions, not recorded",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "tools/tests/test_make_targets.py": {
+      "task": "2",
+      "command": "python3 -I -m unittest discover -s tools/tests -p test_make_targets.py",
+      "base": "task/26-1 (local stand-in for main after #25 and task 1) plus the frozen task-2 files; re-recorded on main after task 1 is merged",
+      "exitCode": 1,
+      "sha256": "e07ef88b18f2dac65c9b0b4d1e43f226ea00d53330ac8fd1241b55ea59b74276",
+      "provableBy": "now, and in CI: ci.yml repo-checks runs python3 -I -m unittest discover -s tools/tests on every push",
+      "reason": "expected: red for missing behaviour, 'Ran 6 tests', 'FAILED (failures=19)': make help has no line for up, dev, down, stop, restart, secrets-init (6); make -n up, dev, down, stop, restart exit 2 with 'No rule to make target' (5); test-api accepts RETRIES 2, -1, yes, 0.5 with exit 0 (4); test-e2e accepts the same four (4). Green on the base, as valid classes: test-e2e stays the no-op (exit 0, no docker call) for RETRIES unset, empty, 0, 1; test-api starts the stage-3 client for RETRIES unset, empty, 0, 1. tools/classify_red_reason.py: 'failing tests, no load error (missing behaviour)'. Checked by the test designer on d6eba00 on 2026-10-29 after the gate-1 decisions, not recorded",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    }
+  },
+  "redRunPolicy": "Owner decision F1 option b (as for #25; gate 1 of #26, 2026-10-29): manual red runs, recorded by the main session; the test designer only checked the reasons. Tasks 1 and 2 touch disjoint paths and run in parallel; both are proven on main after #25 is merged. The frozen files enter the tree per task with the PR of their task (lists under 'tasks'), else stage 0 (typecheck, dependency-cruiser not-to-unresolvable) breaks on model-call.ts and flaky.ts that do not exist yet. The acceptance files (features, owner-run cases, canary) have no red run: make acceptance and the owner run them at gate 2. Before the PR, eslint.config.mjs needs no entry for these files: with the modules present (checked against temporary interface stubs, removed again) eslint --max-warnings 0, prettier --check and tsc pass on the three vitest files.",
+  "redRunHash": "sha256 over the log after: ANSI codes dropped; lines 'Duration', 'Start at', 'Ran <n> tests in <t>s' and the macOS make 'xcrun_db' warnings dropped; a trailing per-test ' <n>ms' dropped; the checkout path and /workspace replaced by '<root>'; the temp dir 'lfc-26-make-*' replaced by 'lfc-26-make-<tmp>'",
+  "sha256": {
+    "packages/service-kit/src/model-call.test.ts": "09f12485fcc548547deb6abef575937cac21ce867a3fd4b35d43922b6e538911",
+    "packages/service-kit/src/logger.edge.test.ts": "4c352e3e7ce21291010e15f06ae02008a870b4517c914b0140a68733d0a6b583",
+    "scripts/ci/flaky.test.ts": "a142a5bb154110abaa83b037c6bb1fa463eb20227cfb4d1d646ff36b5d5b1b81",
+    "scripts/ci/fixtures/flaky/fails-once-retry-1.ndjson": "6b5c6a7115950df45ecc029b8f25f9d6ab38e36aab457e78db298c4c4546f7d8",
+    "scripts/ci/fixtures/flaky/fails-always-retry-1.ndjson": "5210ebaae138dc4ff871dafcd6afb8b2998f2dc363bed5259204aca316957b6e",
+    "scripts/ci/fixtures/flaky/fails-once-no-retry.ndjson": "351ac2d74476e84d2c16f97986756d7432e049438504ccc5948618b5373fc994",
+    "tools/tests/test_make_targets.py": "d980ce959d516df566d778991c5b8aca847136eba4a61205f7e2bbeb4b9f96c9",
+    "tests/acceptance/features/26/owner-stack.feature": "6bfc6e64d914681de35b5372ac0302f9e4e68bf1f99d5f701b26ac8d02997e80",
+    "tests/acceptance/owner/26/owner-stack.feature": "6af80cdac7c4f4f5a479b1cb1b8bfc70adadeb9cbee1e4d4304d1b1dfe354689",
+    "tests/acceptance/canaries/26.json": "afd37ccf85ab5a9720fa163b6dca68d33fd64776494d3b16fc0c45b8f02a250f",
+    "packages/service-kit/src/model-call.metric.test.ts": "357912a6eba4dcb45406d05d7a4c4cceb72347736e07fc1566aa1bb0b0e76bda"
+  },
+  "addendumApprovedAt": "2026-10-29"
+}

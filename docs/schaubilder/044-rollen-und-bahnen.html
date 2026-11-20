@@ -1,0 +1,316 @@
+<!-- Quelle: https://claude.ai/artifact/7uuzqfazY8yNhcHqh9evhZ, exportiert 2026-10-23, Ticket #44 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rollen und Bahnen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; vier Zonen von links nach rechts (Gerät, Backend EU, Auftragsverarbeiter EU, eigenständige Empfänger USA), die Grenze nach außen als bernsteinfarbene Linie; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.dialog .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:6px}
+.dialog .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.dialog .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+.dialog .btn{display:inline-block;border:1px solid var(--ok2);color:var(--ok2);border-radius:6px;padding:2px 10px;font-family:var(--font-display);font-size:13px;margin-right:6px}
+.dialog .btn.ghost{border-color:var(--line);color:var(--muted)}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Prozess-Map · Ticket 44 · Grilling · Schaubild der Entscheidung · 2026-10-18</div>
+  <h1>Rollen und Bahnen</h1>
+  <p class="lead">Welche Rollen hat das Arbeitssystem von live-factchecker-v2, in welchen Bahnen laufen sie, wer darf blockieren und schließen, welches Modell bekommt jede Rolle, und wo stehen Marcos Tore? Vier Befunde liegen vor: das Inventar des alten Repos (346 Artefakte, 27 Rollen-Regeln), die Leitfaden-Essenzen (Prüfliste statt Reviewer), die Werkzeug-Schichtung (Fallow als deterministische Vorstufe) und der Limit-Wächter (Skript, kein Agent). Dazu Marcos Vorgaben vom 18. Oktober und die beiden Schaubilder Factory und AIUP. Zwei Runden, vierzehn Fragen, alle entschieden; die Dateien liegen in live-factchecker-v2 auf dem Branch process/rollen.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Rollen-Landkarte</a><a href="#vorgaben">Vorgaben</a><a href="#fakten">Fakten</a><a href="#tabelle">Vorschlag</a><a href="#runde1">Runde 1</a><a href="#fragen">Runde 2</a><a href="#wohin">Was wo liegt</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Rollen-Landkarte: Vorschlag für Inkrement 1</h2>
+<p>Ein Ticket läuft von links nach rechts durch drei Bahnen. Marco hält zwei Tore: vor dem Bauen gibt er Fälle und Verträge frei, vor dem Merge liest er den Diff. Zwischen den Toren arbeiten Agenten, jeder mit einem eigenen Fenster und einem engen Briefing; alles Deterministische (Tests, Lint, Fallow, Scanner, Hooks) läuft als Code ohne Modell. Grün umrandet sind Rollen mit Beleg aus dem alten Repo, gestrichelt die neuen, grau die, die erst später kommen.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 600" role="img" aria-label="Drei Bahnen: Planen mit Grilling und Wayfinder, Refinement Agent, Testdesigner und Synthese; Bauen mit Orchestrator-Hauptsession, Implementierer je Task im Worktree, Ausführer als Code, drei parallelen Reviewern für Code, Sicherheit und Architektur; Abnehmen und Lernen mit Abnahme-Richter, Ticket-Schluss als Code, Retro mit Lessons und Agenten-Bilanz, Limit-Wächter als Skript. Darunter Tor 1 Freigabe der Fälle und Verträge, deterministische Gates, Tor 2 Diff lesen und mergen. Später: Triage, Healer, Frontend-Reviewer, Platform-Engineer im Lernpfad.">
+  <rect class="zone" x="10" y="40" width="300" height="430" rx="10"/>
+  <rect class="zone" x="350" y="40" width="300" height="430" rx="10"/>
+  <rect class="zone" x="690" y="40" width="300" height="430" rx="10"/>
+  <text class="lab" x="20" y="28">Bahn 1 · Planen</text>
+  <text class="lab" x="360" y="28">Bahn 2 · Bauen</text>
+  <text class="lab" x="700" y="28">Bahn 3 · Abnehmen und Lernen</text>
+
+  <rect class="box box-ok" x="22" y="56" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="76">Grilling und Wayfinder (Marco entscheidet)</text>
+  <text class="t3" x="32" y="94">Skills vorhanden; keine Rollendatei</text>
+  <rect class="box box-bad" x="22" y="122" width="276" height="66" rx="6"/>
+  <text class="t" x="32" y="142">Refinement Agent</text>
+  <text class="t3" x="32" y="160">ADR, Spezifikation → Ticket mit Akzeptanzkriterien,</text>
+  <text class="t3" x="32" y="176">Blast Radius, Größe; schlägt vor, Marco gibt frei</text>
+  <rect class="box box-bad" x="22" y="200" width="276" height="66" rx="6"/>
+  <text class="t" x="32" y="220">Testdesigner</text>
+  <text class="t3" x="32" y="238">Akzeptanzkriterien → rote Tests und Fälle, vor dem Code;</text>
+  <text class="t3" x="32" y="254">nie derselbe Agent wie der Implementierer</text>
+  <rect class="box box-ok" x="22" y="278" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="298">Synthese und Explore</text>
+  <text class="t3" x="32" y="316">eingebaut; Zusammenfassung statt Rohdateien</text>
+  <rect class="box" x="22" y="344" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="364">Platform-Engineer (später, Lernpfad #48)</text>
+  <text class="t3" x="32" y="382">erklärt, weil Marco lernt; Werkzeugliste fehlt</text>
+
+  <rect class="box box-ok" x="362" y="56" width="276" height="66" rx="6"/>
+  <text class="t" x="372" y="76">Orchestrator: Hauptsession</text>
+  <text class="t3" x="372" y="94">hält Ticket, Verträge, Plan; startet Implementierer;</text>
+  <text class="t3" x="372" y="110">feste Ketten als Workflow-Skript (Code)</text>
+  <rect class="box box-bad" x="362" y="134" width="276" height="66" rx="6"/>
+  <text class="t" x="372" y="154">Implementierer je Task</text>
+  <text class="t3" x="372" y="172">Worktree, eigener Branch, Verbotsliste, Bericht DONE,</text>
+  <text class="t3" x="372" y="188">DONE_WITH_CONCERNS, BLOCKED; Tests read-only</text>
+  <rect class="box box-ok" x="362" y="212" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="232">Ausführer: Code, kein Modell</text>
+  <text class="t3" x="372" y="250">Tests, tsc, ESLint, Fallow, Stryker, Semgrep, Harness</text>
+  <rect class="box box-ok" x="362" y="278" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="298">Reviewer (Code) und Security-Reviewer</text>
+  <text class="t3" x="372" y="316">parallel, nur lesend, Scope festgenagelt (alt, bewährt)</text>
+  <rect class="box box-bad" x="362" y="344" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="364">Architektur-Reviewer</text>
+  <text class="t3" x="372" y="382">Grenzen, Redundanz, doppelter Zustand; kennt CONTEXT.md, ADRs</text>
+  <rect class="box box-bad" x="362" y="410" width="276" height="48" rx="6"/>
+  <text class="t" x="372" y="430">Prüfliste leitfaden-pruefpunkte (Skill, kein Agent)</text>
+  <text class="t3" x="372" y="446">per skills: in alle drei Reviewer geladen</text>
+
+  <rect class="box box-ok" x="702" y="56" width="276" height="66" rx="6"/>
+  <text class="t" x="712" y="76">Abnahme-Richter</text>
+  <text class="t3" x="712" y="94">urteilt je Fall gegen die Erwartung: passt, passt nicht, unklar;</text>
+  <text class="t3" x="712" y="110">anderes Modell als der Autor, Kanarienvogel, nie in CI</text>
+  <rect class="box box-bad" x="702" y="134" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="154">Ticket-Schluss: Code</text>
+  <text class="t3" x="712" y="172">gemergt und alle Fälle passt → Issue zu; Marco kann öffnen</text>
+  <rect class="box box-ok" x="702" y="200" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="220">Retro (Skill) mit Lessons und Agenten-Bilanz</text>
+  <text class="t3" x="712" y="238">je Inkrement; Zweimal-Regel; Check vor Prosa</text>
+  <rect class="box box-bad" x="702" y="266" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="286">Limit-Wächter (Skript, launchd)</text>
+  <text class="t3" x="712" y="304">85 warnen, 95 Session hart, 99 Woche sanft</text>
+  <rect class="box" x="702" y="332" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="352">Später: Triage, Healer, Frontend-Reviewer</text>
+  <text class="t3" x="712" y="370">mit Testteam (#46) und Frontend; Nebel</text>
+
+  <rect class="box box-warn" x="22" y="486" width="276" height="40" rx="6"/>
+  <text class="t" x="32" y="504">Tor 1 · Marco gibt Fälle, Verträge,</text>
+  <text class="t3" x="32" y="519">Ticket frei; danach sind sie eingefroren (Hook)</text>
+  <rect class="box box-warn" x="362" y="486" width="276" height="40" rx="6"/>
+  <text class="t" x="372" y="504">Gates: Hooks, Tests, Lint, Fallow, SAST</text>
+  <text class="t3" x="372" y="519">Required Checks, kein Ermessen</text>
+  <rect class="box box-warn" x="702" y="486" width="276" height="40" rx="6"/>
+  <text class="t" x="712" y="504">Tor 2 · Marco liest den Diff und merged</text>
+  <text class="t3" x="712" y="519">Auto-Merge bei niedrigem Blast Radius erst nach Erfahrung</text>
+
+  <path class="ln ln-ok" d="M298 155 C330 155 330 89 362 89"/>
+  <path class="ln ln-ok" d="M638 89 C670 89 670 89 702 89"/>
+  <path class="ln ln-warn" d="M160 486 V398"/>
+  <path class="ln" d="M500 486 V458"/>
+  <path class="ln ln-warn" d="M840 486 V386"/>
+
+  <rect class="box box-ok" x="22" y="548" width="14" height="14" rx="3"/><text class="t3" x="42" y="559">bewährt im alten Repo oder eingebaut</text>
+  <rect class="box box-bad" x="262" y="548" width="14" height="14" rx="3"/><text class="t3" x="282" y="559">neu, zu entscheiden</text>
+  <rect class="box" x="432" y="548" width="14" height="14" rx="3"/><text class="t3" x="452" y="559">später</text>
+  <rect class="box box-warn" x="532" y="548" width="14" height="14" rx="3"/><text class="t3" x="552" y="559">Tor oder Gate: Marco oder Code, kein Modell</text>
+  <text class="t3" x="22" y="586">Quellen: altes Repo (reviewer, security-reviewer, uat-reviewer, geplanter implementer), Leitfaden (Orchestrator-Session, Spec- und Code-Reviewer), Testteam-Analyse (drei Bahnen, Kritiker, Ausführer ohne LLM), Factory-Schaubild (Refinement, AI Reviewer, QA schließt Ticket), AIUP (Code und Tests getrennt).</text>
+</svg>
+</div>
+<figcaption>Zwölf Rollen, davon drei als Code (Ausführer, Ticket-Schluss, Limit-Wächter), eine als Skill (Prüfliste) und acht als Agenten-Dateien. Entschieden in Runde 1 und 2: der Kritiker mit Veto ist eine eigene Rolle vor Tor 1 (Fable 5.1), Frontend-Reviewer und Platform-Engineer sind von Anfang an dabei, einen Healer gibt es nie.</figcaption>
+</figure>
+
+<h2 id="vorgaben">2 · Was feststeht</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Quelle</th><th>Vorgabe</th></tr></thead>
+  <tbody>
+    <tr><td>Marco, 2026-10-18</td><td>Der Agent, der Code schreibt, schreibt nicht die Tests. Modelle je Rolle: Planung und Review stark, Coding günstiger. Gewünscht: Refinement Agent, Architektur-Reviewer (Modularisierung, Redundanz, doppelter Zustand), QA-Agent, der auf Staging prüft und das Ticket schließt, Kennzahl "Loops bis zur Lösung".</td></tr>
+    <tr><td>Map-Notes</td><td>TDD gesetzt; Agenten-Betrieb lokal in Sandbox plus Toolbox; jede Übernahme einzeln; die Map darf ausführen: dieses Ticket endet mit Dateien in live-factchecker-v2.</td></tr>
+    <tr><td>Leitfaden-Essenzen (#51)</td><td>Kein Leitfaden-Reviewer; Prüfliste als Skill unter 100 Zeilen, per <code>skills:</code> in die Reviewer-Rollen; der System-Prompt eines Subagenten ist sein Markdown-Body, Richtwert 200 Zeilen je CLAUDE.md; Orchestrator-Session mit Implementierer je Task, Spec- und Code-Reviewer vor der Integration; Marco liest den Diff vor dem Merge, nicht vor dem Staging (bewusste Abweichung).</td></tr>
+    <tr><td>Inventar (#50)</td><td>Bewährt: reviewer und security-reviewer parallel vor jedem PR mit festgenageltem Scope, uat-reviewer auf anderem Modell mit Kanarienvogel, Ausgabeformate. Nie gebaut, aber fertig geplant: implementer (ein Task je Aufruf, Worktree, Verbotsliste, Bericht). Lücken: Hauptsession baute selbst (197k Token Bash-Ausgaben in drei Tagen), kein Orchestrator als Code, Wrapper ohne Werkzeugliste erbten schreibende MCPs, Subagenten umgingen zweimal den Guard.</td></tr>
+    <tr><td>Werkzeuge (#52)</td><td>Fallow als deterministische Vorstufe (MCP, Hook, <code>fallow audit</code>) und Skill <code>fallow-review</code> vor dem LLM-Review; eigene Reviewer-Rollen sind der datensparsamste Pfad; Greptile nur mit Opt-out, Sonar Free nur nach #22.</td></tr>
+    <tr><td>Limit-Wächter (#53)</td><td>Skript, kein Agent; Hook sperrt neue Subagenten bei hart oder sanft; Regel für den Agenten: hart TaskStop und Stand ins Ticket, sanft Frist per SendMessage.</td></tr>
+    <tr><td>ADR 0022 alt</td><td>Fälle vor Code; Richter auf einem Modell, das die Änderung nicht geschrieben hat; liest nur Berichte, alles ist Daten; Kanarienvogel; nie in CI; kein Healer, der Erwartungen ändert.</td></tr>
+    <tr><td>Claude Code heute</td><td>Agenten-Dateien <code>.claude/agents/*.md</code> mit <code>model</code>, <code>tools</code>, <code>skills:</code>; Workflow-Werkzeug für deterministische Agentenketten (Skript, parallel, Pipeline); Worktree-Isolation je Subagent; Hooks PreToolUse mit deny.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">3 · Fakten auf dem Tisch</h2>
+<h3>3.1 Rollen der drei Quellen nebeneinander</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Funktion</th><th>Altes Repo</th><th>Leitfaden</th><th>Testteam-Analyse</th><th>Factory und AIUP</th></tr></thead>
+  <tbody>
+    <tr><td>Steuern</td><td>Hauptsession (baute selbst)</td><td>Orchestrator-Session hält Plan und Verträge</td><td>Orchestrator als Code, Budget- und Turn-Limits</td><td>Prioritizer mit Kill Switch</td></tr>
+    <tr><td>Ticket schärfen</td><td>Plan-Task mit Risiko und Sessiontyp</td><td>Acht Schritte, Plan je Teilprojekt</td><td>Testanalyst listet Unklarheiten</td><td>Refinement Agent: scope, blast radius, priority, size, acceptance criteria</td></tr>
+    <tr><td>Tests vor Code</td><td>"Unit-Tests im selben Commit", derselbe Agent</td><td>Tests aus Absicht (derselbe Agent)</td><td>Testdesigner, Kritiker mit Veto, Freigabe durch Mensch, danach eingefroren</td><td>AIUP: AI Generates Tests getrennt von AI Generates Code, getrennt reviewt</td></tr>
+    <tr><td>Bauen</td><td>implementer geplant: ein Task, Worktree, Verbotsliste, Bericht</td><td>Implementierer je Task mit Pfaden, Form, Verifikationsbefehl</td><td>Automatisierer, Schreibrecht nur in seinem Ordner</td><td>Implementor Agent, N Instanzen je Worktree und Sandbox, fail → fix, 3 Retries</td></tr>
+    <tr><td>Ausführen</td><td>Make-Ziele, CI</td><td>Selbstverifikation mit Artefakten</td><td>Ausführer ohne LLM, Flaky heißt abgelehnt</td><td>Build & Quality Pipeline: Lint, Static Analysis, Fallow, Dead Code, Duplication, e2e, Visual Diff</td></tr>
+    <tr><td>Review</td><td>reviewer, security-reviewer, parallel, nur lesend</td><td>Spec-Reviewer und Code-Quality-Reviewer vor der Integration</td><td>Quality Gates und Reviewer blockieren den Merge</td><td>AI Reviewer: architecture regression, modularity, redundant system state</td></tr>
+    <tr><td>Abnahme</td><td>uat-reviewer: Richter auf anderem Modell, Kanarienvogel</td><td>Mensch reviewt gegen das fachliche Konzept</td><td>zwei menschliche Tore, Scribe</td><td>QA Agent: acceptance criteria on staging, closes the ticket; UAT durch Mensch</td></tr>
+    <tr><td>Lernen</td><td>retro, lessons, Agenten-Bilanz</td><td>Zweimal-Regel, drei Feedback-Ebenen</td><td>Messgrößen je Phase</td><td>Observability als Feedback Loop</td></tr>
+    <tr><td>Heilen</td><td>nie (ADR 0022)</td><td>–</td><td>Healer nur Locatoren, drei Runden, nie Erwartungen</td><td>fail → fix beim Implementor</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.2 Was die Rechte einer Rolle heute technisch tragen</h3>
+<ul>
+  <li><b>Werkzeuge je Rolle:</b> Frontmatter <code>tools:</code> begrenzt lesend oder schreibend; der alte Wrapper ohne Liste erbte alles, auch schreibende MCPs (Sicherheitsbefund 2026-10-04).</li>
+  <li><b>Modell je Rolle:</b> Frontmatter <code>model:</code>; <code>inherit</code> nimmt das Modell der Hauptsession.</li>
+  <li><b>Fester Kontext:</b> <code>skills:</code> lädt Skill-Inhalte beim Start; beliebige Dateien kann ein Subagent nicht vorladen; CLAUDE.md-Hierarchie lädt er mit.</li>
+  <li><b>Schreibgrenzen:</b> PreToolUse-Hooks mit <code>deny</code> je Pfad (Tests des Testdesigners read-only für den Implementierer, Verträge read-only, Secrets); Worktree je Implementierer; Hooks sind Netz, die Gates in CI sind die Wahrheit.</li>
+  <li><b>Ketten als Code:</b> das Workflow-Werkzeug führt Skripte aus, die Agenten parallel oder als Pipeline starten und ihre Ergebnisse mit Schema einsammeln; damit sind Review-Fan-out und Verify ohne LLM-Orchestrator möglich.</li>
+  <li><b>Kennzahlen:</b> Workflow-Ergebnisse tragen Kosten je Agent; das alte <code>scripts/agent-usage.py</code> las Claude-Code-Logs, ob es heute noch rechnet, ist ungeprüft.</li>
+</ul>
+
+<h2 id="tabelle">4 · Vorschlag: Rollentabelle für Inkrement 1</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Rolle</th><th>Bahn</th><th>Art</th><th>Eingabe → Ausgabe</th><th>Rechte</th><th>Modell</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Refinement Agent</td><td>Planen</td><td>Agent</td><td>ADR, Spezifikation, Issue-Entwurf → Ticket mit Akzeptanzkriterien, Blast Radius, Größe, Risiko, Sessiontyp</td><td>lesend; schreibt nur den Ticket-Entwurf; Marco gibt frei</td><td>stark</td><td>Factory; alt: Risiko je Task</td></tr>
+    <tr><td>Testdesigner</td><td>Planen</td><td>Agent</td><td>Ticket mit Akzeptanzkriterien → rote Tests auf der niedrigsten Stufe, Abnahmefälle mit Erwartung</td><td>schreibt nur unter <code>tests/</code> und Fälle; nie Produktionscode</td><td>stark</td><td>Marco; Testteam; AIUP</td></tr>
+    <tr><td>Synthese, Explore</td><td>Planen</td><td>eingebaut</td><td>Frage → komprimierte Übersicht</td><td>nur lesend</td><td>günstig</td><td>Leitfaden</td></tr>
+    <tr><td>Orchestrator</td><td>Bauen</td><td>Hauptsession plus Workflow-Skripte</td><td>Ticket → Implementierer je Task, Review-Kette, Bericht an Marco</td><td>einzige Stelle mit Push, PR, Merge-Vorbereitung</td><td>Hauptsession</td><td>Leitfaden; alt</td></tr>
+    <tr><td>Implementierer</td><td>Bauen</td><td>Agent, N parallel</td><td>Task mit Pfaden, Vertrag, roten Tests, Verifikationsbefehl → Commits auf eigenem Branch, Bericht</td><td>Worktree; Verbotsliste: kein Push, kein gh, kein Branch-Wechsel, keine Änderung an Tests des Testdesigners, Verträgen, Secrets</td><td>günstiger; stark bei Risiko hoch</td><td>alt (geplant); Leitfaden; Factory</td></tr>
+    <tr><td>Ausführer</td><td>Bauen</td><td>Code</td><td>Branch → Testergebnis, Lint, Fallow, Stryker, Semgrep, Harness-Bericht</td><td>–</td><td>keines</td><td>alle</td></tr>
+    <tr><td>Reviewer (Code)</td><td>Bauen</td><td>Agent</td><td>Diff mit festem Scope → Blocker, Warnungen; PRIO 1 Abkürzungen, Tests, Standards</td><td>nur lesend</td><td>mittel</td><td>alt, bewährt</td></tr>
+    <tr><td>Security-Reviewer</td><td>Bauen</td><td>Agent</td><td>Diff → Befunde mit Angreifer und Szenario; Sicherheitsbefund ist Blocker</td><td>nur lesend</td><td>stark</td><td>alt, bewährt</td></tr>
+    <tr><td>Architektur-Reviewer</td><td>Bauen</td><td>Agent</td><td>Diff plus CONTEXT.md, ADRs, Fallow-Befund → Grenzverletzungen, Redundanz, doppelter Zustand, erfundene Muster</td><td>nur lesend</td><td>stark</td><td>Marco; Factory; Leitfaden</td></tr>
+    <tr><td>Prüfliste</td><td>Bauen</td><td>Skill</td><td>in alle Reviewer geladen</td><td>–</td><td>–</td><td>#51</td></tr>
+    <tr><td>Abnahme-Richter</td><td>Abnehmen</td><td>Agent</td><td>Berichte des Abnahmelaufs → je Fall passt, passt nicht, unklar, mit Beleg und Regressionsstufe</td><td>liest nur Berichte; nie Code, nie Erwartungen; Kanarienvogel</td><td>anderes Modell als der Autor</td><td>alt (ADR 0022); Factory QA</td></tr>
+    <tr><td>Ticket-Schluss</td><td>Abnehmen</td><td>Code</td><td>gemergt und alle Fälle passt → Issue geschlossen mit Belegen</td><td>gh</td><td>keines</td><td>Factory</td></tr>
+    <tr><td>Retro</td><td>Lernen</td><td>Skill</td><td>Inkrement → Lessons befördern, Agenten-Bilanz, NEXT-Liste</td><td>schreibt Lessons und Regeln nach Freigabe</td><td>stark</td><td>alt, bewährt</td></tr>
+    <tr><td>Limit-Wächter</td><td>Lernen</td><td>Skript</td><td>Statuszeile → Stufe, Nachricht, Hook-Sperre</td><td>–</td><td>keines</td><td>#53</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="runde1">5 · Festgelegt in Runde 1 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Orchestrator</td><td>Hauptsession orchestriert das Ticket; feste Ketten (drei Reviewer parallel, Ausführer plus Richter, Verify) als Workflow-Skripte. Kein Agent ruft Agenten in freier Folge auf.</td></tr>
+    <tr><td class="num">Q2</td><td>Rollenliste</td><td>Tabelle aus Abschnitt 4 <b>plus Kritiker mit Veto</b> vor Tor 1 (prüft die Testfälle des Testdesigners). <b>Nie ein Healer.</b> <b>Frontend-Reviewer und Platform-Engineer von Anfang an</b> dabei: nach dem PoC wird alles dockerisiert und produktionsreif nach den zwölf Faktoren gebaut, konfigurierbar über die Umgebung. Triage bleibt später.</td></tr>
+    <tr><td class="num">Q3</td><td>Modell je Rolle</td><td>Drei Stufen als Namen (stark, mittel, günstig), Implementierer günstig mit Aufstufung bei Risiko hoch, Richter nie das Modell des Autors, Modell-IDs in einer Konfigurationsdatei.</td></tr>
+    <tr><td class="num">Q4</td><td>Blockieren, schließen, mergen</td><td>Gates immer; Security-Reviewer bei jedem Befund, Architektur-Reviewer bei Grenzverletzung oder doppeltem Zustand, Code-Reviewer bei PRIO-1-Abkürzung; Richter blockiert nur den Ticket-Schluss; Schließen durch Code; Marco merged in Inkrement 1 immer.</td></tr>
+    <tr><td class="num">Q5</td><td>Implementierer</td><td>Ein Task je Aufruf, Worktree mit eigenem Branch, Toolbox- und Stack-Namen, feste Werkzeugliste, Verbotsliste, Briefing mit Host-Regeln, Bericht DONE, DONE_WITH_CONCERNS, BLOCKED, höchstens drei Versuche.</td></tr>
+    <tr><td class="num">Q6</td><td>Kennzahlen</td><td>Fünf Zahlen deterministisch (Loops, Tokens je Rolle, Befunde je Reviewer mit Anteil berechtigt, Richter-Quote, Rücklauf an Tor 1); Agenten-Bilanz im PR, Retro je Inkrement. <b>Testform:</b> End-to-End- und Integrationstests in Cucumber (Gherkin), Unit-Tests im describe-it-Stil.</td></tr>
+    <tr><td class="num">Q7</td><td>Dateiform</td><td>Claude-Code-nativ: <code>.claude/agents/</code> mit Prompt im Body, Modell, Werkzeuge, <code>skills:</code>; Ketten in <code>.claude/workflows/</code>; Modellnamen in einer Konfigurationsdatei; keine Wrapper.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">6 · Festgelegt in Runde 2 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q8</td><td>Tor 1</td><td>Manifest <code>.claude/frozen/&lt;issue&gt;.json</code> je Ticket mit Features, Steps, roten Unit-Tests, Verträgen und Ticket-Hash; PreToolUse-Hook verweigert Änderungen für alle außer dem Testdesigner; Implementierer darf nur neue Unit-Tests ergänzen; zugleich die Tabelle "Belegt durch".</td></tr>
+    <tr><td class="num">Q9</td><td>Kritiker</td><td>Claude-Subagent, kein Skript-Schritt: Kritiker auf Fable 5.1 (Spitze), Testdesigner auf Opus 5.5 (stark); Regel: Kritiker immer eine Stufe über dem Testdesigner. Grund: kein Budget und kein Zugang für Gemini.</td></tr>
+    <tr><td class="num">Q10</td><td>Grenze Testdesigner und Implementierer</td><td>Testdesigner schreibt Features, Step-Definitionen, rote Unit-Tests und Abnahmefälle; Implementierer nur Produktionscode plus neue Unit-Tests für Interna. Stufen und Konventionen: Testteam (#46).</td></tr>
+    <tr><td class="num">Q11</td><td>Frontend-Reviewer, Platform-Engineer</td><td>Beide jetzt als Dateien, aktiv je Ticket-Typ; Platform-Engineer baut nach den zwölf Faktoren und erklärt; die zwölf Faktoren sind Prüfliste des Architektur-Reviewers; welche Plattformaufgaben Marco selbst macht: Lernpfad (#48).</td></tr>
+    <tr><td class="num">Q12</td><td>Isolation</td><td>Worktree <code>../wt-&lt;issue&gt;-&lt;task&gt;</code>, Branch <code>task/&lt;issue&gt;-&lt;task&gt;</code>, Compose-Projekt und Toolbox <code>lfc-&lt;issue&gt;-&lt;task&gt;</code>, Portbereich je Task, Wegwerf-Secrets; Hook gegen Marcos Projektnamen; höchstens drei Implementierer parallel.</td></tr>
+    <tr><td class="num">Q13</td><td>Limit-Wächter</td><td>Regel in der Orchestrator-Rolle: hart stoppen, Stand ins Ticket, Fortsetzung planen; sanft Frist, Berichte, Stand, Wochen-Reset. Skript im Task (#54).</td></tr>
+    <tr><td class="num">Q14</td><td>Festhalten</td><td><a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/adr/0011-rollen-und-bahnen-des-arbeitssystems.md">ADR 0011</a> und <a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/spec/process/rollen.md">docs/spec/process/rollen.md</a> (Commit 78923d1, gepusht). In live-factchecker-v2 Branch <code>process/rollen</code>, Commit ce4ce27, lokal: zehn Agenten-Dateien, zwei Skills, drei Workflow-Gerüste, <code>models.json</code> mit Sync-Skript, Manifest-Ordner, <code>docs/process/rollen.md</code>. Marco liest und mergt.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="wohin">7 · Was wo liegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Ort</th><th>Inhalt</th></tr></thead>
+  <tbody>
+    <tr><td>ADR 0011 (Planungsrepo)</td><td>Bahnen, Tore, Gates, Orchestrator, Rollenliste, kein Healer, Testdesigner ungleich Implementierer, Kritiker über Testdesigner, Modellstufen, Blockierregeln, Implementierer-Regeln, Kennzahlen, zwölf Faktoren; elf verworfene Optionen; Folgen.</td></tr>
+    <tr><td><code>docs/spec/process/rollen.md</code> (Planungsrepo)</td><td>Neun Abschnitte: Bahnen und Tore, Rollentabelle mit Rechten und Stufen, Blockieren und Schließen, Implementierer, Manifest, Kennzahlen, Orchestrator-Regeln, Testform, Offenes.</td></tr>
+    <tr><td><code>.claude/agents/</code> (v2, Branch process/rollen)</td><td>refinement, test-designer, critic, implementer, reviewer, security-reviewer, architecture-reviewer, frontend-reviewer, platform-engineer, acceptance-judge: Prompt im Body, Modell-ID, Werkzeugliste, <code>skills:</code>.</td></tr>
+    <tr><td><code>.claude/skills/</code></td><td>leitfaden-pruefpunkte (Prüfliste für Plan, ADR, Diff; nicht aufrufbar, vorgeladen), retro (Lernschleife mit Modellstufen-Vorschlägen).</td></tr>
+    <tr><td><code>.claude/workflows/</code></td><td>test-design.js (Testdesigner und Kritiker, bis zwei Runden), review-chain.js (drei Reviewer parallel, Frontend-Reviewer bei Web-Dateien), acceptance.js (Richter, Kanarienvogel, Ticket-Schluss). Gerüste; Schemas und Budgets mit dem ersten Ticket.</td></tr>
+    <tr><td><code>.claude/models.json</code>, <code>tools/sync_agent_models.py</code></td><td>Stufen Spitze, stark, mittel, günstig auf Modell-IDs; Rolle auf Stufe; drei Regeln; Skript schreibt die IDs in die Agenten-Dateien, <code>--check</code> für CI.</td></tr>
+    <tr><td><code>.claude/frozen/</code>, <code>docs/process/rollen.md</code></td><td>Manifest-Format; Kurzfassung des Ablaufs für Leser im Repo.</td></tr>
+    <tr><td>Weitergaben</td><td>Agentenregeln #45 (Hooks: Manifest, Docker-Name, Pipe-Verbot; AGENTS.md), Testteam #46 (Cucumber, describe-it, Stufen, Kritiker-Runden, Kanarienvogel), PR-Format #47 (Blockierregeln, Agenten-Bilanz, Auto-Merge), Lernpfad #48 (Platform-Engineer), Vom Plan zum Ticket #49 (Refinement Agent), Limit-Wächter #54 (Regel steht), Betriebsmodell #15 der Architektur-Map (Docker, zwölf Faktoren nach dem PoC).</td></tr>
+  </tbody>
+</table></div>
+
+</div>
+</body>
+</html>
+
+</body></html>

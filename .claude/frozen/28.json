@@ -1,0 +1,253 @@
+{
+  "issue": 28,
+  "approvedAt": "2026-10-29T20:03:25Z",
+  "ticketSha256": "92a45d66bf65d3ba28c51a74af76d384bb78ec7fca06ace2139ccf32fce5ffe4",
+  "paths": [
+    "services/detection/src/testing/turns.ts",
+    "services/detection/src/turns/turn-builder.test.ts",
+    "services/detection/src/turns/turn-builder.property.test.ts",
+    "services/detection/src/turns/tick-plan.test.ts",
+    "services/detection/src/turns/tick-scheduler.test.ts",
+    "services/detection/src/turns/tick-scheduler.property.test.ts",
+    "services/detection/src/config.turns.test.ts",
+    "services/detection/features/turn-building.feature",
+    "services/detection/features/steps/turn-building.steps.ts",
+    "tests/acceptance/features/28/turn-building.feature",
+    "tests/acceptance/canaries/28.json",
+    "services/detection/src/turns/turn-builder.addendum.test.ts",
+    "services/detection/src/turns/turn-builder.held-cap.test.ts",
+    "services/detection/src/turns/tick-plan.addendum.test.ts",
+    "services/detection/src/turns/tick-scheduler.addendum.test.ts",
+    "services/detection/src/turns/tick-scheduler.rethrow.test.ts"
+  ],
+  "tasks": {
+    "1": [
+      "services/detection/src/testing/turns.ts",
+      "services/detection/src/turns/turn-builder.test.ts",
+      "services/detection/src/turns/turn-builder.property.test.ts",
+      "services/detection/src/turns/turn-builder.addendum.test.ts",
+      "services/detection/src/turns/turn-builder.held-cap.test.ts"
+    ],
+    "2": [
+      "services/detection/src/turns/tick-plan.test.ts",
+      "services/detection/src/turns/tick-scheduler.test.ts",
+      "services/detection/src/turns/tick-scheduler.property.test.ts",
+      "services/detection/src/turns/tick-plan.addendum.test.ts",
+      "services/detection/src/turns/tick-scheduler.addendum.test.ts",
+      "services/detection/src/turns/tick-scheduler.rethrow.test.ts"
+    ],
+    "3": [
+      "services/detection/src/config.turns.test.ts",
+      "services/detection/features/turn-building.feature",
+      "services/detection/features/steps/turn-building.steps.ts",
+      "tests/acceptance/features/28/turn-building.feature",
+      "tests/acceptance/canaries/28.json"
+    ]
+  },
+  "taskNotes": {
+    "1": {
+      "interface": "src/turns/types.ts: EndReason ('pause' | 'max_length' | 'speaker_change' | 'interjection' | 'stream_end'), TurnParameters { tickSeconds, turnPauseEndSeconds, turnMaxSeconds, interjectionMaxSeconds }, Turn { id, speaker, interjection, segments }, EndedTurn (Turn plus endReason, endKnownAt), TurnEvent ('turn-opened' with the Turn before its first Segment | 'segment-appended' with the Turn including the Segment | 'turn-ended' with the EndedTurn). src/turns/turn-builder.ts: createTurnBuilder(parameters) -> { push(segment): readonly TurnEvent[]; end(): readonly TurnEvent[] }. Full text in the header of turn-builder.test.ts.",
+      "implementerPaths": [
+        "services/detection/src/turns/types.ts",
+        "services/detection/src/turns/turn-builder.ts",
+        "services/detection/package.json (dependency @lfc/contracts workspace:* for the Segment type; devDependency fast-check 4.10.2 like packages/*, today it resolves only from the root and knip reports it as unlisted)"
+      ],
+      "why": "src/testing/turns.ts is a frozen test helper of tasks 1 and 2 (Segment builder, seam-sequence generator, fold of Turn events); it imports types only, so each task's tests fail on their own missing module. Knowable end times follow the ticket's first Assumption: the finalizedAt of the Segment that proves the decision, or the last finalizedAt at the end of the Input.",
+      "addendum-2026-10-30": "Gate-1 addendum (review of task 1). turn-builder.addendum.test.ts: the Segments each Turn event carries (turn-opened none, segment-appended up to and including the Segment, turn-ended all; never changed by a later push) and max_length after an interjection (181 s ends A's Turn, both ends known at 181 from push 3; exactly 180 s stays one Turn). turn-builder.held-cap.test.ts (owner decision 1): new optional builder parameter maxHeldSegments (default 200, integer >= 1, invalid values throw at createTurnBuilder naming maxHeldSegments); the Segment with which a held run would exceed it ends the ongoing Turn with speaker_change at its finalizedAt and the run opens the next Turn; bound per push P + 2 + (K+1)(K+2)/2 + 2(K+1) Segment references; fast-check seed 280306; the hostile generator stays under 2 s up to 512 Segments. The implementer adds the parameter without breaking START_VALUES (optional field) and updates the head comment of turn-builder.ts and the README 'Turns' paragraph."
+    },
+    "2": {
+      "interface": "src/turns/tick-plan.ts: Tick { turn: Turn; time; upto; final }, createTickPlan(parameters) -> { next(event: TurnEvent): readonly Tick[] }. src/turns/tick-scheduler.ts: ExtractorName ('claim_extractor' | 'topic_extractor'), ExtractorCall { turn, segments (not yet sent, in order), final, at }, Extractor { call(call): Promise<{ latencySeconds }> } (the port T4 and T6 implement), createTickScheduler({ sessionId, extractors, logger }) -> { tick(tick): Promise<void>; drain(): Promise<void>; readonly skippedTicks }. Simulated clock: a call returns at at + latencySeconds; a return at exactly a Tick's time counts as returned. Full text in the headers of tick-plan.test.ts and tick-scheduler.test.ts.",
+      "implementerPaths": [
+        "services/detection/src/turns/tick-plan.ts",
+        "services/detection/src/turns/tick-scheduler.ts",
+        "packages/service-kit/src/logger.ts and .claude/rules/platform.md (log fields for tick.skipped: the Turn id and the extractor; see owner question 1). The Logger type: task/27-3 (T2) already exports `type Logger` from @lfc/service-kit, so this lapses after the T2 merge"
+      ],
+      "why": "AC14 is tested as written: a non-final Tick without a new Segment is never counted, also while a call is in flight (the harness checks busy first; with Ticks from the Tick plan the case cannot occur, so parity is unaffected).",
+      "addendum-2026-10-30": "Gate-1 addendum (review of task 2). tick-plan.addendum.test.ts: speech landing exactly on 5 s and going on (P2). tick-scheduler.addendum.test.ts: a Tick without a new Segment (AC14) during a call leaves that call in flight (S7, also with controllable promises and tick() not awaited); an interjection with tickSeconds 1 < interjectionMaxSeconds 2 gets its own non-final Tick and final analysis, its speech counts for no other Turn (P12, F1); a non-final Tick of a held-back run falls due at the release time, 15, for an interjection and for a run released by a third Speaker (F2; the Tick plan sees only next(event), so the release time has to reach it within the frozen interface). tick-scheduler.rethrow.test.ts (owner decision 3): a rejecting or throwing extractor call lets every call of the Tick settle, is logged as extractor.failed (three fields, no error text), then tick() rejects with the first original error object, first in ExtractorName order (F6); a final analysis waiting for that call (AC12) still starts at its own time with every Segment not yet sent and its tick() resolves; drain() never rejects. With decision 3 the implementer removes or changes the contradicting cases of the implementer-owned tick-scheduler.errors.test.ts (lines 86, 97, 109, 121, 164) and the 'never thrown / never reject' sentences in tick-scheduler.ts (head comment, TickScheduler.tick doc), services/detection/README.md 'Ticks' and .claude/rules/pipeline.md; #29 catches tick() rejections."
+    },
+    "3": {
+      "interface": "loadConfig(env).turnParameters from TICK_SECONDS, TURN_PAUSE_END_SECONDS, TURN_MAX_SECONDS, INTERJECTION_MAX_SECONDS (defaults 5, 3, 180, 2; seconds above 0; an invalid value names the variable). src/session/session-turns.ts: createSessionTurns({ sessionId, parameters, extractors, logger }) -> { accept(segment): Promise<void>; end(): Promise<void>; readonly turns: readonly EndedTurn[]; readonly ticks: readonly Tick[]; readonly skippedTicks }. Full text in the headers of config.turns.test.ts and features/steps/turn-building.steps.ts.",
+      "implementerPaths": [
+        "services/detection/src/session/session-turns.ts",
+        "services/detection/src/config.ts",
+        "services/detection/package.json (devDependency @lfc/inputs workspace:*)",
+        "services/detection/README.md (Turn parameters)"
+      ],
+      "needsFromT2": [
+        "@lfc/inputs exporting sttRecordingInput from its root (T2 task 2)",
+        "tests/fixtures/golden-window.mjs (T2 task 2, frozen in 27.json)",
+        "services/detection/features/support/service.ts with testProjectRedis (T2 task 3, frozen in 27.json)",
+        "evals/golden/synt-2026-10-06-a/mitschnitt/deepgram-nova3-v1.jsonl (merge of evals/audiomodus, external prerequisite of #27)"
+      ],
+      "why": "Stage 2a runs in-process without HTTP and Redis: the ticket asks for Turns, Ticks and skip counts in-process, and no route or end-of-Input signal exists at the seam before T8. The acceptance case tagged @ac-18 rests on an AC the test designer proposes at gate 1 (owner question 2), because the ticket has no behaviour visible through the edge."
+    }
+  },
+  "pyramidNote": "Counted like tools/check_test_pyramid.py (121 tests): stage 1 118 it-calls in 11 files (turn-builder 28, turn-builder.property 13, tick-plan 14, tick-scheduler 17, tick-scheduler.property 9, config.turns 3; addendum 2026-10-30: turn-builder.addendum 7, turn-builder.held-cap 9, tick-plan.addendum 3, tick-scheduler.addendum 7, tick-scheduler.rethrow 8), stage 2a 3 scenarios in turn-building.feature, stages 3 and 4 none (no route, no client). Stage 1 97.5 %, 2a 2.5 %: the ticket is pure logic plus one wiring task, the ticket keeps interjection, pause and maximum length on stage 1, and the addendum closes unit-level coverage gaps the reviews named. Acceptance: one case through the edge (AC18, a guard) and the canary.",
+  "redRun": {
+    "services/detection/src/turns/turn-builder.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/turn-builder.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: Cannot find module './turn-builder.ts' (module under test), 0 tests; tools/classify_red_reason.py agrees",
+      "sha256": "c6d5e00fca4c5676d4dfaa4657ccedcdd122b9cfd1ebfce58f8ad0ea2e79ef54",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/turns/turn-builder.property.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/turn-builder.property.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: Cannot find module './turn-builder.ts' (module under test, imported before fast-check), 0 tests; tools/classify_red_reason.py agrees",
+      "sha256": "6ccf45db21536c638bbff1493c67cce83b7ac2278f53509b5f5d3ff695c5db94",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/turns/tick-plan.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-plan.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: Cannot find module './tick-plan.ts' (module under test, imported first, so also right on a task-1 base), 0 tests; tools/classify_red_reason.py agrees",
+      "sha256": "2673c1f777eebbd419400ec23b156d4db9dbb704126a95f62dd43c805da80d9a",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/turns/tick-scheduler.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-scheduler.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: Cannot find module './tick-scheduler.ts' (module under test), 0 tests; tools/classify_red_reason.py agrees",
+      "sha256": "146baf0169cc52ce7538c49ec5e299d23fe3a01448a238bc975fd3e32e13da05",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/turns/tick-scheduler.property.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-scheduler.property.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: Cannot find module './tick-scheduler.ts' (module under test, imported before fast-check, imported before tick-plan and turn-builder), 0 tests; tools/classify_red_reason.py agrees",
+      "sha256": "6a1e36ea1bdbd2cf3914a83013d02e4545731b9859254e0e30358553fd2176e0",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/config.turns.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/config.turns.test.ts'",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 1,
+      "reason": "red for the right reason: failing tests, no load error: 25 of 25 fail (turnParameters undefined, invalid values not rejected), missing behaviour; tools/classify_red_reason.py agrees",
+      "sha256": "46325262076fb074c0ce12c828168c3c754267f00d68543c5ee1c3b30892c5fc",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/features/turn-building.feature": {
+      "command": "COMPOSE_PROJECT_NAME=lfc-28-td WS=@lfc/detection make test-integration",
+      "base": "48701d40 (task/27-1, local stand-in) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": 2,
+      "reason": "red for the right reason: cucumber-js stops loading the step files at ERR_MODULE_NOT_FOUND for src/session/session-turns.ts (module under test), so no scenario runs; tools/classify_red_reason.py agrees. On main after T2 the other imports (@lfc/inputs, support/service.ts) exist and the same module is the first missing one",
+      "sha256": "1ea384d580a7a80ba33a6666cf4973fc433eda776533ddd2d895cf0ea9346e69",
+      "sha256Normalised": true,
+      "recordedBy": "main session, 2026-10-29 (F1 option b)"
+    },
+    "services/detection/src/turns/turn-builder.addendum.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/turn-builder.addendum.test.ts'",
+      "base": "b1080121 (directly below task/28-1, no src/turns/) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": null,
+      "reason": "NOT YET RECORDED; expected: red for the right reason: Cannot find module './turn-builder.ts' (module under test, imported first), 0 tests",
+      "sha256": null,
+      "sha256Normalised": true,
+      "recordedBy": "pending: main session (the test designer had no checkout of the base)"
+    },
+    "services/detection/src/turns/turn-builder.held-cap.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/turn-builder.held-cap.test.ts'",
+      "base": "b1080121 (directly below task/28-1, no src/turns/) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": null,
+      "reason": "NOT YET RECORDED; expected: red for the right reason: Cannot find module './turn-builder.ts' (module under test, imported first), 0 tests",
+      "sha256": null,
+      "sha256Normalised": true,
+      "recordedBy": "pending: main session (the test designer had no checkout of the base)"
+    },
+    "services/detection/src/turns/tick-plan.addendum.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-plan.addendum.test.ts'",
+      "base": "b1080121 (directly below task/28-1, no src/turns/) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": null,
+      "reason": "NOT YET RECORDED; expected: red for the right reason: Cannot find module './tick-plan.ts' (module under test, imported first), 0 tests",
+      "sha256": null,
+      "sha256Normalised": true,
+      "recordedBy": "pending: main session (the test designer had no checkout of the base)"
+    },
+    "services/detection/src/turns/tick-scheduler.addendum.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-scheduler.addendum.test.ts'",
+      "base": "b1080121 (directly below task/28-1, no src/turns/) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": null,
+      "reason": "NOT YET RECORDED; expected: red for the right reason: Cannot find module './tick-scheduler.ts' (module under test, imported first), 0 tests",
+      "sha256": null,
+      "sha256Normalised": true,
+      "recordedBy": "pending: main session (the test designer had no checkout of the base)"
+    },
+    "services/detection/src/turns/tick-scheduler.rethrow.test.ts": {
+      "command": "scripts/tb sh -c 'NO_COLOR=1 FORCE_COLOR=0 pnpm exec vitest run --root services/detection src/turns/tick-scheduler.rethrow.test.ts'",
+      "base": "b1080121 (directly below task/28-1, no src/turns/) plus the frozen files; re-recorded on main after T2 tasks 2 and 3 and evals/audiomodus are merged",
+      "exitCode": null,
+      "reason": "NOT YET RECORDED; expected: red for the right reason: Cannot find module './tick-scheduler.ts' (module under test, imported first), 0 tests",
+      "sha256": null,
+      "sha256Normalised": true,
+      "recordedBy": "pending: main session (the test designer had no checkout of the base)"
+    }
+  },
+  "redRunHash": "sha256 over the output without ANSI codes, blank lines, the vitest lines 'Duration' and 'Start at' and per-test timings (' <n>ms' at line end; Cucumber: the duration line), /workspace replaced by <root>",
+  "sha256": {
+    "services/detection/src/testing/turns.ts": "a495284df6640f2bf73245f0781d34f6abfd733ef4025928da2c59e7335fc92b",
+    "services/detection/src/turns/turn-builder.test.ts": "d9d73b0983842aea7da68ea02ffe3fd08384449cc8b28174fe930a326993437a",
+    "services/detection/src/turns/turn-builder.property.test.ts": "f5df8ac5ed16c9d0ed72dbe19fed69303515f189e26038a0c0bb1860bc5702ed",
+    "services/detection/src/turns/tick-plan.test.ts": "94273bae412e642073ea39f8a7148296654ac8f1e9c7c20cc7e3b62ea7251681",
+    "services/detection/src/turns/tick-scheduler.test.ts": "ae5e9ae6323f495664def99247e6e6e792112bac0a7cb25cff56f144521d2c97",
+    "services/detection/src/turns/tick-scheduler.property.test.ts": "10ea37fc4a0433dfb3fbe2e87d3b1fb7733ff255a0adff8245ea9a407790e1e2",
+    "services/detection/src/config.turns.test.ts": "5ad71aacf4d5f4dc053980dfe50ad505f8c1d345271e9b8cb71c6a47333eb7f7",
+    "services/detection/features/turn-building.feature": "fa60dfc0db9e37fa39b1d1a338ed76a3176057c400b729f5a95c34f11078eff4",
+    "services/detection/features/steps/turn-building.steps.ts": "787a55b1679c1675d380bad68cb297fcc6bfd14da66f669098e3e4412526313b",
+    "tests/acceptance/features/28/turn-building.feature": "f73a1937412e2428d9454566e179ef4b82dfb48d7035b0c8d0e4e183abf9c95e",
+    "tests/acceptance/canaries/28.json": "1f78cc18de083f3a5ca91a43ec74f53b06705ffbf714bb5b5ca3464efe306d28",
+    "services/detection/src/turns/turn-builder.addendum.test.ts": "2b9fa47e9ab2d603a11e5f2a109afb776090cde71531756139ff8eb57c8813bf",
+    "services/detection/src/turns/turn-builder.held-cap.test.ts": "5fc3dc2f3ea46ad52d12f782ece51a43eba453463b9210f81ebdd50b8396bfad",
+    "services/detection/src/turns/tick-plan.addendum.test.ts": "70d5470857efd5b2ea63ce495f22bb75586abf0a98f6c1f3b9e1efb930d02176",
+    "services/detection/src/turns/tick-scheduler.addendum.test.ts": "32eaa5b3684c73481eb6004950295554541548b3ea548a43d291fa2d9716603c",
+    "services/detection/src/turns/tick-scheduler.rethrow.test.ts": "6574d0622b0237f363420a27cb96240e58a7a40368bf0fa09751938a876be65e"
+  },
+  "followUp": [
+    "After #27 is closed: merge the near-duplicate log steps of features/steps/turn-building.steps.ts ('no log line contains a word of the replayed Segments', 'exactly one {string} event names the Session, the {extractor} and Turn {int}') with those of features/steps/session.steps.ts ('no log line contains a word of the Segment', 'exactly one {string} event names the Session and Segment {string}'): the words of the sent or replayed Segments as one list in the World, one step each, the log assertions as a helper in features/support/.",
+    "After #28 is closed: move the helpers the addendum of 2026-10-30 copies (run, row, turnWith, endedBy from turn-builder.test.ts; fake, setup, feed, tickA from tick-scheduler.test.ts; flush and observe, used in both tick-scheduler.addendum.test.ts and tick-scheduler.rethrow.test.ts) into src/testing/turns.ts and use them from there.",
+    "Re-record ticketSha256 once the ticket text gets the sentences of the 2026-10-30 decisions (count cap as a named deviation from AC4 for hostile Input, rethrow, F1, F2, F6); kept unchanged until then.",
+    "Record the five redRun entries of the addendum (exitCode, reason, sha256) on b1080121 like the others; the evidence runs on a54b1280 are in the PR (items 1-5 green apart from the two F2 cases, items 6 and 7 red for missing behaviour)."
+  ],
+  "ownerDecisions": {
+    "2026-10-29": [
+      "tick.skipped carries turnId (new logger field) and a role field aligned with T1b at merge (modelRole assumed); tests pin the field count, not the names",
+      "AC18 added to the ticket text; gate-2 evidence for T3 is the stage-2a run output in the PR",
+      "createSessionTurns stays unwired; #29 task 3 adds the wiring into the Session route and the end-of-input signal",
+      "final analysis of an interjection falls at the first speaker's return (15 vs harness audio mode 10): named deviation for T8/T9"
+    ],
+    "2026-10-30": [
+      "APPROVED 2026-11-03: decision 1 (security S1): count cap maxHeldSegments for a held-back run, default 200; recommendation yes, 200. F3 event shape unchanged (recommendation: no change, the bound per push is independent of the run length); F4 not configurable in increment 1 (recommendation); F5 createTurnBuilder validates it and names maxHeldSegments (recommendation yes). Test file turn-builder.held-cap.test.ts; with 'no' it leaves the manifest",
+      "APPROVED 2026-11-03: decision 3: tick() rejects with the first original error once every call of the Tick has settled; recommendation yes, with an AC in #29 that the Session catches tick() rejections, and the implementer allowed to change tick-scheduler.errors.test.ts (lines 86, 97, 109, 121, 164) and the 'never thrown' sentences. F7 an unusable latency stays a lost Tick (recommendation); F8 a synchronous throw is rethrown like a rejection (recommendation yes). Test file tick-scheduler.rethrow.test.ts; with 'no' it leaves the manifest",
+      "APPROVED 2026-11-03: F1: an interjection gets its own non-final Tick once its speech reaches tickSeconds, and its speech never counts for the interrupted Turn (AC4, AC8, AC9, harness, frozen tick-plan.test.ts:114); recommendation yes",
+      "APPROVED 2026-11-03: F2: a non-final Tick of a held-back run falls due at the release time (the finalizedAt of the Segment that decides the run), not at the finalizedAt of the Segment that reaches the multiple; recommendation release time (knowable times, like 2026-10-29 for the final analysis); two cases in tick-scheduler.addendum.test.ts, value changed to 10 there if the owner decides AC8 literally",
+      "APPROVED 2026-11-03: F6: when both extractors fail in one Tick, tick() rejects with the error of the first extractor in ExtractorName order (claim_extractor), also when the Topic Extractor fails first in time; recommendation ExtractorName order (deterministic); one case in tick-scheduler.rethrow.test.ts"
+    ],
+    "2026-11-03": [
+      "Owner answered the gate-1 addendum 2 of 2026-10-30 (issue #28 comment 6597523616): 1 yes (maxHeldSegments, default 200), 2 yes (the five addendum files frozen), 3 yes (tick() rejects after settle), F1 confirmed (an interjection that reaches tickSeconds gets its own non-final Tick), F2 release time (the Tick of a held-back run falls due at its release, not at finalizedAt)"
+    ]
+  },
+  "unlocks": [
+    {
+      "file": "services/detection/src/config.turns.test.ts",
+      "date": "2026-11-05",
+      "by": "owner",
+      "reason": "Semgrep rule ajinabraham.njsscan.generic.hardcoded_secrets.node_secret (pr.yml, sast) flagged the path variable `secretFile`; renamed to `redisPasswordPath` like the sibling config.turns-whole.test.ts, no change to what the test asserts, no ignore entry."
+    },
+    {
+      "file": "tests/acceptance/features/28/turn-building.feature",
+      "date": "2026-11-05",
+      "by": "owner",
+      "reason": "The owner's expectation of AC18 names Turns, Ticks and counters but the case asked the edge for /turns only, so the acceptance judge ruled 'unklar' on 2026-11-05 (report of commit d2434097); the case now also asks for /ticks and /skipped-ticks of the same Session with the same existing steps and the same expected answer (the edge's own 404), expectation text unchanged."
+    }
+  ]
+}

@@ -1,0 +1,364 @@
+<!-- Quelle: https://claude.ai/artifact/43sgMX8V9tRHxGAJpJGPZS, exportiert 2026-10-23, Ticket #45 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentenregeln</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; vier Zonen von links nach rechts (Gerät, Backend EU, Auftragsverarbeiter EU, eigenständige Empfänger USA), die Grenze nach außen als bernsteinfarbene Linie; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.dialog .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:6px}
+.dialog .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.dialog .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+.dialog .btn{display:inline-block;border:1px solid var(--ok2);color:var(--ok2);border-radius:6px;padding:2px 10px;font-family:var(--font-display);font-size:13px;margin-right:6px}
+.dialog .btn.ghost{border-color:var(--line);color:var(--muted)}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Prozess-Map · Ticket 45 · Grilling · Schaubild der Entscheidung · 2026-10-18</div>
+  <h1>Agentenregeln</h1>
+  <p class="lead">Welche Regeln bekommt live-factchecker-v2 in welchem Geltungsbereich, welche Prozeduren werden Skills, welche Pflichten werden Hooks, und wie läuft die Lernschleife? Das alte Repo hatte 63 Regeln in der Root-AGENTS.md, 8 in CLAUDE.md, 141 in zwölf Teilprojekt-Dateien, 8 Skills, 5 Hooks und 40 Lessons; das Inventar (#50) hat jedes Stück bewertet. Der Leitfaden (#51) gibt drei Geltungsbereiche und die Regel "Regeln, keine Prozeduren" vor. Die Claude-Code-Doku belegt, was wann in den Kontext kommt. Die Rollen stehen (ADR 0011). Zwei Runden, vierzehn Fragen, alle entschieden; die Dateien liegen in live-factchecker-v2 auf dem Branch process/rollen.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Was wann lädt</a><a href="#vorgaben">Vorgaben</a><a href="#fakten">Fakten</a><a href="#runde1">Runde 1</a><a href="#entwurf">CLAUDE.md</a><a href="#fragen">Runde 2</a><a href="#wohin">Was wo liegt</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Was ein Agent wann im Kontext hat</h2>
+<p>Regeln wirken nur, wenn sie geladen sind. Die Doku unterscheidet vier Wege: beim Start (CLAUDE.md-Hierarchie, Benutzer-Memory, Skill-Beschreibungen), bei Berührung einer Datei (pfadgebundene Regeln, Unterordner-CLAUDE.md), auf Abruf (Skills, Referenzdateien) und bei Ereignissen (Hooks, die nicht lesen, sondern erzwingen). Ein Subagent bekommt die CLAUDE.md-Hierarchie und seine vorgeladenen Skills, aber nie das Gespräch der Hauptsession. Daraus folgt die Verteilung: kurz und immer gültig nach CLAUDE.md, Teilprojekt-Wissen pfadgebunden, Prozeduren in Skills, Pflichten in Hooks und Gates.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 470" role="img" aria-label="Vier Spalten: beim Start laden CLAUDE.md der Repo-Ebene, Benutzer-Memory und Skill-Beschreibungen; bei Berührung einer Datei laden pfadgebundene Regeln aus .claude/rules und CLAUDE.md eines Unterordners; auf Abruf laden Skills mit ihren Referenzdateien; bei Ereignissen laufen Hooks für PreToolUse, PostToolUse, Stop, SessionStart und PreCompact. Rechts ein Subagent, der CLAUDE.md-Hierarchie und vorgeladene Skills bekommt, aber nicht das Gespräch. Unten die Gates lefthook und CI als echte Wächter.">
+  <rect class="zone" x="10" y="40" width="225" height="330" rx="10"/>
+  <rect class="zone" x="250" y="40" width="225" height="330" rx="10"/>
+  <rect class="zone" x="490" y="40" width="225" height="330" rx="10"/>
+  <rect class="zone" x="730" y="40" width="260" height="330" rx="10"/>
+  <text class="lab" x="20" y="28">Beim Start, immer</text>
+  <text class="lab" x="260" y="28">Bei Berührung einer Datei</text>
+  <text class="lab" x="500" y="28">Auf Abruf</text>
+  <text class="lab lab-warn" x="740" y="28">Bei Ereignissen, erzwingend</text>
+
+  <rect class="box box-ok" x="22" y="56" width="201" height="66" rx="6"/>
+  <text class="t" x="32" y="76">CLAUDE.md (Repo-Ebene)</text>
+  <text class="t3" x="32" y="94">Richtwert unter 200 Zeilen; Regeln,</text>
+  <text class="t3" x="32" y="110">keine Prozeduren; kostet jede Session</text>
+  <rect class="box" x="22" y="134" width="201" height="52" rx="6"/>
+  <text class="t" x="32" y="154">Benutzer-Memory</text>
+  <text class="t3" x="32" y="172">nur Marcos Vorlieben, nie Projektregeln</text>
+  <rect class="box" x="22" y="198" width="201" height="52" rx="6"/>
+  <text class="t" x="32" y="218">Skill-Beschreibungen</text>
+  <text class="t3" x="32" y="236">eine Zeile je Skill; Inhalt erst auf Abruf</text>
+  <rect class="box box-bad" x="22" y="262" width="201" height="52" rx="6"/>
+  <text class="t" x="32" y="282">AGENTS.md?</text>
+  <text class="t3" x="32" y="300">nur ohne CLAUDE.md gelesen, oder per Import</text>
+
+  <rect class="box box-ok" x="262" y="56" width="201" height="80" rx="6"/>
+  <text class="t" x="272" y="76">.claude/rules/*.md mit paths:</text>
+  <text class="t3" x="272" y="94">Teilprojekt-Regeln; laden nur, wenn</text>
+  <text class="t3" x="272" y="110">eine passende Datei gelesen oder</text>
+  <text class="t3" x="272" y="126">geschrieben wird; Themen-Dateien</text>
+  <rect class="box" x="262" y="148" width="201" height="52" rx="6"/>
+  <text class="t" x="272" y="168">CLAUDE.md im Unterordner</text>
+  <text class="t3" x="272" y="186">alte Form je Service; lädt beim ersten Zugriff</text>
+  <rect class="box" x="262" y="212" width="201" height="52" rx="6"/>
+  <text class="t" x="272" y="232">Rules ohne paths:</text>
+  <text class="t3" x="272" y="250">laden immer; wie CLAUDE.md, nur geteilt</text>
+
+  <rect class="box box-ok" x="502" y="56" width="201" height="66" rx="6"/>
+  <text class="t" x="512" y="76">Skills (.claude/skills)</text>
+  <text class="t3" x="512" y="94">Prozeduren: new-service, open-pr,</text>
+  <text class="t3" x="512" y="110">evidence, retro, adr, lesson ...</text>
+  <rect class="box" x="502" y="134" width="201" height="52" rx="6"/>
+  <text class="t" x="512" y="154">Plugin-Skills (mattpocock)</text>
+  <text class="t3" x="512" y="172">grilling, research, tdd, code-review ...</text>
+  <rect class="box" x="502" y="198" width="201" height="52" rx="6"/>
+  <text class="t" x="512" y="218">Referenzdateien</text>
+  <text class="t3" x="512" y="236">CONTEXT.md, ADRs, Specs im Planungsrepo</text>
+  <rect class="box" x="502" y="262" width="201" height="52" rx="6"/>
+  <text class="t" x="512" y="282">docs/lessons.md, CODING_STANDARDS</text>
+  <text class="t3" x="512" y="300">Retro und Reviewer lesen sie</text>
+
+  <rect class="box box-warn" x="742" y="56" width="236" height="52" rx="6"/>
+  <text class="t" x="752" y="76">PreToolUse: deny oder ask</text>
+  <text class="t3" x="752" y="94">Secrets, Manifest, Pipes, Marcos Stack, Verträge</text>
+  <rect class="box box-warn" x="742" y="120" width="236" height="52" rx="6"/>
+  <text class="t" x="752" y="140">PostToolUse: Format und Lint</text>
+  <text class="t3" x="752" y="158">in der Toolbox; meldet, blockt nicht</text>
+  <rect class="box box-warn" x="742" y="184" width="236" height="52" rx="6"/>
+  <text class="t" x="752" y="204">Stop: Tests grün</text>
+  <text class="t3" x="752" y="222">betroffene Workspaces; Exit 2 hält den Agenten</text>
+  <rect class="box box-warn" x="742" y="248" width="236" height="52" rx="6"/>
+  <text class="t" x="752" y="268">SessionStart, PreCompact</text>
+  <text class="t3" x="752" y="286">Issue und Frontier zeigen; Stand sichern</text>
+  <rect class="box" x="742" y="312" width="236" height="48" rx="6"/>
+  <text class="t" x="752" y="332">Subagent sieht: CLAUDE.md-Hierarchie,</text>
+  <text class="t3" x="752" y="348">Body, skills:, Briefing; nie das Gespräch</text>
+
+  <rect class="box box-warn" x="22" y="392" width="956" height="40" rx="6"/>
+  <text class="t" x="32" y="410">Echte Wächter: lefthook (Pre-Commit) und CI (Required Checks). Hooks sind Komfort und Frühwarnung; nie auf einen Hook verlassen (alte Regel C7, bewährt).</text>
+  <text class="t3" x="32" y="426">Quellen: code.claude.com/docs memory, skills, hooks, sub-agents (2026-10-18); Inventar #50; Leitfaden-Essenzen #51.</text>
+  <text class="t3" x="22" y="456">Grün: empfohlener Hauptweg. Rot gestrichelt: zu entscheiden. Bernstein: erzwingend oder Ereignis.</text>
+</svg>
+</div>
+<figcaption>Die Verteilung folgt den Ladewegen: Was in jeder Session gelten muss, steht kurz in CLAUDE.md; was nur ein Teilprojekt betrifft, lädt pfadgebunden; was eine Abfolge ist, ist ein Skill; was jedes Mal passieren muss, ist ein Hook, und was wirklich zählt, prüfen lefthook und CI.</figcaption>
+</figure>
+
+<h2 id="vorgaben">2 · Was feststeht</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Quelle</th><th>Vorgabe</th></tr></thead>
+  <tbody>
+    <tr><td>ADR 0011 (Rollen)</td><td>Rollen als Dateien in <code>.claude/agents/</code>, Prompt im Body, keine Wrapper; Hooks für Manifest-Sperre, Docker-Projektname, Pipe-Verbot, Secrets und Limit-Wächter-Sperre sind diesem Ticket zugewiesen; Orchestrator-Regeln (Tore, Nebenwirkungsprüfung, Limit-Wächter, Deutsch an Marco) gehören in CLAUDE.md; Isolationsschema je Implementierer.</td></tr>
+    <tr><td>Map-Notes</td><td>Agenten-Betrieb lokal in Sandbox plus Toolbox; TDD; alles über GitHub Issues; Conventional Commits; jede Übernahme einzeln; Projektregeln ins Repo, damit es ohne Marcos Rechner läuft.</td></tr>
+    <tr><td>Marco, 2026-10-07</td><td>Agentenregeln komplett neu refinen, eigene Session, nicht nebenbei.</td></tr>
+    <tr><td>Leitfaden (#51)</td><td>Drei Geltungsbereiche (Repo, Teilprojekt, Benutzer); neue Regel in den engsten; CLAUDE.md enthält Regeln, keine Prozeduren; Zweimal-Regel mit Eskalation beim dritten Auftreten ("kommt die Regel an?"); ein Ziel je Session; Briefing eines Subagenten trägt Konventionen, Entscheidungen, Dateien und Ausgabeform.</td></tr>
+    <tr><td>Claude-Code-Doku</td><td>CLAUDE.md unter 200 Zeilen; Unterordner-CLAUDE.md lädt beim ersten Zugriff; <code>.claude/rules/*.md</code> mit <code>paths:</code> lädt nur bei passenden Dateien; AGENTS.md wird nur ohne CLAUDE.md gelesen (oder per Import); Hooks: PreToolUse mit deny und ask, PostToolUse, Stop mit Exit 2, SessionStart, PreCompact, SubagentStop; Subagenten laden CLAUDE.md-Hierarchie und <code>skills:</code>, nicht das Gespräch.</td></tr>
+    <tr><td>Inventar (#50)</td><td>Root-AGENTS.md: 37 übernehmen, 20 anpassen, 6 verwerfen; CLAUDE.md 3/4/1; Hooks 8/5/0 plus drei nie gebaute Kandidaten (Pipe-Guard, Klon-Guard, Öffentlichkeits-Check); Skills 3/4/3; Lessons: 15 von 40 befördert, 11 offene Kandidaten für Tag 1; CODING_STANDARDS 6/1/0. Lücken: Subagenten-Briefings ohne Host-Regeln, drei Pipe-Vorfälle trotz Regel, Plan-Datei neben Issues, Lessons nicht gegen gelandete Checks geprüft.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">3 · Fakten auf dem Tisch</h2>
+
+<h3>3.1 Die alte Root-AGENTS.md nach Zielort sortiert</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Zielort in v2</th><th>Alte Regeln (Nummern aus dem Inventar)</th><th>Bemerkung</th></tr></thead>
+  <tbody>
+    <tr><td><b>CLAUDE.md</b> (Repo-Ebene, kurz)</td><td>A1 Geltungsbereiche, A2 Quellen der Wahrheit (neu: CONTEXT.md, ADRs, Specs, Issues), A4 Stack-Block, A5 Host nur Docker und Git, A6 Befehle über make, A10 Diagnose ohne Docker-MCP, A11 nie Marcos Stack, A13 nichts auf dem Host installieren, A16 nie main, A27 ADR-Pflicht, A29 Git-Skripte nur im Wegwerf-Klon, A30 Hook nie umgehen, A43 Lessons-Mechanik, A44 Standards-Datei, A45 Deutsch an Marco, A46 Englisch im Repo, A49 keine Abkürzungen, A50 kein Overbuild, A58 bis A62 Secrets und Findings; C1 ein Werkzeug, C2 compact bei 60 bis 70 %, C5 Subagenten als Standard, C7 Hooks sind Komfort, C8 keine Pipes</td><td>etwa 35 Regeln, passt in 120 Zeilen, wenn Prozeduren raus sind</td></tr>
+    <tr><td><b>Skill</b></td><td>A34 bis A42 PR-Prozedur (Skill <code>open-pr</code>, Inhalt aus #47), A23 Testanleitung (Teil von open-pr), A28 Belege (Skill <code>evidence</code>), A51 neuer Service (Skill <code>new-service</code>), A52 Vertragsänderung (Skill <code>new-contract</code>), A22 Retro (Skill vorhanden), A20 Grilling (Plugin)</td><td>Prozeduren statt Regeltext</td></tr>
+    <tr><td><b>Hook oder Gate</b></td><td>A11 Klon-Guard, A30 Pre-Commit, A47 TypeScript strict (Lint), A52 Verträge (ask oder Manifest), A53 Modulgrenzen (dependency-cruiser oder Fallow), A58 Secrets (guard-secrets), C8 Pipe-Guard; Manifest-Sperre aus ADR 0011</td><td>Checks statt Prosa</td></tr>
+    <tr><td><b>Anderes Ticket</b></td><td>A7, A12 Betrieb (#15); A8, A9, A24, A54 bis A57 Tests (#46); A14, A17 bis A19, A21 Plan und Tickets (#49); A15, A25 Rollen (erledigt in ADR 0011); A31 bis A33 PR-Größe und Stapel (#47); A41 Review-Werkzeuge (#47)</td><td></td></tr>
+    <tr><td><b>Verwerfen</b></td><td>A3 Antigravity, A26 Werkzeugwechsel, A63 eigener Architekturüberblick (Verweis reicht), C4 Wrapper, C6 Implementierer im Hauptbaum</td><td>Gründe entfallen</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.2 Teilprojekt-Regeln: die bewährte Form</h3>
+<p>Alle zwölf alten Dateien hatten dieselbe Gliederung: Kopfzeile "Regeln nur für dieses Teilprojekt; Repo-Regeln in der Wurzel", Verantwortung mit ADR-Verweis und Dateikarte, Fallstricke, Konfiguration und Secrets, Testablage, Dockerfile. Der Inhalt war produktspezifisch und wird in der Architektur-Map neu entschieden; die Form ist das Muster. In Claude Code gibt es dafür zwei Träger: eine CLAUDE.md im Unterordner (lädt beim ersten Zugriff auf den Ordner) oder eine Datei in <code>.claude/rules/</code> mit <code>paths:</code> (lädt bei passenden Dateien, auch quer über Ordner, zum Beispiel "alle Verträge" oder "alle Tests").</p>
+
+<h3>3.3 Hooks: alt, Kandidaten, neu aus ADR 0011</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Hook</th><th>Ereignis</th><th>Wirkung</th><th>Herkunft, Stand</th></tr></thead>
+  <tbody>
+    <tr><td>guard-secrets</td><td>PreToolUse auf Read, Edit, Write, Grep, Glob, Bash</td><td>blockt .env, Secrets-Verzeichnis, /run/secrets, secrets-init</td><td>alt, bewährt, 21 Testfälle; Pfade der v2</td></tr>
+    <tr><td>frozen-manifest</td><td>PreToolUse auf Edit, Write</td><td>deny auf Pfade in <code>.claude/frozen/*.json</code> offener Tickets</td><td>neu, ADR 0011</td></tr>
+    <tr><td>git-pipe</td><td>PreToolUse auf Bash</td><td>deny, wenn ein zustandsändernder git- oder gh-Befehl in einer Pipe endet</td><td>Kandidat alt (dreimal passiert), nie gebaut</td></tr>
+    <tr><td>owner-stack</td><td>PreToolUse auf Bash</td><td>deny für docker und compose mit Marcos Projektnamen oder ohne eigenes <code>-p lfc-&lt;issue&gt;-&lt;task&gt;</code>; deny für make-Ziele, die Marcos Stack starten</td><td>Kandidat alt (Lesson 34), nie gebaut; ADR 0011</td></tr>
+    <tr><td>contracts</td><td>PreToolUse auf Edit, Write</td><td>ask auf Vertragspfade (oder deny über das Manifest)</td><td>alt, gebaut</td></tr>
+    <tr><td>format-lint</td><td>PostToolUse auf Edit, Write</td><td>Prettier und ESLint fix in der Toolbox, meldet Rest</td><td>alt, gebaut, kein Nutzungsbeleg</td></tr>
+    <tr><td>stop-tests</td><td>Stop</td><td>Unit-Tests der betroffenen Workspaces müssen grün sein; Exit 2 hält den Agenten</td><td>alt, bewährt mit Befund (Timeout unter Last)</td></tr>
+    <tr><td>session-start</td><td>SessionStart</td><td>zeigt zugewiesenes Issue und Frontier per gh statt Plan-Datei</td><td>alt, anpassen</td></tr>
+    <tr><td>pre-compact</td><td>PreCompact</td><td>Git-Stand in eine Scratch-Datei oder Issue-Kommentar</td><td>alt, nie genutzt</td></tr>
+    <tr><td>limit-guard</td><td>PreToolUse auf Agent</td><td>deny neue Subagenten bei Stufe hart oder sanft</td><td>Research #53, Skript im Task #54</td></tr>
+    <tr><td>test-hooks</td><td>Skript</td><td>Regressionstest aller Hooks mit synthetischer Eingabe</td><td>alt, bewährt</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.4 Lessons: Mechanik und offene Kandidaten</h3>
+<p>Tabelle mit Datum, Fehler, automatisch gefangen?, Status; Regel erst beim zweiten Auftreten; Check vor Regel; 15 von 40 befördert, 6 davon zu Checks. Offene Kandidaten, die v2 am Tag 1 schließen könnte: Checks am Exit-Code beurteilen; neuen Service einmal echt starten; Subagenten-Briefings tragen Host-Regeln; blockierter Befehl wird gemeldet; Pipe-Hook; nächtlicher No-Cache-Build der Toolbox; Klon-Guard; Lückenmeldung nur nach vollständigem Lesen; Öffentlichkeits-Check; Commit auf offenem PR sofort gepusht oder PR Draft; Fehlalarme des Secrets-Guards. Pflegelücke: eine Lesson wurde zum CI-Schritt, ohne dass die Zeile aktualisiert wurde.</p>
+
+<h2 id="runde1">4 · Festgelegt in Runde 1 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Träger</td><td>CLAUDE.md als einzige Wurzeldatei plus <code>.claude/rules/</code> mit <code>paths:</code> für Teilprojekte; keine AGENTS.md.</td></tr>
+    <tr><td class="num">Q2</td><td>CLAUDE.md</td><td>Höchstens 120 Zeilen, nur Regeln, zehn Blöcke; Prozeduren in Skills.</td></tr>
+    <tr><td class="num">Q3</td><td>Skills</td><td>Sechs eigene (open-pr, evidence, new-service, new-contract, lesson, brief-implementer) plus retro und Prüfliste; aus dem Plugin grilling, grill-with-docs, domain-modeling, research, tdd, code-review, codebase-design, prototype und <b>improve-codebase-architecture</b> (periodischer Architektur-Scan, von Marco ausdrücklich gewünscht); to-tickets und triage entscheidet #49.</td></tr>
+    <tr><td class="num">Q4</td><td>Konzept-Ablage</td><td>Das Issue ist der Plan; Synthesen als <code>docs/synthesis/&lt;bereich&gt;.md</code>; ADRs zweistufig bis zur Zusammenlegung. <b>Neu:</b> sobald der Prototyp durch ist, werden Planungsrepo und v2 zusammengelegt (CONTEXT.md, ADRs, Specs ziehen um); dann gibt es nur noch einen ADR-Ort. Kommt als Task in die Map, sobald der PoC geschlossen ist.</td></tr>
+    <tr><td class="num">Q5</td><td>Hooks</td><td>Alle elf mit Tests; deny für secrets, frozen-manifest, git-pipe, owner-stack, limit-guard; ask für contracts; format-lint, stop-tests, session-start, pre-compact, test-hooks.</td></tr>
+    <tr><td class="num">Q6</td><td>Lessons</td><td><code>docs/lessons.md</code> in v2 mit Spalte Ziel, Startbestand elf offene Kandidaten, Retro prüft gegen gelandete Checks und beim dritten Auftreten.</td></tr>
+    <tr><td class="num">Q7</td><td>Standards</td><td><code>docs/CODING_STANDARDS.md</code> übernehmen, Naming verweist auf CONTEXT.md, Lint bleibt in ESLint.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="entwurf">5 · Entwurf der CLAUDE.md (71 Zeilen)</h2>
+<p>Englisch, weil im Repo; jede Zeile ist eine Regel, keine Prozedur. So übernommen (Q8) und als <code>CLAUDE.md</code> in v2 committet.</p>
+<pre style="white-space:pre-wrap;font-family:var(--font-mono);font-size:13px;line-height:1.45;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;color:var(--fg)"># live-factchecker-v2
+
+Rules for every agent session in this repository. Procedures live in `.claude/skills/`, sub-project rules in `.claude/rules/` (loaded by path), roles in `.claude/agents/` (ADR 0011, `docs/process/rollen.md`). Keep this file under 120 lines; a procedure or a rule for one part of the codebase does not belong here.
+
+**Context is the product. The owner (Marco) leads the architecture; the agent builds against it.** If you cannot describe the design, you cannot build it; if the owner cannot understand the diff, he cannot merge it.
+
+## Sources of truth
+
+- Glossary: `../live-factchecker-plan/CONTEXT.md` (canonical English terms, German UI labels). Never use a term it lists under _Avoid_.
+- Architecture: ADRs and specs in `../live-factchecker-plan/docs/adr/` and `docs/spec/` until the repos merge; implementation decisions of this repo in `docs/adr/` here.
+- Work: GitHub issues of this repo. The issue is the plan: acceptance criteria and tasks in its body, status and decisions as comments. There are no plan files.
+- Judgement standards: `docs/CODING_STANDARDS.md`. Lessons: `docs/lessons.md`.
+
+## Stack
+
+pnpm workspaces monorepo (`apps/*`, `services/*`, `packages/*`, `tests/*`, `evals/*`); Node LTS, TypeScript strict (ESM, project references), ESLint, Prettier, Vitest (unit, describe/it), Cucumber (integration, end-to-end), Playwright; Python 3 stdlib only under `evals/`; Docker Compose; twelve-factor configuration (environment only, validated at startup, secrets as `&lt;NAME&gt;_FILE`).
+
+## Commands
+
+- Everything runs through `make`; `make help` lists the targets. Node tooling runs in the toolbox container (`scripts/tb &lt;cmd&gt;`), never on the host.
+- Diagnose containers with `docker compose ps|logs|exec` in your own project; there is no Docker MCP server by design.
+
+## Host and isolation
+
+- The host has Docker, Git and the Claude Code sandbox. Never install Node, pnpm or Python packages on the host.
+- Never touch the owner&#x27;s stack, secrets or Compose project. Every agent stack runs as `lfc-&lt;issue&gt;-&lt;task&gt;` with its own ports and throwaway secrets; a hook enforces it.
+- Implementers work in a worktree `../wt-&lt;issue&gt;-&lt;task&gt;` on branch `task/&lt;issue&gt;-&lt;task&gt;`; at most three in parallel, never on shared files.
+- A command the sandbox or a hook blocks is reported to the owner, never retried another way.
+
+## Working
+
+- One issue per session; a new session per implementer task. Compact manually at 60 to 70 % context, after writing the open points as an issue comment.
+- Gates and roles: the owner approves cases and contracts at gate 1 (then `.claude/frozen/&lt;issue&gt;.json` freezes them) and reads the diff at gate 2 (`docs/process/rollen.md`). Whoever writes code does not write its tests. There is never a healer.
+- Background subagents are the default for read-only work and for the review chain; every briefing names scope, files, decisions, output form and the host rules above.
+- Deterministic chains (review, acceptance, test design) run as `.claude/workflows/*.js`; no agent calls agents in free sequence.
+- Limit watcher: at level hard stop all subagents, write the state to the issue, schedule the continuation, halt; at level soft give each subagent a deadline, collect reports, write the state, plan for the weekly reset.
+
+## Git
+
+- Never commit to `main`, never merge; Conventional Commits, small; commits in review order (contract → red tests → logic → wiring → docs).
+- Every commit runs the pre-commit hook; never `--no-verify` or `core.hooksPath`. State-changing `git` or `gh` commands never end in a pipe; judge success by the exit code; bodies via `--body-file`.
+- Scripts that change git state run only in a throwaway clone, with `set -euo pipefail` and a directory check.
+- Push, PR and merge preparation happen only in the orchestrating main session.
+
+## Quality
+
+- No shortcuts to turn a test green: never make a required field optional, widen a type, add a silent default or weaken a test. If a frozen test or a type blocks you, stop and report.
+- No overbuild: nothing the issue or the spec did not ask for; ideas go into the PR as suggestions.
+- A decision that is hard to reverse and surprising without context gets an ADR (`docs/adr/`, same format as the planning repo).
+- A task is done only with evidence: real command output, reports, screenshots (skill `evidence`).
+
+## Security
+
+- Never read, print or write `.env` files, the secrets directory or anything that looks like a key. When the owner must set a secret, hand him a one-line command; never run it yourself.
+- Secrets never go into code, commits, images, build args, logs, errors, metrics or traces. `.env.example` holds only non-secret settings.
+- Never dismiss a scanner or review finding as false positive or won&#x27;t fix, never disable a rule; a narrow suppression needs a reason in code and a mention in the PR. The owner decides.
+- Audio is never stored; transcripts never in logs; only what ADR 0009 allows leaves the backend.
+
+## Learning
+
+- First occurrence of a mistake or owner correction: one row in `docs/lessons.md` (skill `lesson`). A rule is written only on the second occurrence and only if no check catches it; prefer a check (lint, hook, CI) over prose. On the third occurrence ask why the rule did not land.
+- The retro (skill `retro`) runs at the end of every increment and may propose model tier changes in `.claude/models.json`.
+- Project rules live in this repo, never in the agent&#x27;s personal memory.
+
+## Language
+
+- Every message to the owner is German; code, identifiers, comments, commit messages, PR technical sections and these files are English. Stack terms stay English (Stream, Commit, Hook, Token, Pull Request, Blast Radius); never invent a translation. UI texts are German and i18n-ready.
+
+## Hooks
+
+Hooks in `.claude/settings.json` are comfort and early warning. The real guards are lefthook (pre-commit) and CI; never rely on a hook being present.
+</pre>
+
+<h2 id="fragen">6 · Festgelegt in Runde 2 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q8</td><td>CLAUDE.md</td><td>Der Entwurf aus Abschnitt 5 unverändert übernommen, 71 Zeilen; Stack-Block wird nachgezogen, wenn die Architektur-Map den Stack endgültig nennt. Kein Docker-MCP: der Socket ist Root, kein gepflegter Server, die Shell liefert bessere Belege.</td></tr>
+    <tr><td class="num">Q9</td><td>Rules</td><td>Sechs Dateien mit <code>paths:</code>: contracts, tests, pipeline, evals, web, platform; gleiche Gliederung, leere Abschnitte erlaubt.</td></tr>
+    <tr><td class="num">Q10</td><td>owner-stack</td><td>Streng: jeder Docker- oder Compose-Befehl braucht ein Projekt oder einen Namen, der mit <code>lfc-</code> beginnt; Marcos Projektname und <code>make up/dev/down/toolbox</code> sind für Agenten gesperrt; lesende Docker-Befehle erlaubt.</td></tr>
+    <tr><td class="num">Q11</td><td>Manifest</td><td>Manifeste für Agenten read-only; Entsperren nur mit <code>FROZEN_UNLOCK=&lt;issue&gt;</code> in der Hauptsession, danach Testdesigner und Kritiker erneut, Issue-Kommentar.</td></tr>
+    <tr><td class="num">Q12</td><td>stop-tests</td><td>Unit-Tests der geänderten Workspaces grün plus Manifest-Prüfung; Existenz der Tests erzwingt das Manifest.</td></tr>
+    <tr><td class="num">Q13</td><td>Skills</td><td>evidence, new-service, new-contract, lesson, brief-implementer jetzt; open-pr als Gerüst bis PR-Format (#47).</td></tr>
+    <tr><td class="num">Q14</td><td>Festhalten</td><td><a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/spec/process/agentenregeln.md">docs/spec/process/agentenregeln.md</a> und Nachtrag in <a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/adr/0011-rollen-und-bahnen-des-arbeitssystems.md">ADR 0011</a> (Commit 04e2b5a, gepusht). In v2 auf <code>process/rollen</code>, Commit 51032bd, 30 Dateien, lokal: CLAUDE.md, sechs Rules, settings.json, elf Hooks mit 34 Testfällen (alle grün), sechs Skills, docs/lessons.md mit zwölf Zeilen, docs/CODING_STANDARDS.md, docs/synthesis.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="wohin">7 · Was wo liegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Ort</th><th>Inhalt</th></tr></thead>
+  <tbody>
+    <tr><td><code>docs/spec/process/agentenregeln.md</code> (Planungsrepo)</td><td>Träger und Geltungsbereiche, CLAUDE.md-Blöcke, Rules-Themen, Hook-Tabelle mit Erkennungsregeln, Skills, Lessons und Standards, Konzept-Ablage, Offenes.</td></tr>
+    <tr><td>ADR 0011, Nachtrag</td><td>Träger der Regeln; Zusammenlegung von Planungsrepo und v2 nach dem Prototyp.</td></tr>
+    <tr><td><code>CLAUDE.md</code> (v2)</td><td>71 Zeilen, elf Blöcke, nur Regeln.</td></tr>
+    <tr><td><code>.claude/rules/</code></td><td>contracts, tests, pipeline, evals, web, platform mit <code>paths:</code>.</td></tr>
+    <tr><td><code>.claude/settings.json</code>, <code>.claude/hooks/</code></td><td>deny-Liste für .env und Secrets; guard-secrets, frozen-manifest, git-pipe, owner-stack, contracts, limit-guard, format-lint, stop-tests, session-start, pre-compact, lib.sh, test-hooks.sh (34 Fälle).</td></tr>
+    <tr><td><code>.claude/skills/</code></td><td>evidence, new-service, new-contract, lesson, brief-implementer, open-pr (Gerüst); dazu retro und leitfaden-pruefpunkte aus dem Rollen-Commit.</td></tr>
+    <tr><td><code>docs/</code> (v2)</td><td>lessons.md (zwölf Zeilen, drei schon befördert), CODING_STANDARDS.md (sieben Abschnitte, Naming verweist auf CONTEXT.md), synthesis/README.md, process/rollen.md.</td></tr>
+    <tr><td>Weitergaben</td><td>Testteam #46 (tests.md, stop-tests, uat-Form), PR-Format #47 (open-pr, Öffentlichkeits-Check, Push-Regel, Agenten-Bilanz), Vom Plan zum Ticket #49 (Issue ist der Plan, to-tickets), Limit-Wächter #54 (limit-guard liest state.json), Lernpfad #48 (platform.md), Sicherheit #22 der Architektur-Map (Secrets-Guard, deny-Liste). Map: Nebel "Konzept-Ablage" graduiert; neuer Nebel "Planungsrepo in v2 überführen, sobald der PoC geschlossen ist".</td></tr>
+  </tbody>
+</table></div>
+
+</div>
+</body>
+</html>
+
+</body></html>

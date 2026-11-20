@@ -1,0 +1,375 @@
+<!-- Quelle: https://claude.ai/artifact/37Yd6U4BxinNoc8NifeStp, exportiert 2026-10-23, Ticket #10 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clients und Gerätemodus</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; vier Zonen von links nach rechts (Gerät, Backend EU, Auftragsverarbeiter EU, eigenständige Empfänger USA), die Grenze nach außen als bernsteinfarbene Linie; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.dialog .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:6px}
+.dialog .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.dialog .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+.dialog .btn{display:inline-block;border:1px solid var(--ok2);color:var(--ok2);border-radius:6px;padding:2px 10px;font-family:var(--font-display);font-size:13px;margin-right:6px}
+.dialog .btn.ghost{border-color:var(--line);color:var(--muted)}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 10 · Grilling · Schaubild der Entscheidung · 2026-10-18</div>
+  <h1>Clients und Gerätemodus</h1>
+  <p class="lead">Welche Clients kommen in welcher Reihenfolge, und was heißt "Gerät oder Cloud" auf jeder Plattform? Fest ist schon viel: der Live-Vertrag über WebSocket und die Segment-Naht für den Gerätemodus (ADR 0005), der Kanalabgriff als Standard im Modus Sendung und der Gerätemodus-Satz "Dein Ton verlässt das Gerät nicht" (ADR 0009), Dialog, Aufnahmeanzeige, Pause und "Sprecher ausnehmen" als Pflichtelemente, React als Stack, Marco baut allein, Backend zuerst. Drei Recherchen liegen auf dem Tisch: Plattformregeln (#7), Gerätemodus (#38), Modi (#40). Zwei Runden, vierzehn Fragen, alle entschieden.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Datenfluss</a><a href="#vorgaben">Vorgaben</a><a href="#fakten">Fakten</a><a href="#runde1">Runde 1</a><a href="#fragen">Runde 2</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Datenfluss: Clients, Tonquellen, zwei Nähte</h2>
+<p>Links die Clients in der vorgeschlagenen Reihenfolge, daneben die Tonquellen, die jeder Client öffnen kann, dann die beiden Nähte aus ADR 0005 und rechts das Backend. Alles Audio geht über die Audio-Naht durch dieselbe Spracherkennung; nur der Gerätemodus schickt fertige Segmente an die Segment-Naht. Gestrichelt ist, was nicht im ersten Inkrement liegt.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 540" role="img" aria-label="Vier Spalten: Clients (Web-App im Browser im ersten Inkrement, Store-Apps mit Capacitor im zweiten, Server-Ingestion und nativer Desktop später), Tonquellen (Mikrofon, Eingabegerät wie Line-In, Tab-Audio im Desktop-Chrome, Playback Capture auf Android, Sendungsstrom des Partners, Spracherkennung auf dem Gerät), die Audio-Naht und die Segment-Naht, und das Backend mit Spracherkennung, Pipeline und Karten, die per WebSocket zu den Clients zurückgehen.">
+  <rect class="zone" x="10" y="40" width="240" height="490" rx="10"/>
+  <rect class="zone" x="265" y="40" width="250" height="490" rx="10"/>
+  <rect class="zone" x="530" y="40" width="170" height="490" rx="10"/>
+  <rect class="zone" x="715" y="40" width="275" height="490" rx="10"/>
+  <text class="lab" x="20" y="28">Clients</text>
+  <text class="lab" x="275" y="28">Tonquellen (Inputs)</text>
+  <text class="lab" x="540" y="28">Nähte (ADR 0005)</text>
+  <text class="lab" x="725" y="28">Backend, EU</text>
+
+  <!-- Clients -->
+  <rect class="box box-ok" x="22" y="56" width="216" height="96" rx="6"/>
+  <text class="t" x="32" y="76">Web-App im Browser</text>
+  <text class="t2" x="32" y="94">Inkrement 1, React, kein Store</text>
+  <text class="t3" x="32" y="112">iPhone: Safari-Tab, Bildschirm an</text>
+  <text class="t3" x="32" y="128">Android: Chrome-Tab</text>
+  <text class="t3" x="32" y="144">Desktop: Chrome, Edge, Safari, Firefox</text>
+
+  <rect class="box" x="22" y="170" width="216" height="96" rx="6"/>
+  <text class="t" x="32" y="190">Store-Apps iOS und Android</text>
+  <text class="t2" x="32" y="208">Inkrement 2, Capacitor-Hülle</text>
+  <text class="t3" x="32" y="226">dieselbe Web-App, AudioWorklet bleibt</text>
+  <text class="t3" x="32" y="242">Hintergrund, Playback Capture, Abo im Store</text>
+  <text class="t3" x="32" y="258">eigene Plugins in Swift und Kotlin</text>
+
+  <rect class="box box-bad" x="22" y="284" width="216" height="66" rx="6"/>
+  <text class="t" x="32" y="304">Server-Ingestion</text>
+  <text class="t2" x="32" y="322">später: Partner-Sendung ohne Client</text>
+  <text class="t3" x="32" y="340">ffmpeg spricht den Live-Vertrag</text>
+
+  <rect class="box box-bad" x="22" y="368" width="216" height="66" rx="6"/>
+  <text class="t" x="32" y="388">Desktop nativ (Tauri)</text>
+  <text class="t2" x="32" y="406">Nebel: nur wenn Systemton gebraucht</text>
+  <text class="t3" x="32" y="424">Core Audio Taps, WASAPI Loopback</text>
+
+  <rect class="box" x="22" y="452" width="216" height="66" rx="6"/>
+  <text class="t" x="32" y="472">In jedem Client</text>
+  <text class="t3" x="32" y="490">Setting, Dialog je Modus, Aufnahmeanzeige,</text>
+  <text class="t3" x="32" y="506">Pause, Sprecher ausnehmen, Karten, Verlauf</text>
+
+  <!-- Tonquellen -->
+  <rect class="box box-ok" x="277" y="56" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="76">Mikrofon</text>
+  <text class="t3" x="287" y="94">beide Modi; Sendung: Kurzdialog, Nebensprecher weg</text>
+
+  <rect class="box box-ok" x="277" y="120" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="140">Eingabegerät wählen</text>
+  <text class="t3" x="287" y="158">Line-In, USB vom TV-Ausgang; jede Plattform</text>
+
+  <rect class="box box-ok" x="277" y="184" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="204">Tab-Audio (getDisplayMedia)</text>
+  <text class="t3" x="287" y="222">Chrome, Edge am Desktop; Mediathek im Tab</text>
+
+  <rect class="box" x="277" y="248" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="268">Playback Capture (Android 10+)</text>
+  <text class="t3" x="287" y="286">Store-App, eigenes Plugin; App kann opt-out</text>
+
+  <rect class="box box-bad" x="277" y="312" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="332">Sendungsstrom des Partners</text>
+  <text class="t3" x="287" y="350">HLS, SRT; nur Server-Ingestion</text>
+
+  <rect class="box box-bad" x="277" y="376" width="226" height="66" rx="6"/>
+  <text class="t" x="287" y="396">Spracherkennung auf dem Gerät</text>
+  <text class="t3" x="287" y="414">Gerätemodus: STT und Diarisierung lokal,</text>
+  <text class="t3" x="287" y="430">Ton bleibt; Segmente gehen ins Backend</text>
+
+  <rect class="box box-bad" x="277" y="456" width="226" height="50" rx="6"/>
+  <text class="t" x="287" y="476">iOS-Tonabgriff</text>
+  <text class="t3" x="287" y="494">ScreenCaptureKit ab iOS 27, unbelegt; Nebel</text>
+
+  <!-- Nähte -->
+  <rect class="box box-ok" x="542" y="120" width="146" height="110" rx="6"/>
+  <text class="t" x="552" y="140">Audio-Naht</text>
+  <text class="t3" x="552" y="158">Live-Vertrag WebSocket</text>
+  <text class="t3" x="552" y="174">audio.start, Frames,</text>
+  <text class="t3" x="552" y="190">audio.stop</text>
+  <text class="t3" x="552" y="206">pcm16 zuerst, opus</text>
+  <text class="t3" x="552" y="222">mit den Store-Apps</text>
+
+  <rect class="box box-bad" x="542" y="376" width="146" height="66" rx="6"/>
+  <text class="t" x="552" y="396">Segment-Naht</text>
+  <text class="t3" x="552" y="414">Segment-Vertrag,</text>
+  <text class="t3" x="552" y="430">wird öffentlich</text>
+
+  <!-- Backend -->
+  <rect class="box" x="727" y="120" width="250" height="52" rx="6"/>
+  <text class="t" x="737" y="140">Spracherkennung mit Diarisierung</text>
+  <text class="t2" x="737" y="158">Deepgram Nova-3 EU (ADR 0006)</text>
+
+  <rect class="box" x="727" y="250" width="250" height="84" rx="6"/>
+  <text class="t" x="737" y="270">Pipeline</text>
+  <text class="t3" x="737" y="288">Turn, Tick, Claim Extractor, Resolver,</text>
+  <text class="t3" x="737" y="304">Speaker Mapper, Prefetch, Check</text>
+  <text class="t3" x="737" y="320">Session 15 min in Redis ohne Platte</text>
+
+  <rect class="box box-ok" x="727" y="452" width="250" height="66" rx="6"/>
+  <text class="t" x="737" y="472">Karten und Transkript</text>
+  <text class="t2" x="737" y="490">per WebSocket zurück an den Client</text>
+  <text class="t3" x="737" y="506">Verlauf auf Wunsch, Consent Record</text>
+
+  <!-- Linien Clients -> Tonquellen -->
+  <path class="ln ln-ok" d="M238 81 H277"/>
+  <path class="ln ln-ok" d="M238 104 C260 104 260 145 277 145"/>
+  <path class="ln ln-ok" d="M238 126 C262 126 262 209 277 209"/>
+  <path class="ln" d="M238 196 C258 196 258 81 277 81"/>
+  <path class="ln" d="M238 218 C262 218 262 145 277 145"/>
+  <path class="ln" d="M238 240 C262 240 262 273 277 273"/>
+  <path class="ln ln-dash" d="M238 254 C262 254 262 401 277 401"/>
+  <path class="ln ln-dash" d="M238 317 C258 317 258 337 277 337"/>
+  <path class="ln ln-dash" d="M238 401 C258 401 258 481 277 481"/>
+
+  <!-- Tonquellen -> Audio-Naht -->
+  <path class="ln ln-ok" d="M503 81 C525 81 525 160 542 160"/>
+  <path class="ln ln-ok" d="M503 145 C525 145 525 170 542 170"/>
+  <path class="ln ln-ok" d="M503 209 C525 209 525 180 542 180"/>
+  <path class="ln" d="M503 273 C525 273 525 190 542 190"/>
+  <path class="ln ln-dash" d="M503 337 C525 337 525 200 542 200"/>
+  <path class="ln ln-dash" d="M503 409 H542"/>
+
+  <!-- Nähte -> Backend -->
+  <path class="ln ln-ok" d="M688 146 H727"/>
+  <path class="ln" d="M852 172 V250"/>
+  <path class="ln ln-dash" d="M688 409 C705 409 705 292 727 292"/>
+  <path class="ln" d="M852 334 V452"/>
+
+  <!-- Rückweg Karten -->
+  <path class="ln ln-ok ln-dash" d="M727 500 C640 500 640 528 130 528 V518"/>
+  <text class="t3" x="300" y="524">Karten, Transkript, Topic-Zeitleiste zurück an jeden Client</text>
+</svg>
+</div>
+<figcaption>Grün umrandet ist das erste Inkrement: die Web-App im Browser mit Mikrofon, Eingabegerät und Tab-Audio über den Live-Vertrag. Die Store-Apps bringen Hintergrundaufnahme und Playback Capture auf Android. Gestrichelt: Server-Ingestion, nativer Desktop, Gerätemodus und iOS-Tonabgriff, alle außerhalb des ersten Inkrements.</figcaption>
+</figure>
+
+<h2 id="vorgaben">2 · Was die Clients schon vorgegeben bekommen</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Quelle</th><th>Vorgabe an die Clients</th></tr></thead>
+  <tbody>
+    <tr><td>Charting (Marco, 2026-10-06)</td><td>Smartphone-App, Web-App, Desktop, Server-Ingestion; "Gerät oder Cloud" als Einstellung; Stack React; Marco baut allein; Backend zuerst, dann Frontend; DACH Privatkunden.</td></tr>
+    <tr><td>Altes Repo</td><td>Web-App als PWA: React 19, Vite, TypeScript, Tailwind, Zustand; AudioWorklet <code>pcm16.js</code> (128-Sample-Blöcke, Resampling auf 16 kHz, 100-ms-Frames), WebSocket v2, Design "Familientisch" (ADR 0019 alt: ein Telefon auf dem Tisch, Show-Modus). Brief: "keine native iOS-App, später per Capacitor möglich".</td></tr>
+    <tr><td>ADR 0005 Inputs</td><td>Live-Vertrag: <code>audio.start</code> mit <code>encoding</code> (<code>pcm16</code> zuerst, <code>opus</code> mit diesem Ticket), 100-ms-Frames bis 8 KiB, <code>audio.stop</code>, Kontingent statt 60-Minuten-Grenze. Gerätemodus dockt an der Segment-Naht an; der Segment-Vertrag wird damit öffentlich. Kein URL-Input im Backend. Datei-Upload nach dem Launch über die Audio-Naht.</td></tr>
+    <tr><td>ADR 0007 Topic</td><td>Setting vor dem Start: Modus Pflicht, Sprecher mit Rolle und "öffentlich", Anfangs-Topic; Topic auf Karte und Zeitleiste.</td></tr>
+    <tr><td>ADR 0008 Sprecher</td><td>Private Namen nur für den Nutzer auf seinem Gerät; Karte mit Quellen-Plakette, "sinngemäß", Wortlaut; Nutzer kann Attribution setzen.</td></tr>
+    <tr><td>ADR 0009 Datenschutz</td><td>Dialog je Modus vor dem ersten Audio (Texte versioniert, Anbieterliste aus der Konfiguration), Ansage als Schalter, Aufnahmeanzeige dauerhaft, Pause, "Sprecher ausnehmen"; Kanalabgriff als Standard im Modus Sendung, wo die Plattform ihn hat; Gerätemodus verspricht nur "Dein Ton verlässt das Gerät nicht"; lokaler Verlauf ist Client-Sache; Store-Angaben Audio Data und User Content; Datei-Upload nur Modus Gespräch, nie Sendungsmitschnitte.</td></tr>
+    <tr><td>Hauptfälle (ADR 0009, ADR 0019 alt)</td><td>Fernsehabend auf dem iPhone (Modus Sendung, Karten auf dem Telefon, 90 Minuten) und Tischrunde (Modus Gespräch, ein Telefon auf dem Tisch, Bildschirm an, Karten sichtbar). In beiden Fällen ist der Bildschirm der Sinn der Sache.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">3 · Fakten auf dem Tisch</h2>
+
+<h3>3.1 Plattformmatrix: was jede Plattform kann (Research #7, #38, #40)</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Plattform</th><th>Mikrofon</th><th>Hintergrund, Bildschirmsperre</th><th>Tonabgriff der Sendung</th><th>Spracherkennung auf dem Gerät</th><th>Vertrieb und Pflichten</th></tr></thead>
+  <tbody>
+    <tr><td><b>iPhone, Safari-Tab</b></td><td>ja, AudioWorklet, Bildschirm muss an bleiben (Wake Lock API, Safari 16.4+, <span class="tag warn">verify</span>)</td><td>Tab läuft im Hintergrund weiter (WebKit-Aussage); bei Sperre suspendiert (Forenlage) <span class="tag warn">verify</span></td><td>keiner; nur Mikrofon oder Eingabegerät</td><td>nur Cloud-Web-Speech (Siri), unbrauchbar</td><td>HTTPS; kein Store; § 201, DSGVO unverändert</td></tr>
+    <tr><td><b>iPhone, Home-Screen-Web-App</b></td><td>ja</td><td><span class="tag bad">verliert Mikrofon</span> bei App-Wechsel und Sperre (WebKit-Bugs offen)</td><td>keiner</td><td>wie oben</td><td>in der EU erhalten</td></tr>
+    <tr><td><b>Android, Chrome-Tab oder WebAPK</b></td><td>ja</td><td>Capture läuft über Chromes eigenen Foreground Service weiter (Quellcode) <span class="tag warn">verify</span></td><td>keiner (getDisplayMedia-Audio auf Chrome Android: nein)</td><td>nur Cloud-Web-Speech</td><td>HTTPS; kein Store</td></tr>
+    <tr><td><b>iOS Store-App (Capacitor)</b></td><td>ja, WKWebView reicht getUserMedia durch, AudioWorklet 1:1</td><td><code>UIBackgroundModes audio</code>, Forenbericht ab iOS 17.5.1 <span class="tag warn">verify</span>; sonst natives Capture-Plugin</td><td>nur Broadcast-Extension (ab iOS 27 deprecated) oder ScreenCaptureKit (unbelegt) <span class="tag bad">praktisch keiner</span></td><td>SpeechAnalyzer ab iOS 26, eigenes Swift-Plugin nötig; Deutsch unbelegt; Diarisierung nur per Drittbibliothek</td><td>2.5.14 Anzeige, 5.1.2(i) Dritt-KI, Nutrition Label; Abo per IAP; Review</td></tr>
+    <tr><td><b>iOS Store-App (React Native)</b></td><td>ja, expo-audio <code>useAudioStream</code> int16</td><td>offiziell: <code>enableBackgroundRecording</code> seit expo-audio 55</td><td>wie Capacitor</td><td>whisper.rn (Whisper, Parakeet), llama.rn; SpeechAnalyzer nur per eigenem Modul</td><td>wie nativ; zweite Oberfläche neben der Web-App</td></tr>
+    <tr><td><b>Android Store-App (Capacitor)</b></td><td>ja, WebView mappt RECORD_AUDIO</td><td>Foreground Service Typ <code>microphone</code> per Open-Source-Plugin; Play-Console-Deklaration mit Video</td><td><b>AudioPlaybackCapture</b> (Android 10+, MediaProjection-Dialog) per eigenem Kotlin-Plugin; Mediathek-Apps können opt-outen <span class="tag warn">verify ARD, ZDF</span></td><td>System-STT ab API 31 oder Parakeet per Plugin; Diarisierung Drittbibliothek</td><td>Prominent Disclosure, Data Safety, Developer Verification 2027; Abo 10 % + 5 % oder Web-Link 0 %</td></tr>
+    <tr><td><b>Desktop im Browser</b></td><td>ja</td><td>unkritisch</td><td><b>Tab-Audio</b> in Chrome und Edge (Mediathek im anderen Tab); Windows auch Systemton; Safari und Firefox: nichts</td><td>Chrome 139 Desktop on-device Web Speech, ohne Wortzeiten; nicht brauchbar</td><td>keine</td></tr>
+    <tr><td><b>Desktop nativ (Tauri, Electron)</b></td><td>ja</td><td>unkritisch</td><td>macOS Core Audio Taps (14.2+, eigene Berechtigung), Windows WASAPI Loopback (kein Dialog, DRM-Grenze)</td><td>whisper.cpp möglich</td><td>Mac App Store wie iOS oder Developer ID ohne Provision; Microsoft Store erlaubt eigene Zahlung</td></tr>
+    <tr><td><b>Hardware Line-In, USB</b></td><td>erscheint als Eingabegerät</td><td>wie das Gerät</td><td>Sendungston ohne Raumanteil vom TV-Kopfhörerausgang; keine Plattformregel berührt</td><td>–</td><td>–</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.2 Was die Smartphone-Technik kostet und bringt</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Technik</th><th>Code-Wiederverwendung</th><th>Hintergrund iOS</th><th>Gerätemodus</th><th>Playback Capture Android</th><th>Store</th><th>Für Marco allein</th></tr></thead>
+  <tbody>
+    <tr><td>Web-App im Browser-Tab</td><td>100 %, ist die Web-App</td><td>nein (Bildschirm an)</td><td>nein</td><td>nein</td><td>keiner, Web-Abo ohne Provision</td><td>eine Codebasis, kein Review</td></tr>
+    <tr><td>Capacitor-Hülle</td><td>Web-App 1:1, AudioWorklet bleibt</td><td>wahrscheinlich (verify), sonst Capture-Plugin</td><td>nur mit eigenem Swift- und Kotlin-Plugin</td><td>eigenes Kotlin-Plugin (die API ist klein)</td><td>beide Stores, IAP-Pflicht auf iOS</td><td>eine Codebasis plus Plugins</td></tr>
+    <tr><td>React Native (Expo)</td><td>Logik ja, Oberfläche neu (oder react-native-web)</td><td>offiziell belegt</td><td>whisper.rn, llama.rn fertig; SpeechAnalyzer eigenes Modul</td><td>eigenes Modul</td><td>beide Stores</td><td>zwei Oberflächen</td></tr>
+    <tr><td>Nativ Swift und Kotlin</td><td>keine</td><td>belegt</td><td>System-APIs direkt</td><td>direkt</td><td>beide Stores</td><td>drei Codebasen</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.3 Was der Vertriebsweg vom Abo abzieht (Research #7, #37; Entscheidung in Konten #13)</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Weg</th><th>Abzug je 9,99-EUR-Abo</th><th>Bemerkung</th></tr></thead>
+  <tbody>
+    <tr><td>Web-App, Web-Abo per PSP</td><td>etwa 0,52 EUR</td><td>OSS-Meldung und Kündigungsbutton beim Betreiber; keine Store-Regel, solange keine App im Store ist</td></tr>
+    <tr><td>Apple App Store, IAP (EU ab 2026-10-01)</td><td>15 % mit Small Business Program, sonst 26 %</td><td>Apple ist Kommissionär, stellt Beleg und führt USt. ab; Web-Abo zusätzlich erlaubt, wenn IAP auch angeboten wird (3.1.3(b))</td></tr>
+    <tr><td>Apple, Link-out</td><td>10 % (SBP) bis 15 %</td><td>nur Käufe binnen 7 Tagen nach Link-Tap; Option 12 Monate halten</td></tr>
+    <tr><td>Google Play, Play Billing (EWR)</td><td>10 % + 5 %</td><td>Link zur eigenen Website ohne Billing Fee erlaubt</td></tr>
+    <tr><td>Mac App Store</td><td>wie iOS</td><td>außerhalb: Developer ID plus Notarization, 0 %</td></tr>
+    <tr><td>Microsoft Store</td><td>0 % mit eigener Zahlung</td><td>Policy 10.8.1 und 10.8.6</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.4 Gerätemodus: drei Zwischenformen (Research #38)</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Form</th><th>Was lokal läuft</th><th>Belegt?</th><th>Was es kostet</th></tr></thead>
+  <tbody>
+    <tr><td>STT allein</td><td>Spracherkennung (iOS 26 SpeechAnalyzer, Android System-STT, Parakeet 5 % WER)</td><td>machbar; Deutsch für SpeechAnalyzer unbelegt</td><td>Segmente ohne Sprecherlabel: Turn-Bildung (ADR 0002) und Modus Sendung (Nebensprecher) funktionieren nicht; also allein nicht tragfähig</td></tr>
+    <tr><td>STT plus Diarisierung</td><td>dazu Sitzungslabels (sherpa-onnx, FluidAudio)</td><td>Drittbibliothek auf beiden Plattformen, RTF 0,1 bis 0,45, keine Smartphone-Messung für Deutsch</td><td>eigenes Plugin je Plattform, eigener Messaufbau je Gerät; spart 0,007 USD/min Deepgram; der Ton bleibt auf dem Gerät</td></tr>
+    <tr><td>Voller Gerätemodus</td><td>dazu Extraktion und Einschätzung</td><td>nicht tragbar: 25 s je Aufruf gegen 5-s-Takt, Akku nach 10 bis 23 min leer, 4k Kontext, nur ab iPhone 15 Pro</td><td>andere Erkennungsstrategie nötig; die Prüfung bleibt ohnehin netzgebunden</td></tr>
+  </tbody>
+</table></div>
+
+<h3>3.5 Was sich auf dem Gerät prüfen lässt und noch nie geprüft wurde</h3>
+<ul>
+  <li>iPhone: Safari-Tab und Capacitor mit <code>UIBackgroundModes audio</code> bei App-Wechsel und Bildschirmsperre (Research #7, offener Punkt 1); im alten Repo als T6/T7 geplant, nie gelaufen.</li>
+  <li>Android: Chrome-Capture bei Sperre und Doze; eingehender Anruf gewinnt immer.</li>
+  <li>Ob die Mediathek-Apps von ARD und ZDF <code>allowAudioPlaybackCapture</code> abschalten.</li>
+  <li>Ob <code>SpeechTranscriber.supportedLocales</code> auf iOS 26 Deutsch enthält.</li>
+</ul>
+
+<h2 id="runde1">4 · Festgelegt in Runde 1 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Reihenfolge</td><td>Inkrement 1: die React-Web-App im Browser (iPhone im Safari-Tab mit Bildschirm an, Android in Chrome, Desktop in jedem Browser), kein Store. Inkrement 2: Store-Apps für iOS und Android aus derselben Codebasis. Server-Ingestion später; Desktop bleibt der Browser.</td></tr>
+    <tr><td class="num">Q2</td><td>Store-Technik</td><td>Capacitor-Hülle um dieselbe Web-App; eigene Plugins in Swift und Kotlin nur für Playback Capture, Foreground Service und später die Spracherkennung auf dem Gerät. Erste Aufgabe des Store-Inkrements ist der iOS-Hintergrundtest auf dem Gerät; fällt er durch, kommt ein natives Capture-Plugin, kein Technikwechsel.</td></tr>
+    <tr><td class="num">Q3</td><td>Gerätemodus</td><td>Gerätemodus heißt: Spracherkennung und Diarisierung auf dem Gerät, Segmente über die Segment-Naht, Erkennung und Prüfung in der Cloud. Spracherkennung ohne Diarisierung ist keiner. Die Einstellung "Gerät oder Cloud" zeigt nur ein Client, der es kann; im ersten und zweiten Inkrement nur Cloud. Gebaut nach den Store-Apps mit eigenem Ticket und Messung auf dem Gerät.</td></tr>
+    <tr><td class="num">Q4</td><td>Desktop</td><td>Der Browser. Tab-Audio in Chrome und Edge für die Mediathek im Nachbar-Tab; Safari und Firefox nur Mikrofon und Eingabegerät. Kein Electron, kein Tauri. Systemton bleibt Nebel "Desktop nativ".</td></tr>
+    <tr><td class="num">Q5</td><td>Server-Ingestion</td><td>Kopfloser Client des Live-Vertrags: ffmpeg dekodiert den Partnerstrom, Dienstanmeldung statt Nutzerkonto, kein URL-Input im Backend. Session ohne Client und Setting aus Programmdaten bleiben Nebel bis zum ersten Partner.</td></tr>
+    <tr><td class="num">Q6</td><td>Tonabgriff</td><td>Inkrement 1: Mikrofon, Eingabegerät wählen (Line-In, USB), Tab-Audio am Desktop. Inkrement 2: Playback Capture in der Android-Store-App. iOS ohne Tonabgriff, bleibt Nebel. Genau ein Input je Gespräch; der Tonabgriff ersetzt das Mikrofon. Der Dialog-Knopf "Tonabgriff wählen" zeigt je Plattform, was es gibt.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">5 · Festgelegt in Runde 2 (2026-10-18)</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q7</td><td>Opus</td><td>Die Web-App sendet <code>pcm16</code> und warnt bei Mobilfunk vor dem Datenvolumen; Opus kommt nativ mit den Store-Apps. Der Server dekodiert an der Audio-Naht.</td></tr>
+    <tr><td class="num">Q8</td><td>Sperre und Unterbrechung</td><td>Wake Lock beim Start mit Hinweis; keine Home-Screen-Installation beworben, installiert zeigt die App "Im Browser öffnen"; bei Verlust des Mikrofons <code>audio.stop</code>, "Aufnahme unterbrochen", "Weiter" als neuer Input in derselben Session. Store-Apps: Hintergrund per <code>UIBackgroundModes audio</code> oder natives Plugin (Gerätetest), Android Foreground Service.</td></tr>
+    <tr><td class="num">Q9</td><td>Ansage</td><td>Feste Audiodatei je Dialogversion, vom Backend ausgeliefert, überall dieselbe Stimme.</td></tr>
+    <tr><td class="num">Q10</td><td>Auf dem Gerät</td><td>Nur Anmeldung, Einstellungen und Setting-Vorlagen (private Namen erlaubt, nur lokal, löschbar). Keine Karten, kein Verlauf; der Verlauf liegt im Konto und zeigt für private Sprecher das Label.</td></tr>
+    <tr><td class="num">Q11</td><td>Mindestversionen</td><td>Safari 17; Chrome und Edge der letzten zwei Jahre; Firefox nur Mikrofon und Eingabegerät; Store-Apps iOS 17 und Android 10; Gerätemodus später iOS 26.</td></tr>
+    <tr><td class="num">Q12</td><td>Store und Gerätetests</td><td>Konservativ deklarieren wie ADR 0009; Checkliste für Apple und Google und vier Gerätetests (iOS-Hintergrund, Android bei Sperre, ARD- und ZDF-Apps gegen Playback Capture, Deutsch und Diarisierung für den Gerätemodus) stehen in der Spezifikation. Ausnahmen nur mit dem Anwalt (#42).</td></tr>
+    <tr><td class="num">Q13</td><td>Datei-Upload</td><td>Nach dem Launch, nur Web-App, nur Modus Gespräch: die Web-App dekodiert die Datei im Browser und spielt sie mit 1,0-facher Echtzeit über den Live-Vertrag ab; die Datei liegt nie auf dem Server.</td></tr>
+    <tr><td class="num">Q14</td><td>Festhalten</td><td><a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/adr/0010-clients-eine-react-codebasis-web-zuerst.md">ADR 0010</a>, <a href="https://github.com/marcominervinidev/live-factchecker-plan/blob/main/docs/spec/clients.md">docs/spec/clients.md</a>, Glossar Client, Device Mode, Channel Capture; Ergänzungen in ADR 0005, Inputs, Datenschutz, Sprecher. Commit 9234663.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="wohin">6 · Was wo liegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Ort</th><th>Inhalt</th></tr></thead>
+  <tbody>
+    <tr><td>ADR 0010</td><td>Web zuerst, Capacitor für die Stores, Desktop im Browser, Ingestion als ffmpeg-Client, Tonabgriff je Plattform, Gerätemodus definiert und verschoben, Opus, Sperre, Ansage, lokale Daten, Mindestversionen, Store-Angaben, Datei-Upload; 13 verworfene Optionen; Folgen.</td></tr>
+    <tr><td><code>docs/spec/clients.md</code></td><td>13 Abschnitte: Clients und Reihenfolge, Tonquellen je Plattform, Live-Vertrag aus Client-Sicht, Sperre und Unterbrechung, Pflichtelemente, lokale Daten, Mindestversionen, Store-Checkliste, Gerätetests, Server-Ingestion, Gerätemodus, Datei-Upload, Offenes.</td></tr>
+    <tr><td><code>CONTEXT.md</code></td><td>Client, Device Mode (Gerätemodus), Channel Capture (Tonabgriff).</td></tr>
+    <tr><td>ADR 0005, Spezifikation Inputs</td><td>Segment-Vertrag bleibt intern bis zum Gerätemodus; Opus-Zeile und Datei-Upload-Zeile verweisen auf ADR 0010.</td></tr>
+    <tr><td>Spezifikation Datenschutz 12, Sprecher 10</td><td>Offen-Zeilen zu Kanalabgriff, Aufnahmeanzeige, lokalem Verlauf, Store-Angaben verweisen auf ADR 0010.</td></tr>
+    <tr><td>Weitergaben</td><td>Live-Ansicht #16, Konten #13, Betriebsmodell #15, Sicherheit #22, Prinzipien #18, Anwalt #42. Map: Nebel "Gerätemodus" mit Definition und Zeitpunkt, neu "Desktop nativ mit Systemton" und "iOS-Tonabgriff", "Datei-Upload" und "Sender-Livestream" mit der Regel.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="begriffe">7 · Begriffe</h2>
+<dl class="gl">
+  <dt>Client</dt><dd>Das Programm auf dem Gerät des Nutzers, das einen Input öffnet, Setting, Dialog und Karten zeigt und mit dem Backend spricht: Web-App, Store-App oder der Ingestion-Prozess des Betreibers.</dd>
+  <dt>Device Mode (Gerätemodus)</dt><dd>Spracherkennung und Diarisierung auf dem Gerät, nur Segmente gehen ins Backend; Erkennung und Prüfung bleiben in der Cloud. Ohne Diarisierung kein Gerätemodus.</dd>
+  <dt>Channel Capture (Tonabgriff)</dt><dd>Der Sendungston als Input direkt vom abspielenden Gerät oder der App (Tab-Audio, Playback Capture, Line-In) statt über das Mikrofon; ersetzt das Mikrofon, ein Input je Gespräch.</dd>
+</dl>
+
+</div>
+</body>
+</html>
+
+</body></html>

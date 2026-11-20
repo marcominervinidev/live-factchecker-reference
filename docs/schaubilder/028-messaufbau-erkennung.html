@@ -1,0 +1,369 @@
+<!-- Quelle: https://claude.ai/artifact/YLVg36RV41LQMnmMpkVzxX, exportiert 2026-10-23, Ticket #28 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Messaufbau der Erkennung</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite darunter; Audiomodus teal, Textmodus bernstein, alles andere neutral. */
+:root{
+  --bg:#f4f6f7; --fg:#1b2127; --muted:#5a6672; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --audio:#0e7876; --text:#a8580f; --ok:#2b7a3b; --bad:#b4271f;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#9ba6b0; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --audio:#4fc3c0; --text:#e5a35b; --ok:#72cf80; --bad:#f08a81; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+.mode{border-left:4px solid var(--line);padding:4px 0 4px 14px}
+.mode.audio{border-color:var(--audio)} .mode.text{border-color:var(--text)} .mode.loss{border-color:var(--muted)}
+.mode h3{margin-top:0}
+.mode p{margin-bottom:6px;font-size:15px}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.ex div{background:var(--soft);border-radius:6px;padding:10px 12px;font-size:15px;min-width:0}
+.ex b{display:block;font-family:var(--font-display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.ex .hit b{color:var(--ok)} .ex .miss b{color:var(--bad)}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0;max-width:78ch}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+ol.steps li:first-child{border-top:0}
+ol.steps li::before{content:counter(s);font-family:var(--font-mono);font-size:13px;color:var(--muted);padding-top:3px}
+ol.steps li span{min-width:0}
+ol.steps .who{font-family:var(--font-mono);font-size:12px;color:var(--muted);display:block}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.audio{color:var(--audio);border-color:var(--audio)} .tag.text{color:var(--text);border-color:var(--text)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:80ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+.open li{margin:4px 0}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:currentColor;stroke-width:1.2}
+.d .box-audio{stroke:var(--audio);stroke-width:1.8}
+.d .box-text{stroke:var(--text);stroke-width:1.8}
+.d .box-ok{stroke:var(--ok);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.8}
+.d .box-muted{stroke:var(--muted);stroke-dasharray:4 3;stroke-width:1.1}
+.d .box-src{fill:var(--soft)}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11px}
+.d .t3{fill:var(--muted);font-size:10.5px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.03em}
+.d .lab-audio{fill:var(--audio)} .d .lab-text{fill:var(--text)}
+.d .ln{stroke:currentColor;stroke-width:1.3;fill:none}
+.d .ln-audio{stroke:var(--audio)} .d .ln-text{stroke:var(--text)} .d .ln-ok{stroke:var(--ok)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:currentColor} .d .m-audio{fill:var(--audio)} .d .m-text{fill:var(--text)} .d .m-ok{fill:var(--ok)} .d .m-bad{fill:var(--bad)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 28 · Grilling vom 2026-10-08 · festgehalten in ADR 0003 und docs/spec/messaufbau-erkennung.md</div>
+  <h1>Messaufbau der Erkennung</h1>
+  <p class="lead">Das Ticket legt fest, <strong>womit</strong> die Erkennung gemessen wird (die Testdaten) und <strong>wie</strong> (der Messaufbau), bevor im nächsten Ticket die Einheit und die Modelle gewählt werden. Vier Bausteine: zwei Sets, zwei Messmodi, eine Treffer-Regel, ein Bericht.</p>
+</header>
+
+<h2>1 · Zwei Sets, zwei Aufgaben</h2>
+<p>Das Golden Set besteht aus echten Aufnahmen und liefert jede Qualitätszahl. Das synthetische Set wird aus einem Skript gebaut und prüft nur, ob die Mechanik funktioniert. Die beiden Wege kreuzen sich nie.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 960 320" role="img" aria-label="Zwei getrennte Wege: Golden Set aus echten Aufnahmen führt zu Qualitätszahlen; synthetisches Set aus LLM-Skript und TTS führt nur zum Mechanik-Check in der CI.">
+<defs>
+  <marker id="f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="f1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-audio"/></marker>
+</defs>
+<text x="20" y="22" class="lab lab-audio">Golden Set · echte Aufnahmen · liefert die Qualität</text>
+<rect x="20" y="36" width="150" height="56" rx="6" class="box box-src"/>
+<text x="95" y="58" text-anchor="middle" class="t">Quellen</text>
+<text x="95" y="76" text-anchor="middle" class="t2">Talkshow · Debatte · Alltag</text>
+<rect x="200" y="36" width="150" height="56" rx="6" class="box"/>
+<text x="275" y="58" text-anchor="middle" class="t">Ausschnitte</text>
+<text x="275" y="76" text-anchor="middle" class="t2">3 bis 5 min, 40 / 40 / 20</text>
+<rect x="380" y="36" width="150" height="56" rx="6" class="box box-audio"/>
+<text x="455" y="58" text-anchor="middle" class="t">Golden Set</text>
+<text x="455" y="76" text-anchor="middle" class="t2">Audio · Transkript · Labels</text>
+<rect x="560" y="36" width="150" height="56" rx="6" class="box"/>
+<text x="635" y="58" text-anchor="middle" class="t">Messlauf</text>
+<text x="635" y="76" text-anchor="middle" class="t2">echte Modelle, 3 Läufe je Arm</text>
+<rect x="740" y="36" width="150" height="56" rx="6" class="box box-audio"/>
+<text x="815" y="58" text-anchor="middle" class="t">Qualitätszahlen</text>
+<text x="815" y="76" text-anchor="middle" class="t2">Recall, Precision, Latenz, Kosten</text>
+<line x1="170" y1="64" x2="198" y2="64" class="ln ln-audio" marker-end="url(#f1b)"/>
+<line x1="350" y1="64" x2="378" y2="64" class="ln ln-audio" marker-end="url(#f1b)"/>
+<line x1="530" y1="64" x2="558" y2="64" class="ln ln-audio" marker-end="url(#f1b)"/>
+<line x1="710" y1="64" x2="738" y2="64" class="ln ln-audio" marker-end="url(#f1b)"/>
+<text x="455" y="112" text-anchor="middle" class="t3">Labels: von Marco abgenommen, nach Richtlinie, mit Zweitlabel</text>
+
+<text x="20" y="186" class="lab">Synthetisches Set · aus dem Skript gebaut · prüft die Mechanik</text>
+<rect x="20" y="200" width="150" height="56" rx="6" class="box box-src"/>
+<text x="95" y="222" text-anchor="middle" class="t">LLM-Skript</text>
+<text x="95" y="240" text-anchor="middle" class="t2">Behauptungen eingebaut</text>
+<rect x="200" y="200" width="150" height="56" rx="6" class="box"/>
+<text x="275" y="222" text-anchor="middle" class="t">TTS-Audio</text>
+<text x="275" y="240" text-anchor="middle" class="t2">mehrere Stimmen, Überlappung</text>
+<rect x="380" y="200" width="150" height="56" rx="6" class="box"/>
+<text x="455" y="222" text-anchor="middle" class="t">Synthetisches Set</text>
+<text x="455" y="240" text-anchor="middle" class="t2">20 bis 30 Gespräche, Labels gratis</text>
+<rect x="560" y="200" width="150" height="56" rx="6" class="box"/>
+<text x="635" y="222" text-anchor="middle" class="t">CI-Lauf</text>
+<text x="635" y="240" text-anchor="middle" class="t2">Mock-Extraktoren, kostet nichts</text>
+<rect x="740" y="200" width="150" height="56" rx="6" class="box"/>
+<text x="815" y="222" text-anchor="middle" class="t">Mechanik-Check</text>
+<text x="815" y="240" text-anchor="middle" class="t2">Takt, Turn, Dedup, Zuschreibung</text>
+<line x1="170" y1="228" x2="198" y2="228" class="ln" marker-end="url(#f1a)"/>
+<line x1="350" y1="228" x2="378" y2="228" class="ln" marker-end="url(#f1a)"/>
+<line x1="530" y1="228" x2="558" y2="228" class="ln" marker-end="url(#f1a)"/>
+<line x1="710" y1="228" x2="738" y2="228" class="ln" marker-end="url(#f1a)"/>
+<line x1="815" y1="198" x2="815" y2="96" class="ln ln-dash"/>
+<circle cx="815" cy="147" r="9" class="box box-bad"/>
+<text x="815" y="151" text-anchor="middle" class="t" style="font-size:11px">✕</text>
+<text x="860" y="151" class="t3" style="font-size:11px">nie Qualitätszahlen</text>
+<text x="20" y="300" class="t3">Alte Regel aus dem Vorgänger-Repo bleibt für Qualität bestehen: Audio hinter Qualitätszahlen sind echte Menschen, nie synthetische Stimmen.</text>
+</svg>
+</div>
+<figcaption>Oben der Weg zu den Zahlen, die eine Entscheidung tragen; unten der Weg, der in der CI bei jedem Commit läuft. Der durchgestrichene Pfeil ist die Grenze.</figcaption>
+</figure>
+
+<h2>2 · Zwei Messmodi</h2>
+<p>Beide Modi laufen auf demselben Golden Set und enden in denselben Extraktoren. Sie unterscheiden sich darin, <strong>was die Extraktoren zu lesen bekommen</strong>.</p>
+<div class="modes">
+  <div class="mode audio"><h3>Audiomodus</h3><p>Die Extraktoren bekommen, was Spracherkennung (STT) und Sprechertrennung aus dem Audio machen: mit Hörfehlern, mit Pausen, mit falsch zugeordneten Sprechern. Das ist der Weg des Produkts.</p><p class="muted">Nur hier gibt es Latenz und Kosten. Nur hier gelten die Schwellen.</p></div>
+  <div class="mode text"><h3>Textmodus</h3><p>Die Extraktoren bekommen das korrigierte Referenz-Transkript direkt, mit Sprechern und Redebeiträgen, als hätte die Spracherkennung perfekt gehört. Was hier verpasst wird, ist ein Fehler der Erkennung selbst.</p><p class="muted">Billig, wiederholbar, deshalb der Modus für Diagnose und Vergleich der Arme.</p></div>
+  <div class="mode loss"><h3>STT-Verlust</h3><p>Behauptungen, die der Textmodus findet und der Audiomodus verpasst. Sie zeigen, wie viel die Spracherkennung kostet, und sind kein Fehler der Erkennung.</p><p class="muted">Eigene Zeile im Bericht.</p></div>
+</div>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 330" role="img" aria-label="Audiomodus: Audio durch Spracherkennung, Sprechertrennung, Turn-Bildung und Behauptungs-Extraktor. Textmodus: Referenz-Transkript direkt in den Behauptungs-Extraktor. Beide Ergebnisse treffen im Vergleich mit den Labels zusammen.">
+<defs>
+  <marker id="f2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="f2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-audio"/></marker>
+  <marker id="f2c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-text"/></marker>
+</defs>
+<rect x="20" y="50" width="80" height="238" rx="6" class="box box-src"/>
+<text x="60" y="160" text-anchor="middle" class="t">Golden</text>
+<text x="60" y="176" text-anchor="middle" class="t">Set</text>
+<text x="60" y="72" text-anchor="middle" class="t2">Audio</text>
+<text x="60" y="272" text-anchor="middle" class="t2">Transkript</text>
+
+<text x="130" y="32" class="lab lab-audio">Audiomodus · der Weg des Produkts</text>
+<rect x="130" y="50" width="140" height="56" rx="6" class="box box-audio"/>
+<text x="200" y="72" text-anchor="middle" class="t">Spracherkennung</text>
+<text x="200" y="90" text-anchor="middle" class="t2">STT, hört mit Fehlern</text>
+<rect x="300" y="50" width="140" height="56" rx="6" class="box box-audio"/>
+<text x="370" y="72" text-anchor="middle" class="t">Sprechertrennung</text>
+<text x="370" y="90" text-anchor="middle" class="t2">Diarisierung, wer spricht</text>
+<rect x="470" y="50" width="110" height="56" rx="6" class="box box-audio"/>
+<text x="525" y="72" text-anchor="middle" class="t">Turn-Bildung</text>
+<text x="525" y="90" text-anchor="middle" class="t2">Redebeiträge</text>
+<rect x="610" y="50" width="160" height="56" rx="6" class="box box-audio"/>
+<text x="690" y="72" text-anchor="middle" class="t">Behauptungs-Extraktor</text>
+<text x="690" y="90" text-anchor="middle" class="t2">alle 5 s, kumulativer Turn</text>
+<rect x="800" y="50" width="140" height="56" rx="6" class="box box-audio"/>
+<text x="870" y="72" text-anchor="middle" class="t">Gefunden</text>
+<text x="870" y="90" text-anchor="middle" class="t2">im Audiomodus</text>
+<line x1="100" y1="78" x2="128" y2="78" class="ln ln-audio" marker-end="url(#f2b)"/>
+<line x1="270" y1="78" x2="298" y2="78" class="ln ln-audio" marker-end="url(#f2b)"/>
+<line x1="440" y1="78" x2="468" y2="78" class="ln ln-audio" marker-end="url(#f2b)"/>
+<line x1="580" y1="78" x2="608" y2="78" class="ln ln-audio" marker-end="url(#f2b)"/>
+<line x1="770" y1="78" x2="798" y2="78" class="ln ln-audio" marker-end="url(#f2b)"/>
+<text x="285" y="122" text-anchor="middle" class="t3">Text mit Zeiten</text>
+<text x="455" y="122" text-anchor="middle" class="t3">Segmente mit Sprecher</text>
+<text x="595" y="122" text-anchor="middle" class="t3">Turn</text>
+<text x="785" y="122" text-anchor="middle" class="t3">Behauptungen</text>
+
+<line x1="690" y1="106" x2="690" y2="138" class="ln ln-dash"/>
+<rect x="610" y="140" width="160" height="40" rx="6" class="box box-muted"/>
+<text x="690" y="156" text-anchor="middle" class="t2">Themen-Extraktor</text>
+<text x="690" y="171" text-anchor="middle" class="t3">nur mitgeschrieben, kein Soll</text>
+
+<rect x="800" y="140" width="140" height="56" rx="6" class="box"/>
+<text x="870" y="162" text-anchor="middle" class="t">Vergleich mit</text>
+<text x="870" y="178" text-anchor="middle" class="t">den Labels</text>
+<line x1="870" y1="106" x2="870" y2="138" class="ln ln-audio" marker-end="url(#f2b)"/>
+<line x1="870" y1="232" x2="870" y2="198" class="ln ln-text" marker-end="url(#f2c)"/>
+
+<text x="130" y="218" class="lab lab-text">Textmodus · nur die Erkennung</text>
+<rect x="130" y="232" width="140" height="56" rx="6" class="box box-text"/>
+<text x="200" y="254" text-anchor="middle" class="t">Referenz-Transkript</text>
+<text x="200" y="272" text-anchor="middle" class="t2">Turns und Sprecher korrigiert</text>
+<rect x="610" y="232" width="160" height="56" rx="6" class="box box-text"/>
+<text x="690" y="254" text-anchor="middle" class="t">Behauptungs-Extraktor</text>
+<text x="690" y="272" text-anchor="middle" class="t2">gleicher Arm, gleiche Prompts</text>
+<rect x="800" y="232" width="140" height="56" rx="6" class="box box-text"/>
+<text x="870" y="254" text-anchor="middle" class="t">Gefunden</text>
+<text x="870" y="272" text-anchor="middle" class="t2">im Textmodus</text>
+<line x1="100" y1="260" x2="128" y2="260" class="ln ln-text" marker-end="url(#f2c)"/>
+<line x1="270" y1="260" x2="608" y2="260" class="ln ln-text" marker-end="url(#f2c)"/>
+<line x1="770" y1="260" x2="798" y2="260" class="ln ln-text" marker-end="url(#f2c)"/>
+<text x="440" y="252" text-anchor="middle" class="t3">Spracherkennung und Sprechertrennung entfallen, Turns stehen schon drin</text>
+
+<text x="20" y="316" class="t3">STT-Verlust = Behauptungen, die der Textmodus trifft und der Audiomodus verpasst. Schwellen gelten im Audiomodus.</text>
+</svg>
+</div>
+<figcaption>Gleiches Set, gleiche Extraktoren, zwei Eingänge. Der Abstand zwischen den beiden "Gefunden"-Kästen ist der Preis der Spracherkennung.</figcaption>
+</figure>
+
+<h2>3 · Vom Fund zum Treffer</h2>
+<p>Nach jedem Lauf muss entschieden werden, ob eine gefundene Behauptung dieselbe ist wie eine gelabelte. Wortgleich ist sie nie, weil beides Paraphrasen sind. Zwei billige Filter sortieren vor, ein Richter-Modell entscheidet.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 900 280" role="img" aria-label="Gefundene und gelabelte Behauptung durchlaufen zwei Filter, gleicher Sprecher und Zeit plus minus fünf Sekunden, dann entscheidet ein Richter-Modell über gleichen Sachverhalt. Ja ergibt Treffer, Nein ergibt Fehlalarm oder verpasst.">
+<defs>
+  <marker id="f3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="f3ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-ok"/></marker>
+  <marker id="f3bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-bad"/></marker>
+</defs>
+<text x="20" y="24" class="t3">Der Richter ist nie das Extraktor-Modell. Kalibrierung: 50 Paare von Marco geprüft, mindestens 45 richtig, sonst wird die Frage nachgeschärft.</text>
+<rect x="20" y="40" width="180" height="56" rx="6" class="box"/>
+<text x="110" y="62" text-anchor="middle" class="t">Gefundene Behauptung</text>
+<text x="110" y="80" text-anchor="middle" class="t2">aus einem Messlauf</text>
+<rect x="20" y="150" width="180" height="56" rx="6" class="box box-src"/>
+<text x="110" y="172" text-anchor="middle" class="t">Gelabelte Behauptung</text>
+<text x="110" y="190" text-anchor="middle" class="t2">von Marco abgenommen</text>
+<polyline points="200,68 225,68 225,123" class="ln"/>
+<polyline points="200,178 225,178 225,123" class="ln"/>
+<line x1="225" y1="123" x2="248" y2="123" class="ln" marker-end="url(#f3a)"/>
+
+<rect x="250" y="95" width="150" height="56" rx="6" class="box"/>
+<text x="325" y="117" text-anchor="middle" class="t">Gleicher</text>
+<text x="325" y="135" text-anchor="middle" class="t">Sprecher?</text>
+<rect x="450" y="95" width="150" height="56" rx="6" class="box"/>
+<text x="525" y="117" text-anchor="middle" class="t">Zeit überlappt</text>
+<text x="525" y="135" text-anchor="middle" class="t">(± 5 s)?</text>
+<rect x="650" y="95" width="180" height="56" rx="6" class="box box-audio"/>
+<text x="740" y="117" text-anchor="middle" class="t">Richter-Modell</text>
+<text x="740" y="135" text-anchor="middle" class="t2">gleicher Sachverhalt?</text>
+<line x1="400" y1="123" x2="448" y2="123" class="ln" marker-end="url(#f3a)"/>
+<text x="424" y="116" text-anchor="middle" class="t3">ja</text>
+<line x1="600" y1="123" x2="648" y2="123" class="ln" marker-end="url(#f3a)"/>
+<text x="624" y="116" text-anchor="middle" class="t3">ja</text>
+
+<line x1="740" y1="151" x2="740" y2="200" class="ln ln-ok" marker-end="url(#f3ok)"/>
+<text x="748" y="180" class="t3">ja</text>
+<rect x="650" y="202" width="180" height="44" rx="6" class="box box-ok"/>
+<text x="740" y="220" text-anchor="middle" class="t">Treffer</text>
+<text x="740" y="236" text-anchor="middle" class="t3">zählt für Recall und Precision</text>
+
+<line x1="325" y1="151" x2="325" y2="200" class="ln ln-bad" marker-end="url(#f3bad)"/>
+<text x="333" y="180" class="t3">nein</text>
+<line x1="525" y1="151" x2="525" y2="200" class="ln ln-bad" marker-end="url(#f3bad)"/>
+<text x="533" y="180" class="t3">nein</text>
+<polyline points="665,151 665,224 602,224" class="ln ln-bad" marker-end="url(#f3bad)"/>
+<text x="672" y="192" class="t3">nein</text>
+<rect x="250" y="202" width="350" height="44" rx="6" class="box box-bad"/>
+<text x="425" y="220" text-anchor="middle" class="t">Kein Treffer</text>
+<text x="425" y="236" text-anchor="middle" class="t3">Fund ohne Label = Fehlalarm · Label ohne Fund = verpasst</text>
+</svg>
+</div>
+<figcaption>Die Filter sind Code und kosten nichts; der Richter ist ein Modellaufruf je Paar, das die Filter übersteht.</figcaption>
+</figure>
+<div class="ex">
+  <div><b>Label (von Marco)</b>Anna Müller behauptet, dass die Mieten in Berlin seit 2015 um 40 Prozent gestiegen sind.</div>
+  <div class="hit"><b>Fund · Treffer</b>Anna Müller sagt, die Berliner Mieten seien seit 2015 um 40 % gestiegen.</div>
+  <div class="miss"><b>Fund · kein Treffer</b>Anna Müller behauptet, dass in Berlin zu wenig gebaut wird. Das ist ein Fehlalarm, und das Label gilt als verpasst.</div>
+</div>
+
+<h2>4 · Wie ein Label entsteht</h2>
+<p>Ein Label ist eine erwartete Behauptung mit allem, was ADR 0002 für eine Behauptung verlangt, plus drei Angaben für die Messung: Prüfwürdigkeit hoch oder niedrig, Art (Tatsache, Widerspruch, Zustimmung, Meinung mit Tatsachenkern), und bei Widerspruch oder Zustimmung der Bezug auf die Bezugsbehauptung. Reine Meinungen werden nicht gelabelt; findet das System eine, ist das ein Fehlalarm.</p>
+<ol class="steps">
+  <li><span><span class="who">Spracherkennung</span>Entwurf des Transkripts aus dem Audio, mit Wortzeiten und Sprecherlabels.</span></li>
+  <li><span><span class="who">Marco</span>Korrigiert überall die Sprecherwechsel und Namen, und den Wortlaut nur rund um jede Behauptung, einen Satz davor und danach. Markiert Überlappungen. Der Rest bleibt roh.</span></li>
+  <li><span><span class="who">LLM, erstes Modell</span>Schlägt Labels vor: Satz mit benanntem Sprecher, Wortlaut, Zeitspanne, Typ, Prüfwürdigkeit, Art, Bezug.</span></li>
+  <li><span><span class="who">Marco</span>Korrigiert und nimmt ab. Erst dann zählt ein Label; ein Vorschlag ist nie ein Label.</span></li>
+  <li><span><span class="who">LLM, zweites Modell, andere Familie</span>Labelt dasselbe Material unabhängig. Wo es anders entscheidet, schaut Marco noch einmal hin.</span></li>
+  <li><span><span class="who">Bericht</span>Übereinstimmung der beiden Labelrunden wird ausgewiesen. Sie ist kein Gate, aber liegt sie niedrig, ist die Richtlinie unscharf und die Zahlen sind Rauschen.</span></li>
+</ol>
+
+<h2>5 · Der Bericht</h2>
+<p>Eine Tabelle je Arm und je Korpusteil, aus drei Läufen der Median mit Spanne. Schwellen gelten als vorläufig bis zum Ende des ersten Praxistests; eine Änderung ist eine Entscheidung mit Begründung im Bericht, nie eine stille Anpassung.</p>
+<table>
+  <thead><tr><th>Zahl</th><th>Bedeutung</th><th>Schwelle</th><th>Modus</th><th>Teil</th></tr></thead>
+  <tbody>
+    <tr><td>Recall</td><td>Anteil der gelabelten Behauptungen, die getroffen wurden. Zweimal berechnet: nur "hoch" und "hoch plus niedrig"; welche Zahl die Schwelle trägt, wählt Marco nach dem ersten Praxistest.</td><td class="num">≥ 0,75</td><td><span class="tag audio">Audio</span></td><td>Debatte, Talkshow</td></tr>
+    <tr><td>Precision</td><td>Anteil der gefundenen Behauptungen, die ein Treffer sind. Gefundene "niedrig" zählen weder dafür noch dagegen.</td><td class="num">≥ 0,80</td><td><span class="tag audio">Audio</span></td><td>Debatte, Talkshow</td></tr>
+    <tr><td>Fehlalarme je 10 min</td><td>Ersatz für Precision im Alltagsteil, weil dort kaum Positive sind.</td><td class="num">≤ 2</td><td><span class="tag audio">Audio</span></td><td>Alltag</td></tr>
+    <tr><td>Zuschreibung</td><td>Anteil der Treffer mit dem richtigen Sprecher.</td><td class="num">≥ 0,95</td><td><span class="tag audio">Audio</span></td><td>alle</td></tr>
+    <tr><td>Latenz p95</td><td>Vom letzten gesprochenen Wort der Behauptung bis zur Karte, im Echtzeit-Replay auf drei festen Ausschnitten.</td><td class="num">≤ 15 s</td><td><span class="tag audio">Audio</span></td><td>alle</td></tr>
+    <tr><td>Kosten</td><td>USD je Gesprächsminute, beide Extraktoren zusammen.</td><td class="num">≤ 0,063</td><td><span class="tag audio">Audio</span></td><td>alle</td></tr>
+    <tr><td>Dubletten</td><td>Anteil der ausgegebenen Behauptungen, die eine schon ausgegebene wiederholen.</td><td class="num">≤ 10 %</td><td><span class="tag audio">Audio</span></td><td>alle</td></tr>
+    <tr><td>Treue</td><td>Anteil der Paraphrasen, die der Wortlaut stützt (Richter). Diagnose, kein Gate.</td><td class="num">≥ 0,95</td><td><span class="tag text">Text</span></td><td>alle</td></tr>
+    <tr><td>STT-Verlust</td><td>Treffer im Textmodus minus Treffer im Audiomodus. Diagnose.</td><td class="num">–</td><td><span class="tag text">Text</span> <span class="tag audio">Audio</span></td><td>alle</td></tr>
+    <tr><td>Übereinstimmung</td><td>Zwischen erster und zweiter Labelrunde (Krippendorffs α). Diagnose.</td><td class="num">–</td><td>Labels</td><td>alle</td></tr>
+  </tbody>
+</table>
+<p class="muted">Dazu je Lauf: Listen der verpassten und der falsch gefundenen Behauptungen mit Ids, die Entscheidungen des Richters, die Topic-Tags des Themen-Extraktors ohne Soll-Wert.</p>
+
+<h2>6 · Was wo liegt, und was noch offen ist</h2>
+<div class="grid2">
+  <div class="card"><h3>live-factchecker-v2 (privat)</h3><ul>
+    <li><code>evals/golden/</code>: Audio als Opus, Referenz-Transkript, Labels, Quellenangabe je Ausschnitt, Annotationsrichtlinie</li>
+    <li><code>evals/synthetic/</code>: Skripte, TTS-Audio, Labels aus dem Bau</li>
+    <li>Harness: Replay, Richter, Bericht; CI mit Mock-Extraktoren</li>
+    <li>Stufe 2: ClaimBuster-Benchmark auf Englisch, nur Textmodus</li>
+  </ul></div>
+  <div class="card"><h3>live-factchecker-plan (dieses Repo)</h3><ul>
+    <li>ADR 0003 "Messaufbau der Erkennung": die Entscheidungen</li>
+    <li><code>docs/spec/messaufbau-erkennung.md</code>: Label-Schema, Richtlinien-Gerüst, Berichtsformat</li>
+    <li>Task "Testkorpus Gespräche": baut Version 1 des Golden Sets nach dieser Spezifikation</li>
+  </ul></div>
+</div>
+<h3>Noch offen</h3>
+<ul class="open">
+  <li><strong>Alltagsteil, entschieden:</strong> Laberpodcasts per RSS. Version 1 ist eine Episode Realitätsabgleich (CC BY-NC-SA, zwei Sprecher) plus eine Episode Baywatch Berlin (drei Sprecher, Risiko wie Talkshow), zusammen mindestens 50 Minuten. FOLK ist ausgeschlossen, die Nutzungsbedingungen verbieten Cloud-Dienste. NC-Lizenzen sind für interne Tests akzeptiert.</li>
+  <li><strong>Zählregel:</strong> Recall auf "hoch" oder auf "hoch plus niedrig" wird nach dem ersten Praxistest gewählt; die Labels tragen beides.</li>
+  <li><strong>Schwellen:</strong> vorläufig bis zum Ende des ersten Praxistests.</li>
+  <li><strong>Größe:</strong> Version 1 mit 10 bis 20 Ausschnitten startet den Harness; Version 2 wächst auf mindestens 100 erwartete Behauptungen je Teil Debatte und Talkshow, bevor "Erkennungseinheit und Modellrollen" entschieden wird.</li>
+</ul>
+
+<h2>Begriffe</h2>
+<dl class="gl">
+  <dt>STT</dt><dd>Speech-to-Text, die Spracherkennung: macht aus Audio geschriebenen Text mit Wortzeiten.</dd>
+  <dt>Diarisierung</dt><dd>Sprechertrennung: ordnet jedem Stück Audio ein Sprecherlabel zu, ohne Stimmprofile.</dd>
+  <dt>Segment</dt><dd>Technisches Textstück, das die Spracherkennung ausgibt; Material für Turns und Behauptungen.</dd>
+  <dt>Turn</dt><dd>Redebeitrag: zusammenhängende Rede eines Sprechers bis zum Wechsel, zur längeren Pause oder zur Höchstlänge.</dd>
+  <dt>Extraktor</dt><dd>Modellaufruf, der aus dem Transkript Behauptungen (Behauptungs-Extraktor) oder Themen (Themen-Extraktor) zieht; alle fünf Sekunden Redezeit.</dd>
+  <dt>Arm</dt><dd>Eine Variante der Erkennung im Vergleich, zum Beispiel Satz nach Normalisierung, Redebeitrag als Einheit, Satz plus Merkmale.</dd>
+  <dt>Golden Set</dt><dd>Echte Aufnahmen mit abgenommenen Labels; die einzige Quelle für Qualitätszahlen.</dd>
+  <dt>Referenz-Transkript</dt><dd>Der an den wichtigen Stellen korrigierte Text einer Aufnahme mit Sprechern und Zeiten; Anker für die Labels und Eingabe des Textmodus.</dd>
+  <dt>Label</dt><dd>Eine erwartete Behauptung mit Sprecher, Wortlaut, Zeitspanne, Typ, Prüfwürdigkeit, Art und Bezug, von Marco abgenommen.</dd>
+  <dt>Richter</dt><dd>Modell, das entscheidet, ob Fund und Label derselbe Sachverhalt sind; nie das Extraktor-Modell.</dd>
+  <dt>Recall</dt><dd>Wie viel vom Gelabelten gefunden wurde.</dd>
+  <dt>Precision</dt><dd>Wie viel vom Gefundenen richtig war.</dd>
+  <dt>Dublette</dt><dd>Eine Behauptung, die das System doppelt ausgibt, weil der kumulative Turn sie bei jeder Analyse erneut findet.</dd>
+  <dt>Treue</dt><dd>Ob der paraphrasierte Satz vom Wortlaut gedeckt ist.</dd>
+</dl>
+</div>
+
+</body></html>

@@ -1,0 +1,5 @@
+{
+  "title": "The edge answers the plain /health path with the status of the detection service",
+  "expected": "Wenn ich über den Eingang per HTTPS /health abfrage, antwortet der Eingang mit 200 und dem Status des Erkennungsdienstes.",
+  "whyWrong": "The edge routes only /detection/health and /detection/ready (ticket #25, Assumptions); every other path, /health included, answers 404 at the edge and reaches no service (AC9)."
+}

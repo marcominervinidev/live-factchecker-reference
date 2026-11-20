@@ -1,0 +1,4 @@
+# Fingerprints (commit:file:rule:line) of findings that are confirmed test fixtures, never real secrets.
+# Each entry names its reason; the owner approves every line in the PR that adds it (CLAUDE.md, Security).
+# Fake Deepgram key in the stt_record unit tests; replaced by a low-entropy value on 2026-10-25, the commit stays in history.
+44174c3e699c6297cdafdc2c178393aa0e3b1b4c:evals/tools/test_stt_record.py:generic-api-key:41

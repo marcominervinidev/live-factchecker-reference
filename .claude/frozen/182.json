@@ -1,0 +1,131 @@
+{
+  "issue": 182,
+  "approvedAt": "2026-11-06T10:26:33Z",
+  "status": "frozen at gate 1 on 2026-11-06 by the main session after the owner's answers (ownerDecisions) and the critic's round 3 (#182 FREIGEGEBEN MIT AUFLAGEN, text only, met; #168 FREIGEGEBEN).",
+  "ticketSha256": "ed2337eb5337b316f1c5603eb5997a1e69652e32e8565e552702c6b70a504eab",
+  "ticketSha256Note": "sha256 of `gh issue view 182 --json body -q .body` after the gate-1 body update of 2026-11-06 (owner answers to block C, „c ja“; text built and checked by the critic in round 3, critic-168-182.md)",
+  "paths": [
+    "tools/tests/test_docker_clean.py",
+    "tools/tests/fake_docker.py"
+  ],
+  "tasks": {
+    "1": [
+      "tools/tests/test_docker_clean.py",
+      "tools/tests/fake_docker.py"
+    ]
+  },
+  "taskNotes": {
+    "cut": "One task (ticket: 'Size: S (1 task), estimate 40 to 90 production lines (`Makefile` or a script under `scripts/`)'). `Makefile` is a CODEOWNERS path and #168 changes it too (ticket: 'Not in parallel with #168 or #166 (\"44-3 …\") Task 1: all three change the `Makefile`'), so the tickets are implemented one after the other; proposed order: this one first (ticket: 'Blocked by: nothing', 'Dringend'). tools/tests/fake_docker.py is shared with the manifest of #168 (same bytes, same sha256): whichever ticket goes first brings it, the other finds it unchanged. A change to that file after the freeze is an unlock of BOTH tickets: FROZEN_UNLOCK opens one manifest only (.claude/hooks/frozen-manifest.sh: '[ \"${FROZEN_UNLOCK:-}\" = \"$issue\" ] && exit 0'), and the hook stop-tests reports the file against the old hash of the other manifest until that one is unlocked and re-hashed too; both test files then run again and both red runs are re-recorded.",
+    "1": {
+      "interface": "Target and confirmation (C-Q3): `make docker-clean` reports; `make docker-clean CONFIRM=1`, on the command line or exported in the environment, reports and removes; every other value of CONFIRM is no confirmation. Owner only: the target depends on `owner-session`, so it refuses when CLAUDECODE is set, with that target's message, before any docker call; `make -n docker-clean` exits 0 and calls docker not at all (no `$(shell docker ...)`). If the target has a script it is scripts/docker-clean.sh and no other file, and the script itself refuses when CLAUDECODE is set, before its first docker call (the hook owner-stack does not know the target, so `CONFIRM=1 sh scripts/docker-clean.sh` could otherwise run in a session). One `## ` help line. Throwaway project: a name that matches the rule of ci-guard, `lfc-[a-z0-9][a-z0-9_-]*` anchored at both ends, not `lfc-owner`, and not on the fixed exclusion list (C-Q9): `lfc-eval`, `lfc-test` (exact names: lfc-test-1 and lfc-eval-2 are throwaway projects like any other), every name that starts with `lfc-toolbox`, `lfc-agent` or `lfc-probe`. A project has a container when `docker ps -a` shows one with its project label, in any state. Which references belong to a project (C-Q5): a tag that names it, `<registry>/<service>:<project>` with the registry `lfc` or `lfc.invalid` (the name #166 Task 1 gives it, E-F4 and P1) or `<project>-<service>[:tag]`, with or without the label; and an untagged image that carries its label. A tagged image with the project's label loses ONLY the references that name the project, never its other tags and never the image by id: the owner's machine holds one image id with the tags `lfc/detection:local` and `lfc/detection:lfc-25-acc` and the label of lfc-25-acc, and after #166 the same can happen under `lfc.invalid`. Report (stdout, wording free otherwise): only images of throwaway projects, not every image on the machine, and of an image with several tags only the references that name the project; each such reference on one line with the size `docker image ls` prints for it; the lines that name a project differ when it has a container and when it has none, the lines of other projects do not; an excluded project is named as a word of its own on a line with the word `bleibt`, a project that would be cleared never; the size of the build cache as Docker prints it. With CONFIRM=1: the references of the projects without a container go by reference, an untagged image by id, never with `-f`; an image Docker refuses because a container outside the project still uses it stays and the run still exits 0 (C-Q11); the build cache records older than 168 hours go (C-Q4; `docker builder prune -f --filter until=168h`). Exit 0 when nothing is to remove (Docker fails on `image rm` without an argument). Never: an image of a project with a container, of an excluded project, of a project outside the rule (lfc-owner, live-factchecker-v2, live-factcheck, lab-*, docker-*-mcp-*, lfc-_tmp, xlfc-1, lfcx-1, lfc), an image without label and project tag (third-party, minikube), a volume, a container, `compose down`, `system prune`, `image prune` without a label filter (and not with one either: it takes the whole image with every tag).",
+      "implementerPaths": [
+        "Makefile",
+        "scripts/docker-clean.sh",
+        ".claude/rules/platform.md"
+      ],
+      "note": "The tests run make in a throwaway copy (Makefile, *.mk, .nvmrc, scripts/, compose*.yml) with tools/tests/fake_docker.py as `docker` on a PATH of the fake and /usr/bin:/bin:/usr/sbin:/sbin only (the host needs Docker, Git and make; no jq, no Homebrew tool), stdin is empty. The fake models a fixed set of docker calls (its header lists them); a call outside that set exits 64 and fails the case, so stay inside the list or report BLOCKED. Each fake call costs about 50 ms: with one `docker image inspect` per image the file runs about 50 s; fewer calls per run keep `make ci-local` short. Read the containers of a project again directly before removing its references: between the report and the removal a stack may have started; without `-f` Docker refuses an image in use, which is the second line of defence. Not specified by the ticket and not asserted: the exit code when a removal fails for another reason than an image in use, a second report after the removal, an image whose label and tag name two different throwaway projects (leave it).",
+      "fake": "Where the fake decides and the real Docker may differ (header of tools/tests/fake_docker.py, last paragraph). (1) tools/tests/fake_docker.py:381 ('gone = [r for r in state[\"cache\"] if all(r[\"hours\"] > limit for limit in limits)]'): `docker builder prune` without `-a` removes every record older than the filter there; whether the real BuildKit needs `--all` to reach the records that fill the disk is for the owner's real run (ticket: 'The real run is the owner's (the target refuses for agents): one report before and after, pasted into the ticket'). (2) The fake is static: no race between listing and removing. (3) tools/tests/fake_docker.py:463-464: `compose down --rmi` exits 1 on a failed removal; not used by this ticket (compose down is forbidden here). Changed in round 2: `image ls -q` prints one id per tag line, as Docker does (an id with two tags shows twice; `sort -u` before a loop over ids). `image rm -f` of an image that only stopped containers use: in the fake the tag goes and the image stays untagged; what the real Docker does depends on its image store (the classic store removes the image, containerd keeps it untagged) and is not proven. The tag is gone either way, the cases do not depend on which of the two happens, and no real run shows it, because `-f` is forbidden.",
+      "briefing": [
+        "Proof is the host: `python3 -I -m unittest discover -s tools/tests -p test_docker_clean.py` and `sh tools/check_red_before_green.sh week/2026-w45`.",
+        "In `make ci-local` two checks stay red in the toolbox for the wrong reason until #25 Task 4 brings `make` into it: 'repo: tool tests' (scripts/ci/local.sh:174, FileNotFoundError: 'make') and 'red before green' (scripts/ci/local.sh:193; tools/classify_red_reason.py:158: 'missing file ... (in neither tree: test infrastructure)'). No skip for a missing make, no make into the toolbox in this ticket.",
+        "The task branch carries only this manifest, its test file and fake_docker.py; the branch td-168-182 never goes onto the weekly branch as a whole, else the file of the other ticket is red there and red-before-green has nothing left to prove on the task branch.",
+        "Never `docker` by absolute path, never `-H`, `--context` or a changed DOCKER_HOST (the tests isolate through PATH and DOCKER_HOST); never `-f` when removing.",
+        "The real run is the owner's: the agent never runs the target against the real Docker; before the owner confirms, the report without confirmation shows what would go."
+      ],
+      "standIn": "A throwaway stand-in outside the repository (scratchpad td168/r4/standin-182.patch: one Makefile target and scripts/docker-clean.sh, 40 shell lines) makes all 21 cases green; it is not part of this manifest and not given to the implementer."
+    }
+  },
+  "pyramidNote": "21 stdlib unittest cases in tools/tests/test_docker_clean.py (stage 1 of the root tools, as the ticket asks per criterion: 'Lowest stage: stage 1 of the root tools with the Docker stub'); tools/check_test_pyramid.py does not count .py files. No stage 2a, 3 or 4 case: no route, no contract, no service behaviour. 13 of the 21 cases are negative (AC1: removes nothing, no confirmation, lists throwaway projects only: 3; AC3: 7; AC4: 3). 20 are red on the base (the target does not exist); 1 is green on the base and stays green when the target has no script (the script's own refusal). The negative cases of AC3 first require a successful confirmed run that removed an image of a finished project, so they cannot pass on a target that does nothing. Cases per criterion: AC1 7 (two of them for C-Q3 and C-Q9), AC2 3, AC3 7 (two of them for C-Q9 and C-Q11), AC4 3, AC5 1.",
+  "noCanary": "no acceptance case and no canary: the target refuses for agents and is not visible through the edge; the owner's real run with the report before and after is the proof (owner decision C-Q7, 2026-11-06, „c ja“)",
+  "verify": {
+    "1": "Frozen: python3 -I -m unittest discover -s tools/tests -p test_docker_clean.py, green on the host. Not frozen, evidence as the ticket asks: `make ci-local BASE=<weekly branch>` plus Fallow; the owner's real run, report without CONFIRM before and after `make docker-clean CONFIRM=1`, pasted into the ticket, with `docker system df` before and after; the owner checks there whether `docker builder prune` without --all reached the records that fill the disk."
+  },
+  "criticRound1": "Verdict ÄNDERN of 2026-11-05 (scratchpad critic-168-182.md): blockers 1 (shared image with the label of a finished project) and 2 (foreign projects on the name rule, Q9), findings 4, 5, 6, 9, 10; all done in round 2 (add4cc3a).",
+  "criticRound2": "Verdict FREIGEGEBEN MIT AUFLAGEN of 2026-11-05: conditions 1 to 4 done in 32408e28; the switch Q9 set after the owner's answer (removed: the cases now assert C-Q9 ja directly) and the header's „open“ replaced by the quoted decisions in this round. Its seven unchanged prototypes are killed as in round 2; the designer's mutants of round 4 are listed in mutantsRound4.",
+  "mutantsRound4": {
+    "b182-none": "stand-in (scripts/docker-clean.sh): 21 of 21 green",
+    "b182-byid": "labelled images by id with -f: killed by test_it_never_removes_an_image_of_the_owner_s_projects, test_q11_*, test_the_report_lists_*, test_with_confirmation_and_nothing_to_remove_*",
+    "b182-alltags": "every tag of a labelled image: killed by test_it_never_removes_an_image_of_the_owner_s_projects (2 subtests: lfc/ and lfc.invalid/), test_the_report_lists_*",
+    "b182-nocontainerinfo": "no container information per project: killed by test_the_report_tells_per_project_*",
+    "b182-noexclusion": "no exclusion list (C-Q9 nein): killed by both test_q9_* (14 subtests), test_with_confirmation_and_nothing_to_remove_*",
+    "b182-force": "image rm -f <reference>: killed by test_q11_*",
+    "b182-noguard": "script without its own refusal: killed by test_the_script_refuses_by_itself_* (2 subtests)",
+    "b182-listall": "report lists every image: killed by test_the_report_lists_* (23 subtests)",
+    "b182-oldprefix": "knows only lfc/ as registry: killed by test_the_report_shows_every_image_*, test_with_confirmation_it_removes_* (lfc-50-acc)",
+    "b182-agentexact": "lfc-agent as an exact name: killed by both test_q9_* and test_with_confirmation_and_nothing_to_remove_* (lfc-agent-3)",
+    "b182-toolboxexact": "lfc-toolbox and lfc-toolbox-5a exact: killed by both test_q9_* and test_with_confirmation_and_nothing_to_remove_* (lfc-toolbox-7b)",
+    "b182-evalprefix": "lfc-eval as a prefix: killed by test_q9_the_report_marks_*, test_with_confirmation_it_removes_* (lfc-eval-2)",
+    "b182-testprefix": "lfc-test as a prefix: killed by test_q9_the_report_marks_*, test_with_confirmation_it_removes_* (lfc-test-1)"
+  },
+  "ownerDecisions": {
+    "date": "Marco, 2026-11-06, gate 1: „c-q8 ja c-q9 ja“ (in the message „a10 ja, a5 ja A8 ja b9ja c-q8 ja c-q9 ja d1 ja d7 ja …“), later „c ja“ (on the request „Block C für #168 (ein „C ja“ genügt)“): every question of block C of entscheidungen-2026-11-06.md with its recommendation; both messages quoted in the comments of 2026-11-06 on #168 and #182. E-F4 and P1: „… e über all ja … p1 ja“ (comment on #166).",
+    "cQ3": {
+      "question": "C-Q3: #182. Ticket: „removes on confirmation“. Gilt: Befehl `make docker-clean`; Bestätigung `CONFIRM=1`, getippt oder als exportierte Variable; jeder andere Wert zeigt nur an; Größen so, wie Docker sie ausgibt?",
+      "answer": "c ja",
+      "means": "TARGET docker-clean, CONFIRM=1 on the command line or exported, NOT_A_CONFIRMATION, size() as drafted"
+    },
+    "cQ4": {
+      "question": "C-Q4: #182. Ticket: „Age limit of the build cache: seven days → offen, the owner may name another.“ Bleibt es bei sieben Tagen?",
+      "answer": "c ja",
+      "means": "168 hours; CACHE records at 167 and 169 hours as drafted"
+    },
+    "cQ5": {
+      "question": "C-Q5: #182. Ticket: „images by the Compose project label and by the project's tag“. Gilt: alte Builds ohne Namen mit dem Label eines fertigen Projekts gehen; `lfc/detection:<projekt>` geht auch ohne Label; ein Image mit mehreren Namen verliert nur die Namen des Projekts?",
+      "answer": "c ja",
+      "means": "untagged labelled builds go by id; lfc/detection:<project> goes without a label (lfc-ci-77); an image with several tags loses only the references that name the project (SHARED_WITH_OWNER, SHARED_RENAMED)"
+    },
+    "cQ6": {
+      "question": "C-Q6: #182. Ticket: „Gate 1: offen; … Recommendation: Tor 1 with the test designer“. Gilt Tor 1 für #182?",
+      "answer": "c ja",
+      "means": "this manifest"
+    },
+    "cQ7": {
+      "question": "C-Q7: Beide. Kein Abnahmefall und kein Canary, weil man das Verhalten nicht über die Edge sieht. Beleg ist der echte Lauf (#168: „one real `make ci-stack-up` / `make ci-stack-down` … quoted in the PR“; #182: „one report before and after, pasted into the ticket“). Einverstanden?",
+      "answer": "c ja",
+      "means": "noCanary"
+    },
+    "cQ8": {
+      "question": "C-Q8: Beide. #182 zuerst. #168 erst einfrieren, wenn E-F4 beantwortet ist („Lokal gebaute Images bekommen ein Präfix, das kein Docker-Hub-Namensraum sein kann, statt `lfc`.“)? Ticket #168: „Blocked by: 44-3“.",
+      "answer": "c-q8 ja",
+      "means": "#182 is frozen first; #168 after it, with the name of E-F4 in its test file (LOCAL_REGISTRY)"
+    },
+    "cQ9": {
+      "question": "C-Q9: #182. Kritiker: „Auf deinem Rechner liegen Projekte, die auf die Namensregel der Wegwerfprojekte passen, aber nicht aus diesem Repo stammen … Soll `docker-clean` diese Projekte nie räumen, auch `lfc-eval` und `lfc-test`?“ Empfehlung: „ja: feste Ausnahmeliste, der Bericht zeigt sie als „bleibt“. `lfc-eval` und `lfc-test` gelten als genaue Namen. Willst du für alle fünf den Namensanfang, sag es dazu.“",
+      "answer": "c-q9 ja",
+      "means": "fixed exclusion list: lfc-eval and lfc-test exactly, every name starting with lfc-toolbox, lfc-agent or lfc-probe; the report marks them with „bleibt“. Fixtures both ways: EXCLUDED (lfc-eval, lfc-test, lfc-toolbox, lfc-toolbox-5a, lfc-toolbox-7b, lfc-agent, lfc-agent-3, lfc-probe-1) stay; lfc-test-1 and lfc-eval-2 in FINISHED go. The owner did not ask for a prefix for all five."
+    },
+    "cQ11": {
+      "question": "C-Q11: #182. Das Ticket schweigt dazu: Ein Image eines fertigen Projekts wird noch von einem Container außerhalb des Projekts benutzt. Bleibt es liegen, und der Lauf endet trotzdem ohne Fehler?",
+      "answer": "c ja",
+      "means": "the image stays with its tag and the run exits 0; never -f (test_q11_*)"
+    },
+    "eF4": {
+      "question": "E-F4: #166, steht schon im Ticket (R5: „lokal gebaute Images `lfc/<dienst>` können ohne `--build` von Docker Hub gezogen werden“). Bekommen lokal gebaute Images ein Präfix, das kein Docker-Hub-Namensraum sein kann, statt `lfc`?",
+      "answer": "e über all ja",
+      "means": "#166 Task 1 renames the local registry; the name is the test designer's (P1, see p1)"
+    },
+    "p1": {
+      "question": "P1: Sollen Benennungen und Formate, bei denen jede Antwort ginge (Variablennamen, Nachkommastellen, Ort eines Testhelfers), künftig vom Testdesigner entschieden und dir nur gemeldet werden, sodass als Frage nur bleibt, was bei „nein“ eingefrorene Tests ändert, eine Entsperrung braucht, Geld oder Actions-Minuten kostet oder etwas löscht?",
+      "answer": "p1 ja",
+      "means": "the local registry prefix is `lfc.invalid` (named by the test designer on 2026-11-06, reported, not asked): `.invalid` is a reserved top-level domain that never resolves (RFC 2606), and the dot makes Docker read the first path component as a registry host, never as a Docker Hub namespace; #166 Task 1 has to use the same name (#166, Assumptions: „The exact local registry prefix is the test designer's choice (P1, owner 2026-11-06), named in the gate-1 comment“), else manifests 168 and 182 need an unlock (critic round 3, finding 1: test_docker_clean.py also spells `lfc.invalid`)"
+    }
+  },
+  "redRunHash": "sha256 over the unittest output without blank lines and macOS 'xcrun_db' warnings, with the duration on the 'Ran <n> tests' line dropped, the worktree path replaced by <root> and the temp directory '<tmp dir>/lfc-182-make-*' by '<tmp>/lfc-182-make-<tmp>'",
+  "redRun": {
+    "tools/tests/test_docker_clean.py": {
+      "task": "1",
+      "command": "python3 -I -m unittest discover -s tools/tests -p test_docker_clean.py",
+      "base": "week/2026-w45 merge base 1506035b (Makefile, compose.yml and scripts/ unchanged up to the tip e3669a83) plus the two files of this manifest, worktree td-168-182",
+      "environment": "host (macOS, /usr/bin/make, Python 3.12.7, stdlib only), two runs with the same normalised hash; not in the toolbox, which has no make before Task 4 of #25 (the test then errors with FileNotFoundError: 'make', the wrong reason)",
+      "exitCode": 1,
+      "sha256": "9efa594f50413f853d37ba6935bdfb9383ff8e6fb2c69d84f8019c6603ad82df",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour); tools/classify_red_reason.py agrees; two runs gave the same normalised hash. 'Ran 21 tests', 'FAILED (failures=26)', 20 cases red: `make docker-clean`, with and without CONFIRM, exits 2 with 'No rule to make target `docker-clean'' where exit 0 is expected (AC1: 7 cases with 4 subtests for the values that are no confirmation; AC2: 3; AC3: 7), the refusal inside a Claude Code session does not name CLAUDECODE (AC4, 2 subtests), `make -n docker-clean` exits 2 (AC4, 3 subtests), `make help` has no line for docker-clean (AC5). Green on the base: the script's own refusal, which passes while scripts/docker-clean.sh does not exist.",
+      "recordedBy": "test designer, 2026-11-06, after the owner's answers (block C, E-F4, P1)"
+    }
+  },
+  "sha256": {
+    "tools/tests/test_docker_clean.py": "4c61fe3c1a8b77e0409c3a7106e804236d7543ec8872b5ec87758f870e306661",
+    "tools/tests/fake_docker.py": "53bc16d7da987104e37c1606c714a7e7d4fc45ba244e35871e24501d75bbccc0"
+  }
+}

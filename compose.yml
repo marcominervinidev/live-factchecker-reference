@@ -1,0 +1,209 @@
+# Stack and toolbox (.claude/rules/platform.md). Agent stacks run as COMPOSE_PROJECT_NAME=lfc-<issue>-<task>,
+# CI as lfc-ci-<run>; without it this is the owner's project. Only the edge publishes a host port.
+# Secrets are files in LFC_SECRETS_DIR (`make ci-secrets` for test stacks, `make secrets-init` for the owner's), services
+# read them as <NAME>_FILE.
+name: live-factchecker-v2
+
+services:
+  # No disk (ADR 0009): no AOF, no snapshots, data on tmpfs. The password is a secret file; the default user
+  # authenticates with its SHA-256 from an ACL file on tmpfs, never on the command line.
+  redis:
+    image: redis:8.10.3-alpine@sha256:21090af93f8324db2f0f0f4f38a7c60369d47d917e000c3423d89d2ae2883537
+    user: '999:1000'
+    entrypoint:
+      - /bin/sh
+      - -euc
+      - |
+        [ -s /run/secrets/redis_password ] || { echo 'redis: secret redis_password is empty' >&2; exit 1; }
+        # Same rule as the services: exactly one trailing newline is not part of the secret.
+        hash=$$(awk 'NR > 1 { printf "\n" } { printf "%s", $$0 }' /run/secrets/redis_password | sha256sum | cut -d' ' -f1)
+        umask 077
+        # +client|list: stage 2a reads the client list to see the service hold and release its connection.
+        echo "user default on #$$hash ~* &* +@all -@admin -@dangerous +client|list" > /data/users.acl
+        # At the memory cap writes fail loudly: noeviction is decided (#27), since an LRU policy could evict one key of
+        # a Session and keep the others. SESSION_BYTE_BUDGET counts JSON bytes, real memory is up to about x1.3:
+        # 20 Sessions x 3 MiB x 1.3 is about 78 MB, below the cap.
+        exec redis-server --aclfile /data/users.acl --appendonly no --save '' --dir /data --protected-mode yes \
+          --maxmemory 96mb --maxmemory-policy noeviction
+    secrets: [redis_password]
+    read_only: true
+    tmpfs: ['/data:size=64m,uid=999,gid=1000,mode=0700', '/tmp:size=8m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    networks: [data]
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'REDISCLI_AUTH="$$(cat /run/secrets/redis_password)" redis-cli --no-auth-warning ping | grep -q PONG',
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits: { cpus: '0.50', memory: 128M }
+    memswap_limit: 128M
+
+  # The detection service (ticket #25): the built image (services/detection/Dockerfile, distroless, non-root),
+  # reached only through the edge. LFC_REGISTRY=lfc builds it locally (make ci-stack-up), else it is pulled. The
+  # ci-* and acceptance targets tag a local build with the Compose project (LFC_TAG), never a shared `local`.
+  detection:
+    image: ${LFC_REGISTRY:-lfc}/detection:${LFC_TAG:-local}
+    build:
+      context: .
+      dockerfile: services/detection/Dockerfile
+      target: runtime
+    environment:
+      PORT: '8080'
+      REDIS_URL: redis://redis:6379
+      REDIS_PASSWORD_FILE: /run/secrets/redis_password
+      # The Claim Extractor with the mock adapter (#29, gate 1 question 12: „Aufgabe 3 hält fest, dass compose.yml
+      # MODEL_ADAPTER=mock setzt“): the prompt file of the image and the Golden Set labels of the recording fixture as
+      # the mock's expectations (mechanics only, never quality). T7 brings the real adapter.
+      MODEL_ADAPTER: mock
+      CLAIM_EXTRACTOR_PROMPT_FILE: /app/prompts/claim_extractor.v2.de.txt
+      # The Topic Extractor runs only with its prompt file (#32, gate 1 O2); its mock opens sub-topics at the
+      # harness rate (MOCK_TOPIC_NEW_RATE, default 0.05).
+      TOPIC_EXTRACTOR_PROMPT_FILE: /app/prompts/topic_extractor.de.txt
+      MOCK_EXPECTATIONS_FILE: /run/lfc/mock-expectations.jsonl
+    volumes:
+      - ./evals/golden/synt-2026-10-06-a/labels.jsonl:/run/lfc/mock-expectations.jsonl:ro
+    secrets: [redis_password]
+    read_only: true
+    tmpfs: ['/tmp:size=8m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    networks: [edge, data]
+    depends_on:
+      redis: { condition: service_healthy }
+    # Distroless has no shell and no curl: node itself asks /health (the liveness probe, no dependency).
+    healthcheck:
+      test:
+        - CMD
+        - /nodejs/bin/node
+        - -e
+        - 'fetch(`http://127.0.0.1:$${process.env.PORT}/health`).then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))'
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits: { cpus: '${LFC_DETECTION_CPUS:-0.5}', memory: 256M, pids: 64 }
+    memswap_limit: 256M
+
+  # The edge (deploy/edge/Caddyfile): the stack's only host port, HTTPS from Caddy's internal CA, two routes.
+  # LFC_EDGE_PORT picks the host port on 127.0.0.1; unset, Docker picks a free one (`docker compose port edge 8443`).
+  # The image's caddy binary carries the file capability cap_net_bind_service, so exec needs it in the bounding
+  # set; Caddy itself listens on 8443 and needs no capability.
+  edge:
+    image: caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+    user: '65532:65532'
+    volumes:
+      - ./deploy/edge/Caddyfile:/etc/caddy/Caddyfile:ro
+    read_only: true
+    tmpfs:
+      [
+        '/data:size=8m,uid=65532,gid=65532,mode=0700',
+        '/config:size=1m,uid=65532,gid=65532,mode=0700',
+      ]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ['no-new-privileges:true']
+    init: true
+    ports: ['127.0.0.1:${LFC_EDGE_PORT:-}:8443']
+    networks: [public, edge, clients]
+    depends_on:
+      detection: { condition: service_healthy }
+    # Healthy once the internal CA and both site certificates exist (make test-api exports the root CA).
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          test -s /data/caddy/pki/authorities/local/root.crt
+          && test -s /data/caddy/certificates/local/localhost/localhost.crt
+          && test -s /data/caddy/certificates/local/edge/edge.crt
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    deploy:
+      resources:
+        limits: { cpus: '${LFC_EDGE_CPUS:-0.5}', memory: 128M, pids: 64 }
+    memswap_limit: 128M
+
+  # Dev toolbox (profile toolbox: never part of a stack start), reached through scripts/tb. No Docker socket.
+  toolbox:
+    profiles: [toolbox]
+    build:
+      context: docker/toolbox
+      args:
+        NODE_VERSION: ${LFC_NODE_VERSION:-}
+    init: true
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    volumes:
+      - .:/workspace
+      # Git metadata read-only: .git of this checkout, and the common dir of a worktree at its host path
+      # (scripts/tb sets LFC_GIT_COMMON_DIR). Commits happen on the host.
+      - ./.git:/workspace/.git:ro
+      - ${LFC_GIT_COMMON_DIR:-./.git}:${LFC_GIT_COMMON_DIR:-/git-common}:ro
+    environment:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: ${LFC_GIT_COMMON_DIR:-/git-common}
+    networks: [tools]
+    deploy:
+      resources:
+        limits: { cpus: '4', memory: 6g, pids: 1024 }
+
+  # Stage 2a (`make test-integration`): a one-off toolbox on the data network only. The in-process tests reach
+  # the project's Redis without a host port and without a route out; `run --rm` removes it before ci-stack-down,
+  # so no container holds the data network when the stack goes down.
+  toolbox-it:
+    extends: toolbox
+    profiles: !override [integration]
+    networks: !override [data]
+    # Fits a 2-vCPU CI runner (Docker refuses a limit above the host's CPUs); LFC_IT_CPUS overrides it.
+    deploy: !override
+      resources:
+        limits: { cpus: '${LFC_IT_CPUS:-1.5}', memory: 2g, pids: 512 }
+
+  # Stage 3 (`make test-api`) and the acceptance runner (`make acceptance`): a one-off toolbox on the clients
+  # network, which reaches the edge only. It sees the repository read-only and writes only LFC_CLIENT_REPORTS;
+  # .secrets/ is covered by an empty tmpfs (no stack's secrets), the edge's root CA of this project is the one file
+  # it gets, read-only at /run/lfc/edge-root.crt (security review S6).
+  stack-client:
+    extends: toolbox
+    profiles: !override [client]
+    networks: !override [clients]
+    read_only: true
+    tmpfs: ['/tmp:size=64m,mode=1777', '/workspace/.secrets:size=1m,mode=0500']
+    volumes: !override
+      - .:/workspace:ro
+      - ./${LFC_CLIENT_REPORTS:-tests/api/reports}:/workspace/${LFC_CLIENT_REPORTS:-tests/api/reports}
+      - ./.secrets/${COMPOSE_PROJECT_NAME:-unset}/edge-root.crt:/run/lfc/edge-root.crt:ro
+    deploy: !override
+      resources:
+        limits: { cpus: '${LFC_CLIENT_CPUS:-1}', memory: 1g, pids: 256 }
+
+networks:
+  # Services, their data stores and the stage-2a toolbox; no route out.
+  data:
+    internal: true
+  # The edge and the services it forwards to; no route out.
+  edge:
+    internal: true
+  # The edge's published port; the edge is its only member.
+  public: {}
+  # The edge and the stage-3 and acceptance clients; no route out, no service.
+  clients:
+    internal: true
+  # Registry access for the toolbox only.
+  tools: {}
+
+# Every secret here is also named in STACK_SECRETS in the Makefile (checked before up and dev, created by secrets-init).
+secrets:
+  redis_password:
+    file: ${LFC_SECRETS_DIR:-${HOME}/.config/live-factchecker/secrets}/redis_password

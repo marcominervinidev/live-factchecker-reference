@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#55 Konten und Mandanten – Runde 2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout und Tokens wie Runde 1 (und 011-datenschutzmodell.html): eine Lesespalte, Schaubild in voller Breite, Faktentabelle, Fragen mit Empfehlung. Vier Zonen von links nach rechts (Clients, Cognito, Rand des Backends, Zustand in der EU); offene Punkte dieser Runde bernsteinfarben gestrichelt, Entschiedenes teal. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td q,li q{font-style:italic}
+.src{font-family:var(--font-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .ask{font-size:16px;margin:0 0 6px;max-width:80ch}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:8px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.later li{margin:3px 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px} .src{white-space:normal}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8;stroke-dasharray:5 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .tq{fill:var(--warn);font-family:var(--font-mono);font-size:11px;font-weight:500}
+.d .tw{fill:var(--warn);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;fill:currentColor}
+.d .mono{font-family:var(--font-mono);font-size:10.5px}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 55 · Grilling · Briefing Runde 2 · 2026-11-05</div>
+  <h1>#55 Konten und Mandanten – Runde 2</h1>
+  <p class="lead">Runde 1 ist entschieden (Marco, 2026-11-05, <q>genauso wie empfohlen</q>): ein Konto ist eine Person, nur der Rand kennt es, Cognito in Frankfurt führt die Anmeldung, Stripe Managed Payments kassiert, das Kontingent zählt Minuten hart und Prüfungen weich. Runde 2 klärt, was daran hängt: wie beide Clients das Token tragen, wie sich die Ingestion anmeldet, was nach <code>quota_exceeded</code> passiert, was ein Gast ist, und wie Probezeit, Tarif und Konto löschen zusammenspielen. Der Store-Abgleich wandert in Runde 3, weil er erst mit den Store-Apps (Inkrement 2) gebraucht wird. Jede Frage ist so gestellt, dass „ja“ die Empfehlung annimmt.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#heute">Heute</a><a href="#bild">Schaubild</a><a href="#fest">Schon fest</a><a href="#fakten">Fakten</a><a href="#fragen">Fragen</a><a href="#spaeter">Runde 3</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="heute">1 · Was es heute gibt</h2>
+<div class="two">
+  <div class="card">
+    <h3>Runde 1, entschieden am 2026-11-05</h3>
+    <ul>
+      <li><b>Q1 Mandant:</b> <q>Konto = Mandant; eine Person, ein Konto, ein Abo, ein Zähler. Haushalt und Team in den Nebel.</q></li>
+      <li><b>Q2 Rand:</b> <q>nur am Rand; die Zählpunkte schlagen den Besitzer über die Session-Id nach; die Verträge der Pipeline bleiben ohne Konto-ID.</q></li>
+      <li><b>Q3 Anmeldung:</b> <q>Cognito eu-central-1, Essentials; Zitadel Cloud bleibt der Ausweichweg.</q> (Frage: <q>mit Passkey und E-Mail-Code und ohne Social Login</q>)</li>
+      <li><b>Q4 Web-Abo:</b> <q>Stripe Managed Payments als Verkäufer (Merchant of Record), und das Konto speichert nur Abo-Status und Kunden-Id</q>: ja.</li>
+      <li><b>Q5 Kontingent:</b> <q>Minuten als harte Grenze (Stopp mit <code>quota_exceeded</code>) und Prüfungen als weiche Grenze (danach Einschätzung statt Urteil), zentral in Postgres</q>; <q>der alte USD-Tageszähler bleibt nur als Notbremse des Betreibers.</q></li>
+    </ul>
+    <p class="muted" style="margin-top:8px;font-size:14px">Quelle: Kommentar „Runde 1 entschieden“ in #55, 2026-11-05.</p>
+  </div>
+  <div class="card">
+    <h3>Code und altes Repo</h3>
+    <ul>
+      <li><b>v2 hat noch keinen Rand.</b> Unter <code>services/</code> liegt nur <code>detection</code>. Der Zähler je Session steht: <code>packages/service-kit/README.md</code>: <q lang="en">The quota per account (ADR 0005, #13) keeps its own counter in the account database and takes this record per call as its source.</q></li>
+      <li><b>Altes Token-Modell.</b> Research #73: <q>WebSocket per erster Nachricht <code>{ type: "auth", schemaVersion: 2, token }</code> innerhalb von <code>WS_AUTH_TIMEOUT_MS</code></q>; <q>Der Browser hält das Token in <code>localStorage</code> unter <code>lfc.gatewayToken</code></q>.</li>
+      <li><b>Was davon bleibt.</b> Ebenda: <q>Erhalten bleibt der Transport-Slot: ein Bearer-Header und eine erste WebSocket-Nachricht tragen auch ein pro Person ausgestelltes Token</q>.</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="bild">2 · Schaubild: vom Login bis zur Session</h2>
+<p>Links die drei Clients, daneben Cognito in Frankfurt, dann der Rand des Backends, rechts der Zustand in der EU. Teal ist entschieden (Runde 1 oder ADR), bernsteinfarben gestrichelt ist offen in dieser Runde (Q6 bis Q10). Gezeichnet ist der Stand, wenn du alle fünf Empfehlungen annimmst.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 600" role="img" aria-label="Vier Zonen. Clients: die Web-App und die Store-App melden sich mit Authorization Code und PKCE bei Cognito an und bekommen ID-, Access- und Refresh-Token (Frage 6); die Web-App hält das Access-Token im Speicher und das Refresh-Token in localStorage, die Store-App im Keychain oder Keystore. Die Server-Ingestion holt sich mit Client Credentials ein Access-Token von einem eigenen Cognito-App-Client (Frage 7). Alle drei öffnen den WebSocket zum Rand und schicken das Access-Token als erste Nachricht. Der Rand prüft Origin und Token lokal gegen die Schlüssel von Cognito, trägt den Besitzer in die Session in Redis ein, schlägt das Konto in Postgres nach (aktiv, Abo-Status, Rest-Kontingent) und beendet bei Rest null mit audio.stopped quota_exceeded ohne Weiter (Frage 8). Sprecher in der Session sind Labels, keine Konten (Frage 9). Stripe Managed Payments meldet den Abo-Status und die Probezeit per Webhook an das Konto; Konto löschen kündigt das Abo, löscht den Cognito-Nutzer, Verlauf und Zähler (Frage 10).">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m"/></marker>
+    <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m-warn"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="m-ok"/></marker>
+  </defs>
+
+  <!-- Zonen -->
+  <rect class="zone" x="10" y="40" width="230" height="545" rx="10"/>
+  <rect class="zone" x="255" y="40" width="230" height="545" rx="10"/>
+  <rect class="zone" x="500" y="40" width="245" height="545" rx="10"/>
+  <rect class="zone" x="760" y="40" width="230" height="545" rx="10"/>
+  <text class="lab" x="20" y="28">Clients (ADR 0010)</text>
+  <text class="lab" x="265" y="28">Cognito Frankfurt (Q3)</text>
+  <text class="lab" x="510" y="28">Rand des Backends (Q2)</text>
+  <text class="lab" x="770" y="28">Zustand, EU</text>
+
+  <!-- A: Web-App -->
+  <rect class="box box-warn" x="22" y="60" width="206" height="96" rx="6"/>
+  <text class="t" x="32" y="81">Web-App im Browser</text>
+  <text class="tq" x="32" y="99">Q6</text>
+  <text class="t2" x="56" y="99">Code + PKCE, Managed Login</text>
+  <text class="t2" x="32" y="116">Access-Token nur im Speicher,</text>
+  <text class="t2" x="32" y="133">Refresh-Token in localStorage</text>
+  <text class="t3" x="32" y="149">CSP als Kontrolle (ASVS 14.3.3)</text>
+
+  <!-- A: Store-App -->
+  <rect class="box box-warn" x="22" y="176" width="206" height="96" rx="6"/>
+  <text class="t" x="32" y="197">Store-App (Capacitor)</text>
+  <text class="tq" x="32" y="215">Q6</text>
+  <text class="t2" x="56" y="215">Login im Systembrowser,</text>
+  <text class="t2" x="32" y="232">Rückkehr per App-Link;</text>
+  <text class="t2" x="32" y="249">Refresh-Token im Keychain</text>
+  <text class="t2" x="32" y="266">oder Keystore, Inkrement 2</text>
+
+  <!-- A: Ingestion -->
+  <rect class="box box-warn" x="22" y="430" width="206" height="96" rx="6"/>
+  <text class="t" x="32" y="451">Server-Ingestion</text>
+  <text class="tq" x="32" y="469">Q7</text>
+  <text class="t2" x="56" y="469">Client Credentials,</text>
+  <text class="t2" x="32" y="486">Secret beim Betreiber;</text>
+  <text class="t2" x="32" y="503">nur Access-Token, kein Nutzer</text>
+  <text class="t3" x="32" y="519">später, mit dem ersten Partner</text>
+
+  <!-- B: Managed Login -->
+  <rect class="box box-ok" x="267" y="60" width="206" height="120" rx="6"/>
+  <text class="t" x="277" y="81">Managed Login, Essentials</text>
+  <text class="t2" x="277" y="99">Passkey oder E-Mail-Code</text>
+  <text class="t2" x="277" y="116">gibt ID-, Access- und</text>
+  <text class="t2" x="277" y="133">Refresh-Token aus</text>
+  <text class="tq" x="277" y="151">Q6</text>
+  <text class="t2" x="301" y="151">Access 60 min, Refresh</text>
+  <text class="t2" x="277" y="168">30 Tage, rotiert</text>
+
+  <!-- B: JWKS -->
+  <rect class="box box-ok" x="267" y="330" width="206" height="58" rx="6"/>
+  <text class="t" x="277" y="351">Signaturschlüssel (JWKS)</text>
+  <text class="t2" x="277" y="369">öffentlich, vom Rand gecacht</text>
+
+  <!-- B: M2M -->
+  <rect class="box box-warn" x="267" y="430" width="206" height="96" rx="6"/>
+  <text class="t" x="277" y="451">M2M-App-Client</text>
+  <text class="tq" x="277" y="469">Q7</text>
+  <text class="t2" x="301" y="469">eigener Scope, z. B.</text>
+  <text class="t2" x="277" y="486"><tspan class="mono">ingest/live</tspan>; sub = Client-Id</text>
+  <text class="t3" x="277" y="503">Add-on, je Token-Abruf bezahlt</text>
+  <text class="t3" x="277" y="519">bis zu zwei Secrets (Rotation)</text>
+
+  <!-- C: Rand-Grundsatz -->
+  <rect class="box box-ok" x="512" y="60" width="221" height="90" rx="6"/>
+  <text class="t" x="522" y="81">Einziger Ort mit Konto</text>
+  <text class="t2" x="522" y="99">Q2 (Runde 1): Events und</text>
+  <text class="t2" x="522" y="116">Prompts tragen nur die</text>
+  <text class="t2" x="522" y="133">Session-Id, keine Konto-ID</text>
+
+  <!-- C: Handshake -->
+  <rect class="box box-warn" x="512" y="190" width="221" height="110" rx="6"/>
+  <text class="t" x="522" y="211">WebSocket-Aufbau (WSS)</text>
+  <text class="tq" x="522" y="229">Q6</text>
+  <text class="t2" x="546" y="229">Origin prüfen, dann erste</text>
+  <text class="t2" x="522" y="246">Nachricht <tspan class="mono">auth</tspan> mit Token</text>
+  <text class="t2" x="522" y="263">binnen 5 s, nie in der URL;</text>
+  <text class="t2" x="522" y="280">erneut bei jedem <tspan class="mono">audio.start</tspan></text>
+
+  <!-- C: Verify -->
+  <rect class="box box-ok" x="512" y="320" width="221" height="80" rx="6"/>
+  <text class="t" x="522" y="341">Token lokal prüfen</text>
+  <text class="t2" x="522" y="359">Signatur, exp, token_use,</text>
+  <text class="t2" x="522" y="376">client_id; sub = Besitzer</text>
+  <text class="t3" x="522" y="392">widerrufene JWT gelten bis exp</text>
+
+  <!-- C: Quota -->
+  <rect class="box box-warn" x="512" y="420" width="221" height="106" rx="6"/>
+  <text class="t" x="522" y="441">Konto nachschlagen</text>
+  <text class="t2" x="522" y="459">aktiv? Abo-Status? Rest?</text>
+  <text class="tq" x="522" y="477">Q8</text>
+  <text class="t2" x="546" y="477">Rest 0: Stopp, Session</text>
+  <text class="t2" x="522" y="494">endet, kein „Weiter“;</text>
+  <text class="t2" x="522" y="511">Rest vor dem Start sichtbar</text>
+
+  <!-- D: Session -->
+  <rect class="box box-ok" x="772" y="60" width="206" height="90" rx="6"/>
+  <text class="t" x="782" y="81">Session (Redis ohne Platte)</text>
+  <text class="t2" x="782" y="99">Besitzer: Konto-ID oder</text>
+  <text class="t2" x="782" y="116">Dienst-Id (Q7), nur hier</text>
+  <text class="tq" x="782" y="137">Q9</text>
+  <text class="t3" x="806" y="137">Sprecher sind nur Labels</text>
+
+  <!-- D: Stripe -->
+  <rect class="box box-warn" x="772" y="176" width="206" height="96" rx="6"/>
+  <text class="t" x="782" y="197">Stripe Managed Payments</text>
+  <text class="tq" x="782" y="215">Q10</text>
+  <text class="t2" x="812" y="215">ein Tarif, Probezeit</text>
+  <text class="t2" x="782" y="232">mit Zahlungsmittel</text>
+  <text class="t2" x="782" y="249">Webhooks: Abo-Status</text>
+  <text class="t3" x="782" y="265"><tspan class="mono">subscription.*, invoice.paid</tspan></text>
+
+  <!-- D: Postgres -->
+  <rect class="box box-ok" x="772" y="300" width="206" height="116" rx="6"/>
+  <text class="t" x="782" y="321">Kontodatenbank Postgres</text>
+  <text class="t2" x="782" y="339">Konto: sub, Abo-Status,</text>
+  <text class="t2" x="782" y="356">Kunden-Id; Nutzungszähler</text>
+  <text class="t2" x="782" y="373">(Minuten hart, Prüfungen</text>
+  <text class="t2" x="782" y="390">weich), Consent Record,</text>
+  <text class="t2" x="782" y="407">Verlauf (ADR 0009)</text>
+
+  <!-- D: Delete -->
+  <rect class="box box-warn" x="772" y="446" width="206" height="100" rx="6"/>
+  <text class="t" x="782" y="467">Konto löschen</text>
+  <text class="tq" x="782" y="485">Q10</text>
+  <text class="t2" x="812" y="485">Abo sofort kündigen,</text>
+  <text class="t2" x="782" y="502">Cognito-Nutzer löschen,</text>
+  <text class="t2" x="782" y="519">Verlauf und Zähler sofort;</text>
+  <text class="t3" x="782" y="537">ohne Konto lehnt der Rand ab</text>
+
+  <!-- Pfeile Clients <-> Cognito -->
+  <path class="ln ln-warn" d="M228 90 H265" marker-end="url(#aw)"/>
+  <text class="t3" x="231" y="84">PKCE</text>
+  <path class="ln ln-ok" d="M267 116 H230" marker-end="url(#ao)"/>
+  <text class="t3" x="231" y="130">Token</text>
+  <path class="ln ln-warn" d="M228 200 H330 V182" marker-end="url(#aw)"/>
+  <path class="ln ln-warn" d="M228 462 H265" marker-end="url(#aw)"/>
+  <path class="ln ln-ok" d="M267 494 H230" marker-end="url(#ao)"/>
+
+  <!-- Sammelleitung Clients -> Rand -->
+  <path class="ln" d="M228 145 H246"/>
+  <path class="ln" d="M228 255 H246"/>
+  <path class="ln" d="M228 515 H246"/>
+  <path class="ln" d="M246 145 V560"/>
+  <path class="ln ln-warn" d="M246 245 H510" marker-end="url(#aw)"/>
+  <text class="tw" x="262" y="238">WSS, erste Nachricht: Access-Token</text>
+
+  <!-- Rand intern -->
+  <path class="ln" d="M473 359 H510" marker-end="url(#a)"/>
+  <text class="t3" x="477" y="352">JWKS</text>
+  <path class="ln" d="M622 300 V318" marker-end="url(#a)"/>
+  <path class="ln" d="M622 400 V418" marker-end="url(#a)"/>
+
+  <!-- Rand -> Zustand -->
+  <path class="ln ln-ok" d="M733 340 H750 V105 H770" marker-end="url(#ao)"/>
+  <text class="t3" x="676" y="174">Besitzer</text>
+  <text class="t3" x="676" y="186">eintragen</text>
+  <path class="ln ln-ok" d="M733 450 H756 V390 H770" marker-end="url(#ao)"/>
+  <path class="ln ln-warn ln-dash" d="M875 272 V298" marker-end="url(#aw)"/>
+  <text class="t3" x="881" y="290">Webhook</text>
+  <path class="ln ln-warn ln-dash" d="M875 446 V418" marker-end="url(#aw)"/>
+
+  <!-- Stopp zurück zum Client -->
+  <path class="ln ln-warn" d="M600 526 V560 H248" marker-end="url(#aw)"/>
+  <text class="tw" x="262" y="576"><tspan class="mono">audio.stopped</tspan> mit <tspan class="mono">quota_exceeded</tspan> (Q8)</text>
+</svg>
+</div>
+<figcaption>Ein Prüfweg für alle drei Clients: der Rand nimmt nur Access-Token desselben Cognito-Pools an und unterscheidet Person und Dienst am Claim <code>sub</code>. Weil Cognito-Token nach einem Widerruf bis zu ihrem Ablauf gültig aussehen, schlägt der Rand bei jedem Aufbau und jedem <code>audio.start</code> das Konto in Postgres nach; das braucht er für Abo-Status und Rest-Kontingent ohnehin.</figcaption>
+</figure>
+
+<h2 id="fest">3 · Was schon fest ist</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Festlegung</th><th>Wortlaut</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Ein Token-Modell für zwei Clients</td><td><q>die Store-App hält die Anmeldung nicht im <code>localStorage</code>-Modell des alten ADR 0011; das Token-Modell muss beide Clients tragen.</q></td><td class="src">#78, ADR 0010, Consequences</td></tr>
+    <tr><td>Ingestion ohne Nutzerkonto</td><td><q>Die Ingestion braucht eine Dienstanmeldung statt eines Nutzerkontos</q>; Spezifikation: <q>Ein vom Betreiber gestarteter Prozess spricht den Live-Vertrag (Abschnitt 3) mit Dienstanmeldung</q></td><td class="src">ADR 0010; clients.md 10</td></tr>
+    <tr><td>Ein Eingangspfad</td><td><q>Eigener Push-Ingest (SRT-Listener): zweiter Eingangspfad, zweite Authentifizierung. Verworfen.</q></td><td class="src">ADR 0010, Considered Options</td></tr>
+    <tr><td>Anmeldung am WebSocket gehört hierher</td><td><q>Die Anmeldung am WebSocket entscheiden Konten (#13) und Sicherheit (#22); die Store-App hält das Token nicht im <code>localStorage</code>-Modell des alten Repos.</q> (#13 ist heute #55, #22 ist #59)</td><td class="src">clients.md 3</td></tr>
+    <tr><td>Stoppgrund steht im Vertrag</td><td><q><code>audio.stopped</code> | Server → Client | Id und Grund: <code>client</code>, <code>quota_exceeded</code>, <code>overloaded</code>, <code>provider_error</code></q></td><td class="src">inputs.md 3</td></tr>
+    <tr><td>Zustand nach dem Stopp (gezeichnet, nicht entschieden)</td><td><q>aktiv --&gt; beendet : audio.stopped mit quota_exceeded, Kontingent je Konto (offen, #55)</q>; <q>beendet : beendet, Karten 15 min lesbar, Verlauf wählbar</q></td><td class="src">architecture.md 3</td></tr>
+    <tr><td>Mitsprecher bekommen kein eigenes Protokoll</td><td><q>Einwilligung je Person mit Protokoll (Teams-Muster) … Verworfen; „Sprecher ausnehmen“ erreicht den Zweck des Widerspruchs.</q></td><td class="src">#79, ADR 0009</td></tr>
+    <tr><td>Konto löschen</td><td><q>Konto löschen | Verlauf und Zähler sofort; Consent Records und Rechnungen bleiben für ihre Fristen ohne Verbindung zu Inhalten</q></td><td class="src">datenschutz.md 8</td></tr>
+    <tr><td>Store-Abo erst mit Inkrement 2</td><td><q>Konten (#13) kann mit dem Web-Abo anfangen; Store-Abos kommen mit dem zweiten Inkrement, dann gilt Apples 3.1.3(b) (Web-Abo nur neben IAP).</q></td><td class="src">#78, ADR 0010</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fakten">4 · Fakten auf dem Tisch</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Thema</th><th>Fakt mit Wortlaut</th><th>Quelle</th></tr></thead>
+  <tbody>
+    <tr><td>Warum die erste Nachricht</td><td><q>Die WS-Auth per erster Nachricht existiert nur, weil Browser im Handshake keinen Header setzen können; native und Server-Clients könnten. Keine Origin-Prüfung im Handshake gefunden.</q></td><td class="src">#99 sicherheits-inventar 2.1</td></tr>
+    <tr><td>Nie in die URL</td><td><q>die Begründung von ADR 0011, warum das Token nie in die URL darf (Caddy- und Fastify-Logs), gilt weiter.</q></td><td class="src">#73 produktluecke</td></tr>
+    <tr><td>Capacitor ist eine fremde Origin</td><td><q>eine Capacitor-App hat eine eigene Origin, also halten „keine CORS-Header“ und „same-origin only“ nicht mehr; Token-Ablage wird plattformabhängig (Keychain/Keystore statt <code>localStorage</code>)</q>; ASVS <q>14.3.3 (L2): Browser-Storage nur für Session-Token</q></td><td class="src">#99, 2.2</td></tr>
+    <tr><td>Session-Anforderungen</td><td><q>ASVS 7.2.2 (L1): keine statischen API-Secrets als Session-Mechanismus</q>; <q>7.4.2 (L1) alle Sessions enden bei Kontolöschung</q>; <q>4.4.2 (L2) Origin-Prüfung im WS-Handshake</q></td><td class="src">#99, 2.1</td></tr>
+    <tr><td>Cognito: öffentliche Clients</td><td><q lang="en">As a best security practice in public-client apps, activate only the authorization-code grant OAuth flow, and implement Proof Key for Code Exchange (PKCE) to restrict token exchange.</q>; <q lang="en">App callback URLs such as <code>myapp://example</code> are also supported.</q></td><td class="src">AWS Cognito, App clients, abgerufen 2026-11-05</td></tr>
+    <tr><td>Cognito: Laufzeiten</td><td><q lang="en">You can set the access token expiration to any value between 5 minutes and 1 day.</q>; <q lang="en">don't specify a minimum less than an hour if you use managed login. Managed login sets browser cookies that are valid for one hour.</q>; <q lang="en">By default, the refresh token expires 30 days after your application user signs into your user pool. … any value between 60 minutes and 10 years.</q></td><td class="src">AWS Cognito, Access token; Refresh tokens, 2026-11-05</td></tr>
+    <tr><td>Cognito: Rotation</td><td><q lang="en">Rotation reissues a refresh token within the same fixed validity window. It doesn't extend the window.</q>; <q lang="en">you can also configure a grace period for the original refresh token of up to 60 seconds.</q>; <q lang="en">As a security best practice, enable refresh token rotation on your app clients.</q></td><td class="src">AWS Cognito, Refresh tokens, 2026-11-05</td></tr>
+    <tr><td>Cognito: Widerruf</td><td><q lang="en">revoked tokens will still be valid if they are verified using any JWT library that verifies the signature and expiration of the token.</q></td><td class="src">AWS Cognito, Token revocation, 2026-11-05</td></tr>
+    <tr><td>Cognito: Dienste (M2M)</td><td><q lang="en">Your app client must have a client secret to perform <code>client_credentials</code> grants.</q>; <q lang="en">a client credentials grant doesn't issue</q> ID-Token; <q lang="en">the <code>sub</code> claim contains the ID of the app client that requested the token, not a user identifier</q>; Preis: M2M in Essentials als <q lang="en">Add-on</q>, Beispiel <q lang="en">$0.00225 x 5,000 token requests = $11.25 per month</q>, <q lang="en">There is no additional charge for the number of app clients</q></td><td class="src">AWS Cognito, Scopes/M2M, Access token, Pricing, 2026-11-05</td></tr>
+    <tr><td>Kosten der Minute</td><td><q>Die Minute kostet heute fix 0,044 USD (STT 0,0068 + Erkennung 0,034 × 1,1 für den EU-Endpunkt) plus Karten × Prüfung</q>; Minuten-Kontingent <q>begrenzt STT und Erkennung (den Fixanteil), nicht die Karten</q></td><td class="src">#119 kostenmodell-abonnent</td></tr>
+    <tr><td>Stripe MP: Probezeit</td><td><q lang="en">A trial start email that confirms the subscription.</q>; <q lang="en">A trial ending reminder. Stripe sends this in addition to the trial start email for all trials longer than 7 days.</q>; Status <code>trialing</code>: <q lang="en">you can safely provision your product for your customer.</q></td><td class="src">Stripe, How Managed Payments works; Subscription webhooks, 2026-11-05</td></tr>
+    <tr><td>Stripe MP: Kunde kündigt woanders</td><td><q lang="en">your customers automatically have access to the Link website to manage … Cancel or update subscriptions</q>; bei Löschantrag <q lang="en">Cancels any subscriptions sold to them through Managed Payments.</q>; Ereignis <q lang="en"><code>customer.subscription.deleted</code> | Sent when a customer’s subscription ends.</q></td><td class="src">Stripe, How Managed Payments works; Subscription webhooks, 2026-11-05</td></tr>
+    <tr><td>Stripe MP: nur Checkout</td><td><q lang="en">Use Managed Payments with Stripe Checkout or Payment Links to sell digital products</q>; Karten: Einmal- und wiederkehrende Zahlungen <q lang="en">✓ Supported</q></td><td class="src">Stripe, How Managed Payments works, 2026-11-05</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="fragen">5 · Fragen der Runde 2</h2>
+<div class="qs">
+
+<div class="q">
+  <h3><span class="n">Q6</span>Wie tragen Web-App und Store-App die Anmeldung?</h3>
+  <p class="ask"><b>Melden sich beide Clients bei Cognito mit Authorization Code und PKCE an, halten das Access-Token (60 Minuten) nur im Speicher und das rotierende Refresh-Token (30 Tage) im Web in <code>localStorage</code>, in der Store-App im Keychain oder Keystore, und schickt der Client das Access-Token als erste WebSocket-Nachricht, die der Rand beim Aufbau und bei jedem <code>audio.start</code> prüft?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Bearer-Token in beiden Clients:</b> ein Login-Weg (Managed Login, PKCE), ein Prüfweg am Rand, der Transport-Slot des alten Repos (erste Nachricht <code>auth</code>) bleibt; nur die Ablage des Refresh-Tokens unterscheidet sich je Plattform.</li>
+    <li>b) Backend for Frontend: der Rand hält die Token, die Web-App bekommt ein HttpOnly-Cookie; die Store-App läuft auf eigener Origin und braucht trotzdem Bearer-Token, also zwei Modelle.</li>
+    <li>c) Token als Parameter in der WebSocket-URL: am einfachsten, landet aber in Proxy- und Server-Logs.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>ADR 0010: <q>das Token-Modell muss beide Clients tragen.</q> Research #99: <q>Token-Ablage wird plattformabhängig (Keychain/Keystore statt <code>localStorage</code>)</q>; ASVS <q>14.3.3 (L2): Browser-Storage nur für Session-Token</q>.</li>
+    <li>Research #99: <q>Die WS-Auth per erster Nachricht existiert nur, weil Browser im Handshake keinen Header setzen können</q>. Research #73: <q>warum das Token nie in die URL darf (Caddy- und Fastify-Logs), gilt weiter.</q></li>
+    <li>Cognito: <q lang="en">activate only the authorization-code grant OAuth flow, and implement Proof Key for Code Exchange (PKCE)</q>; Access-Token <q lang="en">between 5 minutes and 1 day</q>, mit Managed Login nicht unter einer Stunde; Refresh-Token Standard <q lang="en">30 days</q>; Rotation <q lang="en">doesn't extend the window</q>, die Anmeldung hält also höchstens 30 Tage.</li>
+    <li>Die 90-Minuten-Debatte (inputs.md 3: <q>weil sie weder zur 90-Minuten-Debatte noch zu einem Input ohne Ende passt</q>) überdauert ein 60-Minuten-Token; deshalb prüft der Rand beim Aufbau und bei jedem <code>audio.start</code>, nicht mitten im Strom.</li>
+    <li>Alt: <q>WebSocket: erste Textnachricht <code>{type:"auth", token}</code> innerhalb <code>WS_AUTH_TIMEOUT_MS</code> (5 s), sonst Close 4408</q> (#99, 1.7); dazu neu die Origin-Prüfung im Handshake (ASVS 4.4.2).</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Ein Login, ein Prüfweg und der alte Transport-Slot reichen für beide Clients; die Store-App weicht nur bei der Ablage ab, wie Research #99 es verlangt. Je Plattform ein eigener öffentlicher App-Client ohne Secret, Rotation an, Origin-Prüfung im Handshake neu.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q7</span>Wie meldet sich die Ingestion an?</h3>
+  <p class="ask"><b>Meldet sich die Server-Ingestion als eigener Cognito-App-Client mit Client Credentials an (Secret beim Betreiber, Access-Token mit eigenem Scope, derselbe Prüfweg am Rand), und gehören ihre Sessions einer Dienst-Id statt einem Konto?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Cognito Client Credentials:</b> der Betreiber legt je Ingestion einen vertraulichen App-Client an; der Prozess holt stündlich ein Access-Token; der Rand prüft es wie ein Nutzertoken und erkennt den Dienst am Scope.</li>
+    <li>b) mTLS am Rand: Client-Zertifikat aus einer eigenen CA; stark, aber Ausgabe, Ablauf und Sperrung der Zertifikate betreibst du selbst, und der Rand braucht einen zweiten Prüfweg.</li>
+    <li>c) Eigenes signiertes Diensttoken: ein Schlüssel beim Betreiber signiert ein JWT, der Rand prüft es; ein zweiter Aussteller neben Cognito.</li>
+    <li>d) Statisches Secret wie das alte <code>GATEWAY_TOKEN</code>: am einfachsten, aber von ASVS 7.2.2 ausgeschlossen.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>ADR 0010: <q>Die Ingestion braucht eine Dienstanmeldung statt eines Nutzerkontos</q>; clients.md 1: Server-Ingestion <q>später, mit dem ersten Partner</q>.</li>
+    <li>Cognito: <q lang="en">Your app client must have a client secret to perform <code>client_credentials</code> grants.</q>; <q lang="en">Each app client can have up to two secrets at a time, enabling secret rotation without downtime.</q>; im M2M-Token <q lang="en">the <code>sub</code> claim contains the ID of the app client</q>; Beispielantwort <q lang="en">"ExpiresIn": 3600</q>.</li>
+    <li>Preis: M2M ist in Essentials ein <q lang="en">Add-on</q>, je erfolgreichem Token-Abruf; nach dem Preisbeispiel (0,00225 USD je Abruf) kostet ein Abruf je Stunde rund 720 × 0,00225 = 1,62 USD im Monat je Ingestion (Rechnung dieser Seite).</li>
+    <li>Research #99 (1.2): Secrets liegen als <q>Eine Datei je Secret in <code>SECRETS_DIR</code></q>; ASVS <q>7.2.2 (L1): keine statischen API-Secrets als Session-Mechanismus</q>. Das Secret in a verlässt nie den Weg zu Cognito, zum Rand geht nur das kurzlebige Token.</li>
+    <li>ADR 0010 hat einen zweiten Eingangspfad mit <q>zweite Authentifizierung</q> verworfen; b und c brächten genau das am Rand.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Ein Aussteller, ein Prüfweg, Rotation ohne Ausfall und kein eigener Zertifikatsbetrieb. Gebaut wird es erst mit dem ersten Partner; heute legt die Antwort nur fest, dass der Rand Person und Dienst am selben Token-Typ unterscheidet. Kontingent und Besitz der Partner-Sessions kommen in Runde 3.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q8</span>Was passiert nach <code>quota_exceeded</code>?</h3>
+  <p class="ask"><b>Endet die Session bei aufgebrauchten Minuten mit <code>quota_exceeded</code> ohne „Weiter“ bis zum nächsten Abrechnungszeitraum, zeigt die App den Rest vor jedem Start, und gibt es in Inkrement 1 keinen Nachkauf?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Harter Stopp:</b> <code>audio.stopped</code> mit <code>quota_exceeded</code>, Session wird „beendet“ (Karten 15 Minuten lesbar, Verlauf wählbar); ein <code>audio.start</code> mit Rest null bekommt sofort dieselbe Antwort; der Rest steht vor dem Start in der App.</li>
+    <li>b) „Weiter“ nach Nachkauf (Top-up): ein Einmalkauf über Stripe Checkout füllt Minuten auf, danach „Weiter“ in derselben Session.</li>
+    <li>c) Weiterlaufen nur mit Einschätzung: Aufnahme und Erkennung laufen weiter, Karten bekommen keine Prüfung mehr.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li><code>docs/architecture.md</code>: <q>Was in keinem Dokument steht und deshalb offen ist: ob nach <code>quota_exceeded</code> ein "Weiter" möglich ist (Konten #55)</q>; gezeichnet ist <q>aktiv --&gt; beendet : audio.stopped mit quota_exceeded</q>.</li>
+    <li>Runde 1, Q5: <q>Minuten als harte Grenze (Stopp mit <code>quota_exceeded</code>)</q>. Research #119: Minuten <q>begrenzt STT und Erkennung (den Fixanteil), nicht die Karten</q>; die Minute kostet <q>fix 0,044 USD</q>. Option c spart diesen Fixanteil nicht und hebt die harte Grenze auf.</li>
+    <li>inputs.md 3 kennt <code>quota_exceeded</code> schon als Grund; a braucht keine neue Nachricht. Eine Warnung mitten im Gespräch bräuchte eine, und die gehört zum <q>Live-Vertrag jenseits der Audio-Nachrichten</q> (architecture.md 5: <q>kein Ticket; der Live-Vertrag wird mit dem Frontend gebaut</q>).</li>
+    <li>Stripe Managed Payments nimmt Einmalzahlungen mit Karte an (Spalte „Supports one-time payments“ bei Karten: <q lang="en">✓ Supported</q>), b ginge also im Web; im Store bräuchte ein Nachkauf einen eigenen In-App-Kauf (Research #100: <q>Abos in nativen Apps laufen über In-App-Kauf (Apple 3.1.1)</q>; für Einmalkäufe ist das eine Lesart).</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Der Stopp nutzt den vorhandenen Vertrag und den gezeichneten Zustand „beendet“; Nachkauf und Warnung im Gespräch kosten je einen neuen Kaufweg und eine neue Nachricht und kommen in Runde 3, wenn die Tarifzahlen aus dem Messaufbau der Prüfung (#60) stehen.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q9</span>Was ist ein Gast?</h3>
+  <p class="ask"><b>Ist ein Gast nie Nutzer des Produkts, sondern nur ein Sprecher (Label oder Name im Setting), dessen Einwilligung der Kontoinhaber im Dialog bestätigt und den er mit „Sprecher ausnehmen“ herausnimmt?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Gast = Sprecher:</b> kein Konto, keine Anmeldung, nichts gespeichert, was ihn identifiziert; der Consent Record zählt nur die Sprecher.</li>
+    <li>b) Gast-Link zum Mitlesen: Gäste sehen die Karten live ohne Konto über einen geteilten Link.</li>
+    <li>c) Gast mit eigenem Konto oder eigener Einwilligung auf dem eigenen Gerät.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>#55 fragt: <q>Wie Gastteilnehmer eines Gesprächs behandelt werden.</q> <code>CONTEXT.md</code> zu Speaker: <q lang="en">Avoid: Teilnehmer, Participant, User (the User is the person operating the product, not necessarily a Speaker)</q>.</li>
+    <li>ADR 0009 hat c schon verworfen: <q>Einwilligung je Person mit Protokoll (Teams-Muster) … setzt ein Gerät je Mitsprecher voraus oder beweist nichts mehr als die Nutzerbestätigung</q>.</li>
+    <li>datenschutz.md 8: <q>Mitsprecher | Auskunft oder Löschung nachträglich | der Anbieter hält nichts, was ihn identifiziert</q>; Consent Record: <q>Nie im Record: Namen, Setting-Text, Topic, Transkript, Audio.</q> (nur <code>speakersInSetting</code>).</li>
+    <li>clients.md 6: Setting-Vorlagen mit <q>auch private Namen ("Mama", "Papa"); nur lokal, in den Einstellungen löschbar, nie zum Konto.</q></li>
+    <li>Für b fehlt der Unterbau: <q>Session ohne verbundenen Client mit Karten für später dazukommende Zuschauer</q> liegt bei #56, Teilen bei der Live-Ansicht #57; Runde 1 hat <q>Haushalt und Team in den Nebel</q> gelegt.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Das ist schon die Linie von ADR 0009 und dem Glossar; ein Gast-Konto bräche „eine Person, ein Konto“ und die Zusage, dass nichts über Mitsprecher liegt. Mitlesen per Link kommt mit Teilen (#57) in Runde 3.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q10</span>Probezeit, Tarif und Konto löschen</h3>
+  <p class="ask"><b>Startet Inkrement 1 mit genau einem Tarif und einer Probezeit über Stripe mit hinterlegtem Zahlungsmittel und kleinerem Kontingent, und kündigt „Konto löschen“ zuerst das Abo sofort, löscht dann Cognito-Nutzer, Verlauf und Zähler und lässt Consent Records und die Belege beim Verkäufer stehen?</b></p>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Ein Tarif, Probezeit mit Zahlungsmittel, Löschen kündigt:</b> Stripe führt die Probe (<code>trialing</code>), das Konto bekommt in der Probe ein kleineres Kontingent; Löschen beendet das Abo bei Stripe, dann Cognito, dann Verlauf und Zähler.</li>
+    <li>b) Freikontingent ohne Zahlungsmittel (Freemium): einmalig einige Minuten je neuem Konto.</li>
+    <li>c) Mehrere Tarifstufen ab Start, etwa Alltag und Sendung.</li>
+    <li>d) Löschen nur ohne laufendes Abo: erst kündigen, Zeitraum abwarten, dann löschen.</li>
+  </ul>
+  <div class="lbl">Fakten</div>
+  <ul>
+    <li>Stripe MP verschickt <q lang="en">A trial start email that confirms the subscription.</q> und eine Erinnerung <q lang="en">for all trials longer than 7 days</q>; Webhook <q lang="en"><code>customer.subscription.trial_will_end</code> | Sent 3 days before the trial period ends.</q></li>
+    <li>Anmeldung ist kostenlos (Cognito <q>10.000 MAU frei</q>, #100); ein neues Konto braucht nur eine E-Mail-Adresse. Freikontingent b kostet je Konto die Minuten: Research #119 nennt für die Golden-Set-Mischung <q>0,073 statt 0,178 USD</q> je Minute (mit Hebeln), 30 freie Minuten also etwa 2,19 USD (Rechnung dieser Seite).</li>
+    <li>Tarifstufen c: Research #119 rechnet die Break-even-Minuten je Profil sehr verschieden, etwa <q>Alltag | … | 173 / 192</q> gegen <q>Sendung | … | 73 / 81</q> (Hebel ohne Cache, Store/Web), ausdrücklich <q>keine Entscheidung</q>; Runde 1: die Zahlen <q>stehen im Tarif, nicht in der Architektur</q>.</li>
+    <li>datenschutz.md 8: <q>Konto löschen | Verlauf und Zähler sofort</q>; Consent Record <q>überlebt die Kontolöschung für diese Frist ohne Verbindung zu einem Verlauf</q>. Beim Verkäufer (MoR) liegen die Rechnungen ohnehin bei Stripe.</li>
+    <li>Cognito-Token bleiben nach Widerruf bis <code>exp</code> gültig (<q lang="en">revoked tokens will still be valid if they are verified using any JWT library</q>); ASVS <q>7.4.2 (L1) alle Sessions enden bei Kontolöschung</q>. Darum prüft der Rand die Konto-Zeile (Schaubild).</li>
+    <li>Kündigen kann der Kunde auch bei Link, ohne dein Zutun (<q lang="en">Cancel or update subscriptions</q>); das Konto erfährt es nur über <code>customer.subscription.deleted</code>. Research #100: <q>Web-Abo (PSP oder MoR) → eigener Kündigungsbutton auf der Website Pflicht</q> (Lesart); das Löschen ersetzt diesen Button nicht.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Das Zahlungsmittel bremst Konten, die nur für Freiminuten angelegt werden, Stripe übernimmt die Probe-Mails, und ein Tarif hält Inkrement 1 klein, bis #60 die Zahlen liefert. Beim Löschen zuerst kündigen, damit nach dem Löschen nichts mehr abgebucht wird; ob der laufende Monat anteilig erstattet wird, geht an den Anwalt (#61).</div>
+</div>
+
+</div>
+
+<h2 id="spaeter">6 · Runde 3 (nicht heute)</h2>
+<div class="later">
+  <ul>
+    <li><b>Store-Abos und Abgleich</b> mit Inkrement 2: Research #100: <q>Eigenbau über App Store Server Notifications V2 und Play RTDN … oder RevenueCat (Free bis 2.500 USD MTR, dann 1 %; Web ohne Aufpreis, Engines Stripe/Paddle)</q>; RevenueCat Web: <q lang="en">Stripe can be merchant of record when using Managed Payments</q>. Dazu ADR 0010: <q>dann gilt Apples 3.1.3(b) (Web-Abo nur neben IAP).</q></li>
+    <li><b>Besitz und Kontingent der Partner-Sessions</b> (wenn Q7 ja): mit dem ersten Partner und der <q>Session ohne verbundenen Client</q> (#56, inputs.md 8).</li>
+    <li><b>Nachkauf und Warnung im Gespräch</b> (wenn Q8 ja): Einmalkauf im Web, eigener In-App-Kauf im Store, Restminuten als Nachricht im Live-Vertrag mit dem Frontend.</li>
+    <li><b>Tarifzahlen</b> (Minuten, Prüfungen, Probe-Kontingent und -Dauer) nach dem Messaufbau der Prüfung (#60).</li>
+    <li><b>Gäste lesen mit</b> per Link: mit Teilen in der Live-Ansicht (#57).</li>
+    <li><b>Rechtsfragen</b> für #61: Erstattung beim Löschen mit laufendem Abo; Research #100: <q>Reicht beim MoR ein Button, der zur MoR-Kündigung führt, oder braucht es die eigene Bestätigungsseite?</q></li>
+    <li><b>Probe zweimal:</b> wer löscht und neu anlegt, bekommt einen frischen Zähler, weil <q>Verlauf und Zähler sofort</q> gelöscht werden; ob das Zahlungsmittel als Bremse reicht, zeigt erst der Betrieb.</li>
+  </ul>
+  <p style="margin:10px 0 0">Danach: ADR-Entwurf „Konten, Mandanten und Kontingent“ (Kommentar Runde 1: <q>ADR-Entwurf „Konten, Mandanten und Kontingent“ nach Runde 2</q>), mit Nachtrag zu <code>docs/spec/clients.md</code> 3 und <code>docs/architecture.md</code> 3 und 5.</p>
+</div>
+
+<h2 id="begriffe">7 · Begriffe</h2>
+<dl class="gl">
+  <dt>OIDC</dt><dd>OpenID Connect: Anmeldestandard auf OAuth 2.0; der Anbieter (hier Cognito) bestätigt, wer sich angemeldet hat, und stellt dafür signierte Token aus.</dd>
+  <dt>ID-Token</dt><dd>Sagt, wer angemeldet ist (Kennung <code>sub</code>, E-Mail); für die App, nicht für den Rand.</dd>
+  <dt>Access-Token</dt><dd>Sagt, was der Inhaber darf; kurzlebig (hier 60 Minuten), geht als erste WebSocket-Nachricht an den Rand.</dd>
+  <dt>Refresh-Token</dt><dd>Langlebiger Nachweis (hier 30 Tage), mit dem der Client neue ID- und Access-Token holt, ohne dass sich die Person neu anmeldet. Mit Rotation gibt es bei jedem Abruf ein neues, das alte verfällt.</dd>
+  <dt>PKCE</dt><dd>Proof Key for Code Exchange: Schutz für Clients ohne Secret (Browser, App), damit ein abgefangener Anmeldecode nicht eingelöst werden kann.</dd>
+  <dt>JWKS</dt><dd>Die öffentlichen Schlüssel des Anbieters; damit prüft der Rand die Signatur eines Tokens selbst, ohne Cognito bei jedem Aufbau zu fragen.</dd>
+  <dt>Client Credentials</dt><dd>OAuth-Ablauf für Dienste ohne Person: der Dienst weist sich mit Client-Id und Secret aus und bekommt ein Access-Token (M2M, Maschine zu Maschine).</dd>
+  <dt>mTLS</dt><dd>Gegenseitiges TLS: auch der Client zeigt beim Verbindungsaufbau ein Zertifikat; braucht eine eigene Zertifizierungsstelle und deren Betrieb.</dd>
+  <dt>Top-up</dt><dd>Nachkauf: Einmalkauf zusätzlicher Minuten innerhalb eines Abrechnungszeitraums.</dd>
+  <dt>Probezeit</dt><dd>Trial: Abo-Zeitraum ohne Abbuchung; bei Stripe Status <code>trialing</code>, danach automatisch <code>active</code>, wenn ein Zahlungsmittel hinterlegt ist.</dd>
+  <dt>Webhook</dt><dd>Nachricht, die ein fremder Dienst (hier Stripe) bei einem Ereignis an eine Adresse des Backends schickt, etwa „Abo beendet“.</dd>
+</dl>
+
+<p class="muted" style="margin-top:32px">Quellen: Issue #55 mit Kommentaren (Stand 2026-11-05); <code>docs/adr/0005</code>, <code>0009</code>, <code>0010</code>; <code>docs/spec/inputs.md</code>, <code>clients.md</code>, <code>datenschutz.md</code>, <code>sprecher.md</code>; <code>docs/architecture.md</code>; <code>docs/research/produktluecke.md</code> (#73), <code>sicherheits-inventar.md</code> (#99), <code>identitaet-zahlung-eu.md</code> (#100, Preise abgerufen 2026-10-09), <code>kostenmodell-abonnent.md</code> (#119, 2026-10-23); <code>CONTEXT.md</code>; <code>packages/service-kit/README.md</code>; alles auf origin/main 3301f712. Web, abgerufen 2026-11-05: <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html">Cognito App clients</a>, <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-access-token.html">Access token</a>, <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-refresh-token.html">Refresh tokens</a>, <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/token-revocation.html">Token revocation</a>, <a href="https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html">Scopes, M2M</a>, <a href="https://aws.amazon.com/cognito/pricing/">Cognito Pricing</a>, <a href="https://docs.stripe.com/payments/managed-payments/how-it-works">How Managed Payments works</a>, <a href="https://docs.stripe.com/billing/subscriptions/webhooks">Subscription webhooks</a>. Rechnungen „dieser Seite“ sind eigene Überschläge aus den zitierten Preisen. Keine Rechts- oder Steuerberatung.</p>
+</div>
+</body>
+</html>

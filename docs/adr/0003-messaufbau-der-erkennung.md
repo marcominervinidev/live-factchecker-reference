@@ -1,0 +1,46 @@
+# 0003: Messaufbau der Erkennung: Golden Set, zwei Messmodi, Richter-Modell
+
+Die Erkennung von live-factchecker wird an zwei getrennten Datensätzen gemessen. Das **Golden Set** besteht aus echten Aufnahmen in drei Teilen (Talkshow, Debatte, Alltag; Anteile 40/40/20 nach Behauptungen) mit Labels, die Marco abnimmt; nur aus ihm kommen Qualitätszahlen. Das **synthetische Set** entsteht aus LLM-Skripten mit eingebauten Behauptungen und Text-to-Speech mit mehreren Stimmen; es läuft in der CI mit Mock-Extraktoren und prüft nur Mechanik (Turn-Bildung, Fünf-Sekunden-Takt, Dedup, Zuschreibung, Latenzpfad), nie Qualität. Jeder Messlauf hat zwei **Modi**: im Audiomodus geht das Audio durch Spracherkennung (STT) und Sprechertrennung an die Extraktoren, das ist der Weg des Produkts, und dort gelten die Schwellen; im Textmodus bekommen die Extraktoren das korrigierte Referenz-Transkript direkt, als Diagnose; die Differenz ist der STT-Verlust. Ob ein Fund ein gelabeltes Claim trifft, entscheidet nach zwei Filtern (gleicher Sprecher, Zeitüberlappung ±5 s) ein **Richter-Modell**, das nie das Extraktor-Modell ist und an 50 von Marco geprüften Paaren kalibriert wird (mindestens 45 richtig). Labels tragen Prüfwürdigkeit (hoch, niedrig), Art (Tatsache, Widerspruch, Zustimmung, Meinung mit Tatsachenkern) und Bezug, damit die Zählregel nach dem ersten Praxistest gewählt werden kann, ohne neu zu labeln; reine Meinungen werden nicht gelabelt und zählen als Fehlalarm. Die Schwellen sind vorläufig: Recall ≥ 0,75, Precision ≥ 0,8, Zuschreibung ≥ 0,95, p95 vom letzten gesprochenen Wort bis zur Karte ≤ 15 s, Kosten ≤ 0,063 USD je Minute, Dubletten ≤ 10 %, im Alltagsteil ≤ 2 Fehlalarme je 10 Minuten; je Arm drei Läufe, der Median zählt. Korpus und Harness liegen im privaten Repo `live-factchecker-v2` unter `evals/`. Sprache ist von Anfang an Parameter; Deutsch bleibt Primärsprache, Englisch kommt nur als automatisierter ClaimBuster-Benchmark im Textmodus. Marco hat das am 2026-10-08 entschieden.
+
+Status: accepted. Quelle: Wayfinder-Ticket "Testdaten und Messaufbau der Erkennung festlegen" (marcominervinidev/live-factchecker-plan#28), Research "Testdaten für die Erkennung" (#26) und "Alltagsteil des Golden Sets" (#29). Spezifikation: `docs/spec/messaufbau-erkennung.md`. Begriffe: `CONTEXT.md` (Segment, Turn, Claim, Speaker).
+
+## Considered Options
+
+- **Nur echte Aufnahmen, auch für die CI** (Regel des alten Repos vom 2026-10-02): Die CI bräuchte echte Modelle und Geld oder liefe gar nicht. Verworfen; die Regel gilt weiter für Qualitätszahlen, das synthetische Set liefert keine.
+- **Nur Audiomodus:** Fehler der Spracherkennung und Fehler der Erkennung wären nicht trennbar. Verworfen.
+- **Zuordnung Fund zu Label von Hand:** bei drei Armen, drei Läufen und 200 Behauptungen rund 1.800 Entscheidungen je Vergleichsrunde, nicht wiederholbar. Verworfen zugunsten des Richter-Modells mit Stichprobenprüfung.
+- **Zählregel jetzt festlegen** (Recall nur auf hoch prüfwürdige): verschoben; die Labels tragen beide Lesarten, der Bericht rechnet beide.
+- **Eigene Alltagsaufnahmen oder Forschungskorpora** (FOLK, GRAIN, CALLHOME): Marco nimmt nicht selbst auf; FOLK verbietet die Übermittlung an Cloud-Dienste und ist auf Hochschulen beschränkt, GRAIN ist unerreichbar, CALLHOME braucht Konto oder Kauf. Verworfen zugunsten von Gesprächspodcasts per RSS (Realitätsabgleich, Baywatch Berlin, später Gemischtes Hack und Fest & Flauschig).
+- **Korpus im Planungs-Repo:** Der Harness ist Code und gehört nach v2; ein Korpus ohne Harness nützt nichts. Verworfen; v2 bleibt privat, solange der Korpus drin ist.
+- **Englisch zuerst** wegen fertiger Labels: Die englischen Daten messen Satz-Prüfwürdigkeit ohne Sprecher, nicht den Vertrag aus ADR 0002; die Erkennungslücke war ein deutscher Befund. Verworfen; Sprache als Parameter.
+- **Referenz-Transkript vollständig korrigieren:** 6 bis 10 Stunden je 100 Minuten. Verworfen; korrigiert werden Sprecherwechsel und Namen überall, der Wortlaut nur um jede Behauptung plus einen Satz davor und danach.
+- **Merz-Beispiel als benannter Testfall:** von Marco verworfen.
+
+## Consequences
+
+- Golden Set Version 1 (10 bis 20 Ausschnitte à 3 bis 5 Minuten) startet den Harness; Version 2 wächst auf mindestens 100 erwartete Behauptungen je Teil Debatte und Talkshow aus mindestens vier Sendungen oder Sitzungen und mindestens 30 Minuten Alltag, bevor die messbaren Entscheidungen aus "Erkennungseinheit und Modellrollen" fallen.
+- Eine Änderung der Schwellen ist eine Entscheidung mit Begründung im Bericht, nie eine stille Anpassung.
+- Richter-Modell und Zweitlabel-Modell müssen aus einer anderen Modellfamilie kommen als der Extraktor; das geht in "Anbieterentscheidungen" (#12).
+- Weil das Referenz-Transkript nur teilweise korrigiert wird, ist die Wortfehlerrate der Spracherkennung nicht messbar; das ist in Kauf genommen, gemessen wird der STT-Verlust an Behauptungen.
+- Der Themen-Extraktor wird in Version 1 nur mitgeschrieben, ohne Soll-Wert; Topic-Labels bleiben Nebel.
+- NC-Lizenzen und das Download-Risiko bei Sendungen und Podcasts sind für interne Tests akzeptiert; der Korpus wird nicht weitergegeben.
+- Übereinstimmung zwischen Marcos Labels und dem Zweitlabel wird berichtet, ist aber kein Gate; liegt sie unter α 0,6, ist die Richtlinie nachzuschärfen.
+
+## Nachtrag 2026-10-23: Latenzschwelle p95 auf 20 s gelockert
+
+Marco hat im Ticket "Vergleichsprototyp Erkennung" (#30, Frage F10) die Schwelle "Latenz p95 vom Ende des letzten Worts der Behauptung bis zur Karte, nur Treffer" von ≤ 15 s auf **≤ 20 s** gelockert. Die Zahl im Haupttext bleibt als Stand vom 2026-10-08 stehen; gültig ist dieser Nachtrag und die Tabelle in der Spezifikation (Abschnitt 4.4).
+
+Begründung aus der Messung (Textmodus, Golden Set 1.0, Gemini-Richter kalibriert 49 von 50): Der beste Kandidat im Kostenbudget, Haiku 5.5 mit Prompt v2 als Extraktor und Sonnet 5.5 als Prüfstufe nach dem Extraktor (0,020 USD je Minute), liegt über drei Wiederholungen bei p95 17,8 s gesamt (Spanne 16,6 bis 22,7), Talkshow 19,7 s, Debatte 13,3 s. Die Latenz kommt fast vollständig aus dem Nachholen: Der Extraktor gibt eine Behauptung erst ein bis zwei Aufrufe (5-s-Ticks) nach dem Aufruf aus, in dem der Wortlaut vollständig vorlag; alle Treffer über 15 s sind nachgeholt, ohne Nachholen läge p95 bei 10,8 s. Die Prüfstufe kostet nur 2,1 s je Karte; Takt 3 s, Resolver aus oder Prüfstufe parallel ändern p95 um weniger als 0,5 s. Zwei Prompt-Fassungen (v2; v3 mit ausdrücklichem Verbot des Nachholens) haben es nicht beseitigt (v3: 18,9 s, 25 von 188 Karten über 15 s). 15 s erreicht nur Sonnet 5.5 als Extraktor (11,3 s), bei 0,104 USD je Minute, 65 % über der Kostenschwelle von 0,063. Die Schwelle an der Kostenschwelle zu halten, hätte also den einzigen Kandidaten im Budget ausgeschlossen, ohne dass Prompt oder Mechanik einen Hebel gezeigt hätten.
+
+Konsequenzen: Die Schwelle gilt wie bisher im Audiomodus; der Textmodus bleibt Diagnose. Mit 20 s bleibt im Audiomodus weniger Reserve für die STT-Finalisierung; das wird im Messschritt Audiomodus (Folgeticket) neu bewertet. Wiedervorlage, wenn ein Extraktor im Kostenbudget 15 s erreicht oder der Audiomodus die Reserve frisst. Die Spezifikation Messaufbau (4.4) trägt die neue Schwelle; ADR 0004 nennt das Latenzbudget von 15 s in seiner Begründung und hat einen Nachtrag.
+
+## Nachtrag 2026-10-28: Audiomodus gemessen, Schwellen unverändert
+
+Ticket #73 hat den Audiomodus gemessen (Replay 2026-10-27 mit Sonnet 5.5 als Speaker Mapper, ADR 0009 nur als Gegenrechnung, Median aus drei Wiederholungen; Live-Latenzlauf 2026-10-28 auf lanz-a, phoenix-a und realitaetsabgleich-a; Berichte im v2-Branch `evals/audiomodus` unter `evals/reports/audio-2026-10-27/` und `audio-live-2026-10-28/`). Die Schwellen der Spezifikation (4.4) bleiben, wie sie sind.
+
+- **Latenz:** Die Wiedervorlage aus dem Nachtrag 2026-10-23 ("wenn der Audiomodus die Reserve frisst") greift nicht. Live liegt p95 nur Treffer bei 16,3 s, das Gate ≤ 20 s ist erfüllt. Mit ADR 0009 über das Mikrofon (Zurückhalten bis 30 s ohne Antwort auf die Rückfrage) wären es 23,1 s, in der Talkshow 29,5 s; das ist ein Preis der Datenschutzregel, kein Anlass, die Schwelle zu lockern. Der Messbericht weist beide Grenzen aus, ohne und mit ADR 0009 (ADR 0009, Nachtrag 2026-10-28).
+- **Zuschreibung:** 0,677, das Gate ≥ 0,95 ist verfehlt. Ursachen und Gegenmaßnahmen stehen in `evals/reports/audio-2026-10-27/zuschreibung-analyse.md`; weiter im Folgeticket plan#77.
+- **Talkshow:** Recall und Precision verfehlen die Schwellen (≥ 0,75 und ≥ 0,80) schon im Textmodus (Text: Recall nur hoch 0,71, Precision 0,65; Audio: 0,62 und 0,66); das ist kein Effekt der Spracherkennung und gehört nicht zum Audiomodus.
+- **STT-Verlust:** Recall nur hoch 0,715 im Text, 0,624 im Audio, also 0,09 gesamt (Talkshow 0,71 → 0,62, Debatte 0,81 → 0,81, Alltag 0,57 → 0,43); Precision 0,663 → 0,662; Kosten 0,021 → 0,031 USD je Minute, unter der Schwelle 0,063.
+
+Marco hat das am 2026-10-28 entschieden (G4). Konsequenzen: keine Änderung an den Schwellen in 4.4; die Spezifikation Messaufbau (Abschnitt 5) verlangt im Audiomodus die Zahlen ohne und mit ADR 0009. Schaubild: https://claude.ai/artifact/1DAV5jSYMRpCMKPP3We71s (Kopie: docs/schaubilder/073-audiomodus-stt-verlust.html).

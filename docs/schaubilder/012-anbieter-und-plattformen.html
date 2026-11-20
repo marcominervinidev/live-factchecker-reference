@@ -1,0 +1,353 @@
+<!-- Quelle: https://claude.ai/artifact/4sQFzjcWN7Qsihdj7ANmt7, exportiert 2026-10-23, Ticket #12 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Anbieterentscheidungen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; EU-Verarbeitung teal, Verarbeitung in den USA bernstein, Offenes gestrichelt; Schrift nie schwarz (dunkles Marineblau); dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --eu:#0e7876; --us:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --eu:#4fc3c0; --us:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --eu:#4fc3c0; --us:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:720px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.eu{color:var(--eu);border-color:var(--eu)} .tag.us{color:var(--us);border-color:var(--us)}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--eu);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--eu);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--eu);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-eu{stroke:var(--eu);stroke-width:1.8}
+.d .box-us{stroke:var(--us);stroke-width:1.8}
+.d .box-muted{stroke:var(--muted);stroke-dasharray:4 3;stroke-width:1.1}
+.d .zone-eu{fill:var(--eu);opacity:.08}
+.d .zone-us{fill:var(--us);opacity:.10}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-eu{fill:var(--eu)} .d .lab-us{fill:var(--us)} .d .lab-bad{fill:var(--bad)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-eu{stroke:var(--eu)} .d .ln-us{stroke:var(--us)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-eu{fill:var(--eu)} .d .m-us{fill:var(--us)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ticket 12 · Grilling · Schaubild der Entscheidung · 2026-10-12</div>
+  <h1>Anbieterentscheidungen</h1>
+  <p class="lead">Welche Anbieter aus live-factcheck bleiben im Produkt, welche fallen, welche gelten nur in einem Modus? Schon fest sind <strong>Deepgram Nova-3 EU</strong> als Spracherkennung im ersten Schritt (ADR 0005) und <strong>kein Klassifikator</strong>, also fällt Jev (ADR 0004). Entschieden sind die <strong>Plattform</strong> der Claude-Modelle, die <strong>Messfamilie</strong>, die Dienste außerhalb des Modells und Startwerte je Rolle; die konkreten Modelle fallen nach Messung. Diese Seite ist das Schaubild zum Abnicken.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#fluss">Wohin Daten gehen</a><a href="#matrix">Matrix</a><a href="#festgelegt">Festgelegt</a><a href="#rollen">Messrollen</a><a href="#fakten">Fakten</a><a href="#wohin">Was wo liegt</a><a href="#begriffe">Begriffe</a>
+  </nav>
+</header>
+
+<h2 id="fluss">1 · Wohin welche Daten gehen</h2>
+<p>So sieht es jetzt aus. Jeder Anbieter ist eine Stelle, an der Gesprächsdaten das Backend verlassen. Was ein Anbieter zu sehen bekommt, wächst von rechts nach links: Deepgram hört alles, das Modell liest das Transkript, die Suche sieht nur den Satz einer Behauptung.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 430" role="img" aria-label="Das Backend läuft in der EU. Es schickt Audio an Deepgram am EU-Endpunkt, Transkript und Setting an Claude über Bedrock oder Vertex in der EU. Nach der Namensmaske gehen nur Behauptungssätze nach außen: an Brave in den USA, an Google Fact Check in den USA, an Wikipedia, und an amtliche Quellen in Deutschland und der EU. Richter und Zweitlabel laufen nur im Messaufbau bei einer anderen Modellfamilie in der EU. Embeddings sind offen.">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="are" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-eu"/></marker>
+  <marker id="aru" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-us"/></marker>
+</defs>
+<rect x="10" y="10" width="640" height="410" rx="8" class="zone-eu"/>
+<text x="24" y="32" class="lab lab-eu">EU-Verarbeitung</text>
+<rect x="680" y="10" width="310" height="410" rx="8" class="zone-us"/>
+<text x="694" y="32" class="lab lab-us">USA oder Ort unklar</text>
+
+<!-- Backend -->
+<rect x="30" y="170" width="150" height="80" rx="6" class="box"/>
+<text x="105" y="196" text-anchor="middle" class="t">Backend</text>
+<text x="105" y="214" text-anchor="middle" class="t2">EU-Hosting</text>
+<text x="105" y="230" text-anchor="middle" class="t3">Ticket EU-Hosting, Betrieb</text>
+
+<!-- Deepgram -->
+<rect x="250" y="50" width="180" height="56" rx="6" class="box box-eu"/>
+<text x="340" y="72" text-anchor="middle" class="t">Deepgram Nova-3</text>
+<text x="340" y="90" text-anchor="middle" class="t2">api.eu.deepgram.com · fest</text>
+<polyline points="105,170 105,78 248,78" class="ln ln-eu" marker-end="url(#are)"/>
+<text x="112" y="120" class="t3">Audio</text>
+<text x="440" y="72" class="t3" style="fill:var(--bad)">Schranke vor Launch:</text>
+<text x="440" y="86" class="t3" style="fill:var(--bad)">Beleg Aufbewahrung · Q4</text>
+
+<!-- Claude -->
+<rect x="250" y="150" width="180" height="70" rx="6" class="box box-eu"/>
+<text x="340" y="172" text-anchor="middle" class="t">Claude</text>
+<text x="340" y="190" text-anchor="middle" class="t2">Bedrock EU oder Vertex eu</text>
+<text x="340" y="207" text-anchor="middle" class="t3">Extraktor, Klärer, Prüfung · Q1, Q7</text>
+<line x1="180" y1="185" x2="248" y2="185" class="ln ln-eu" marker-end="url(#are)"/>
+<text x="214" y="177" text-anchor="middle" class="t3">Transkript</text>
+<text x="214" y="200" text-anchor="middle" class="t3">+ Setting</text>
+
+<!-- Richter -->
+<rect x="250" y="260" width="180" height="56" rx="6" class="box box-eu"/>
+<text x="340" y="282" text-anchor="middle" class="t">Gemini · Vertex Frankfurt</text>
+<text x="340" y="300" text-anchor="middle" class="t3">Richter, Zweitlabel · nur Messaufbau · Q6</text>
+
+<!-- Embeddings -->
+<rect x="250" y="340" width="180" height="56" rx="6" class="box box-muted"/>
+<text x="340" y="362" text-anchor="middle" class="t2">Embeddings</text>
+<text x="340" y="380" text-anchor="middle" class="t3">verschoben an #24 · Q5</text>
+
+<!-- Maske -->
+<rect x="470" y="150" width="34" height="250" rx="4" class="box"/>
+<text x="487" y="275" text-anchor="middle" class="t3" transform="rotate(-90 487 275)">Namensmaske (ADR 0002)</text>
+<polyline points="180,230 220,230 220,240 468,240" class="ln" marker-end="url(#ar)"/>
+<text x="300" y="236" class="t3">Behauptungssatz</text>
+
+<!-- Amtlich -->
+<rect x="530" y="330" width="110" height="56" rx="6" class="box box-eu"/>
+<text x="585" y="352" text-anchor="middle" class="t2">Amtliche Quellen</text>
+<text x="585" y="370" text-anchor="middle" class="t3">Destatis, DIP …</text>
+<polyline points="504,358 528,358" class="ln ln-eu" marker-end="url(#are)"/>
+
+<!-- USA -->
+<rect x="720" y="150" width="240" height="50" rx="6" class="box box-us"/>
+<text x="840" y="170" text-anchor="middle" class="t">Brave Search · Q2</text>
+<text x="840" y="188" text-anchor="middle" class="t3">USA · Query-Log 90 Tage</text>
+<rect x="720" y="220" width="240" height="50" rx="6" class="box box-us"/>
+<text x="840" y="240" text-anchor="middle" class="t">Google Fact Check · Q3</text>
+<text x="840" y="258" text-anchor="middle" class="t3">USA · ohne CORRECTIV seit 2026-04</text>
+<rect x="720" y="290" width="240" height="50" rx="6" class="box box-us"/>
+<text x="840" y="310" text-anchor="middle" class="t">Wikipedia, Wikidata</text>
+<text x="840" y="328" text-anchor="middle" class="t3">Wikimedia · Rate-Limits 2026</text>
+<rect x="720" y="360" width="240" height="44" rx="6" class="box box-muted"/>
+<text x="840" y="386" text-anchor="middle" class="t2">SearXNG · fällt (Q2)</text>
+
+<polyline points="504,175 718,175" class="ln ln-us" marker-end="url(#aru)"/>
+<polyline points="504,245 718,245" class="ln ln-us" marker-end="url(#aru)"/>
+<polyline points="504,315 718,315" class="ln ln-us" marker-end="url(#aru)"/>
+<text x="610" y="168" text-anchor="middle" class="t3">nur der Satz,</text>
+<text x="610" y="194" text-anchor="middle" class="t3">Privatnamen maskiert</text>
+</svg>
+</div>
+<figcaption>Teal läuft in der EU, Bernstein in den USA oder an einem Ort, den der Anbieter nicht nennt. Nach außen gehen nur Behauptungssätze, und Namen nur von Personen, die das Setting als öffentlich markiert. Gestrichelt ist, was in dieser Runde nicht entschieden wird.</figcaption>
+</figure>
+
+<h2 id="matrix">2 · Matrix: was aus live-factcheck kommt und was die Empfehlung ist</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Anbieter</th><th>Altes Repo</th><th>Stand jetzt</th><th>Empfehlung</th><th>Frage</th></tr></thead>
+  <tbody>
+    <tr><td>Deepgram Nova-3 EU</td><td>Default (ADR 0016)</td><td>fest im ersten Schritt (ADR 0005)</td><td><span class="tag ok">bleibt</span> mit Bedingung zur Aufbewahrung</td><td>Q4 entschieden</td></tr>
+    <tr><td>Anthropic direkt</td><td>einziger LLM-Weg</td><td>kein EU-Endpunkt (<code>inference_geo</code> nur global, us)</td><td><span class="tag bad">fällt</span> für Gesprächsdaten</td><td>Q1 entschieden</td></tr>
+    <tr><td>Claude über Bedrock EU</td><td>nicht gebaut</td><td>Research #33</td><td><span class="tag ok">Plattform</span></td><td>Q1 entschieden</td></tr>
+    <tr><td>Claude über Vertex <code>eu</code></td><td>nicht gebaut</td><td>Research #33</td><td>Ausweichweg</td><td>Q1 entschieden</td></tr>
+    <tr><td>Jev (TypeSafe)</td><td>Klassifikator (ADR 0007)</td><td>kein EU-Endpunkt; Vortor gestrichen (ADR 0004)</td><td><span class="tag bad">fällt</span></td><td>entschieden</td></tr>
+    <tr><td>Brave Search</td><td>Opt-in (ADR 0023)</td><td>USA, Query-Log 90 Tage</td><td><span class="tag ok">bleibt</span>, als Standard, nur mit Maske</td><td>Q2 entschieden</td></tr>
+    <tr><td>SearXNG</td><td>Default bis zum Vergleich</td><td>Google behandelt es als Bot, CAPTCHAs</td><td><span class="tag bad">fällt</span></td><td>Q2 entschieden</td></tr>
+    <tr><td>Google Fact Check Claim Search</td><td>gebaut</td><td>CORRECTIV fehlt seit 2026-04-02; kein Caching erlaubt</td><td><span class="tag ok">bleibt</span>, nur live</td><td>Q3 entschieden</td></tr>
+    <tr><td>Embedding-Modell</td><td>offen (ADR 0012)</td><td>kein Bedarf im ersten Inkrement benannt</td><td>verschoben an Topic und Vorrecherche</td><td>Q5 entschieden</td></tr>
+    <tr><td>Modelle je Rolle der Erkennung</td><td>Haiku 4.5, Opus 5</td><td>Anforderungen aus ADR 0004</td><td>wählt der Vergleichsprototyp; Prüfung: Startwerte</td><td>Q7 entschieden</td></tr>
+    <tr><td>Richter, Zweitlabel</td><td>–</td><td>andere Familie (ADR 0003); drei Kombinationen in #33</td><td>Gemini auf Vertex Frankfurt</td><td>Q6 entschieden</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="festgelegt">3 · Festgelegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Frage</th><th>Thema</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Q1</td><td>Plattform</td><td>Claude über <strong>Bedrock EU</strong> als Standard (Profil <code>eu.</code>, null Aufbewahrung, Schema per erzwungenem Tool); Vertex <code>eu</code> als Ausweichweg hinter demselben Adapter, Wechsel ohne neue Entscheidung, wenn die Schema-Fehlerrate zu hoch liegt. Anthropic direkt fällt für Gesprächsdaten.</td></tr>
+    <tr><td class="num">Q2</td><td>Websuche</td><td><strong>Brave als Standard</strong>, nur mit Namensmaske; SearXNG fällt; Perplexity bleibt Kandidat für einen zweiten Adapter. Ob im Modus "Gespräch" nach außen gesucht wird: Datenschutzmodell (#11).</td></tr>
+    <tr><td class="num">Q3</td><td>Faktencheck</td><td><strong>Google Fact Check Claim Search bleibt</strong>, nur live, mit Maske, ohne Cache über den Header hinaus. CORRECTIV-Lücke über eigenen Index: Topic und Vorrecherche (#24).</td></tr>
+    <tr><td class="num">Q4</td><td>Spracherkennung</td><td><strong>Deepgram bleibt</strong>, mit Schranke vor dem Launch: schriftlicher Beleg, dass am EU-Endpunkt weder Audio noch Transkript gespeichert wird; sonst Wechsel auf AssemblyAI nach zweitem Mitschnitt. Für Tests mit Sendungen gilt die Schranke nicht.</td></tr>
+    <tr><td class="num">Q5</td><td>Embeddings</td><td><strong>Verschoben</strong> an Topic und Vorrecherche (#24); Anforderung schon jetzt: Verarbeitung in der EU.</td></tr>
+    <tr><td class="num">Q6</td><td>Messfamilie</td><td><strong>Gemini über Vertex Frankfurt</strong> für Richter und Zweitlabel; Richter 3.8 Flash, 3.1 Pro falls die Kalibrierung unter 45 von 50 liegt; Zweitlabel 3.8 Flash. Developer-API-Schlüssel nur als Übergang für die Labels von Version 1.</td></tr>
+    <tr><td class="num">Q7</td><td>Prüfung</td><td><strong>Startwerte</strong> auf derselben Plattform: Suchanfragen und Relevanz Sonnet 5.5 <code>low</code>, Urteil Opus 5.5 <code>low</code>, Einschätzung und Erklärung Haiku-Klasse; Budget unter 0,05 USD und 30 s je Prüfung. Modellwahl im neuen Ticket "Messaufbau der Prüfung".</td></tr>
+    <tr><td class="num">Q8</td><td>Wikimedia</td><td><strong>Bleiben</strong>, mit User-Agent samt Kontaktadresse und Budget je Minute; Anmeldung erst bei Bedarf.</td></tr>
+    <tr><td class="num">Q9</td><td>Festhalten</td><td><strong>ADR 0006</strong> und <code>docs/spec/anbieter.md</code> (Matrix, Startwerte, Schema-Erzwingung, Schlüssel). Alte ADRs: 0007 gekippt, 0023 wird Standard, 0016 bestätigt mit Schranke, 0012 verschoben.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="rollen">4 · Wer misst wen: Familien im Messaufbau</h2>
+<p>ADR 0003 verlangt, dass Richter und Zweitlabel aus einer <strong>anderen Modellfamilie</strong> kommen als der Extraktor. Sonst würde ein Modell seine eigenen Fehler für richtig erklären. Die Erkennung läuft auf Claude, also brauchen die Messrollen eine zweite Familie mit EU-Weg.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 300" role="img" aria-label="Links die Familie Claude über Bedrock EU: Claim Extractor, Resolver und Label-Vorschlag. Rechts die Familie Gemini über Vertex Frankfurt: Richter und Zweitlabel. In der Mitte Marco, der Labels abnimmt. Der Richter vergleicht Funde des Extraktors mit Marcos Labels; das Zweitlabel labelt unabhängig und wird gegen Marcos Labels verglichen. Ein durchgestrichener Pfeil zeigt, dass Sonnet als Richter für Haiku unzulässig wäre, weil gleiche Familie.">
+<defs>
+  <marker id="br" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
+  <marker id="bre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m-eu"/></marker>
+</defs>
+<rect x="10" y="10" width="330" height="280" rx="8" class="zone-eu"/>
+<text x="24" y="32" class="lab lab-eu">Familie Claude · Bedrock EU (Q1)</text>
+<rect x="660" y="10" width="330" height="280" rx="8" class="zone-eu"/>
+<text x="674" y="32" class="lab lab-eu">Familie Gemini · Vertex Frankfurt (Q6)</text>
+
+<rect x="30" y="56" width="290" height="50" rx="6" class="box box-eu"/>
+<text x="175" y="76" text-anchor="middle" class="t">Claim Extractor, Resolver</text>
+<text x="175" y="94" text-anchor="middle" class="t2">Produkt und Messlauf · Modell misst #30</text>
+
+<rect x="30" y="126" width="290" height="50" rx="6" class="box box-eu"/>
+<text x="175" y="146" text-anchor="middle" class="t">Label-Vorschlag</text>
+<text x="175" y="164" text-anchor="middle" class="t2">erstes Modell, Messaufbau 3.3 Schritt 3</text>
+
+<rect x="30" y="196" width="290" height="50" rx="6" class="box box-eu"/>
+<text x="175" y="216" text-anchor="middle" class="t">Prüfung: Queries, Relevanz, Urteil</text>
+<text x="175" y="234" text-anchor="middle" class="t2">Startwerte · Q7</text>
+
+<!-- Marco -->
+<rect x="420" y="100" width="160" height="70" rx="6" class="box"/>
+<text x="500" y="126" text-anchor="middle" class="t">Marco</text>
+<text x="500" y="144" text-anchor="middle" class="t2">nimmt Labels ab</text>
+<text x="500" y="160" text-anchor="middle" class="t3">reviewed: true</text>
+<line x1="320" y1="151" x2="418" y2="140" class="ln" marker-end="url(#br)"/>
+<text x="369" y="132" text-anchor="middle" class="t3">Vorschläge</text>
+
+<!-- Gemini -->
+<rect x="680" y="56" width="290" height="50" rx="6" class="box box-eu"/>
+<text x="825" y="76" text-anchor="middle" class="t">Richter</text>
+<text x="825" y="94" text-anchor="middle" class="t2">"derselbe Sachverhalt?" je Fund und Label</text>
+
+<rect x="680" y="126" width="290" height="50" rx="6" class="box box-eu"/>
+<text x="825" y="146" text-anchor="middle" class="t">Zweitlabel</text>
+<text x="825" y="164" text-anchor="middle" class="t2">labelt unabhängig, α gegen Marco</text>
+
+<polyline points="320,70 400,70 400,44 640,44 640,81 678,81" class="ln ln-eu" marker-end="url(#bre)"/>
+<text x="520" y="40" text-anchor="middle" class="t3">Funde aus dem Messlauf</text>
+<line x1="580" y1="128" x2="678" y2="92" class="ln" marker-end="url(#br)"/>
+<text x="635" y="104" text-anchor="middle" class="t3">Labels</text>
+<line x1="678" y1="156" x2="582" y2="148" class="ln" marker-end="url(#br)"/>
+<text x="630" y="170" text-anchor="middle" class="t3">Übereinstimmung α</text>
+
+<!-- verboten -->
+<polyline points="175,106 175,116" class="ln ln-bad ln-dash"/>
+<rect x="30" y="256" width="290" height="24" rx="4" class="box box-muted"/>
+<text x="175" y="272" text-anchor="middle" class="t3" style="fill:var(--bad)">Sonnet als Richter für Haiku: unzulässig, gleiche Familie (ADR 0003)</text>
+</svg>
+</div>
+<figcaption>Zwei Familien in zwei Clouds: Claude erkennt, Gemini misst. Marco bleibt die einzige Quelle der Erwartung; die Modelle schlagen nur vor und vergleichen.</figcaption>
+</figure>
+
+<h2 id="fakten">5 · Die Fakten auf dem Tisch</h2>
+<h3>Bedrock EU gegen Vertex <code>eu</code> für Claude</h3>
+<div class="tbl"><table>
+  <thead><tr><th></th><th>Bedrock EU</th><th>Vertex <code>eu</code></th></tr></thead>
+  <tbody>
+    <tr><td>Regionen</td><td>Profil <code>eu.</code>: Frankfurt, Zürich, Stockholm, Mailand, Spanien, Irland, London, Paris</td><td>Multiregion <code>eu</code>; regionale Endpunkte nur bis Sonnet 4.6</td></tr>
+    <tr><td>Aufbewahrung</td><td>Standard null, "zero operator access"; nur Fable 5 und 5.1 bis 30 Tage mit Prüfung durch AWS</td><td>kein Training; In-Memory-Cache bis 24 h, projektweit abschaltbar</td></tr>
+    <tr><td>Structured Outputs</td><td><span class="tag bad">nein</span>, nur erzwungenes Tool</td><td><span class="tag ok">ja</span></td></tr>
+    <tr><td>Prompt-Caching</td><td>ja, gleiche Minima (512 Token bei 5.5, 4.096 bei Haiku 4.5)</td><td>ja</td></tr>
+    <tr><td>Zugang</td><td>Haiku 4.5 offen; Haiku 5.5, Sonnet 5.5, Opus 5.5 nach Freigabe in der Konsole</td><td>Projekt mit Model-Garden-Freischaltung</td></tr>
+    <tr><td>Preis</td><td colspan="2">Listenpreis plus 10 % für regionale und Multiregion-Endpunkte (Anthropic-Doku); AWS- und Google-Preisseiten nicht maschinenlesbar</td></tr>
+    <tr><td>Vertrag</td><td>AWS GDPR DPA mit SCC; Anthropic sieht keine Inhalte</td><td>Google Cloud DPA mit DPF und SCC</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Websuche und Faktencheck-Dienste</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Dienst</th><th>Preis</th><th>Ort, Aufbewahrung</th><th>Speicherrecht</th><th>Zustand</th></tr></thead>
+  <tbody>
+    <tr><td>Brave Search</td><td class="num">5 USD je 1.000</td><td>USA, Query-Log bis 90 Tage, ZDR nur Enterprise</td><td>nur mit Plan, der es ausdrücklich gewährt</td><td>gebaut, Opt-in</td></tr>
+    <tr><td>SearXNG</td><td class="num">Betrieb</td><td>selbst gehostet, reicht Anfragen an Google, Bing weiter</td><td>–</td><td>gebaut, CAPTCHAs</td></tr>
+    <tr><td>Perplexity Search</td><td class="num">5 USD je 1.000</td><td>Nicht-Speicherung im Standardplan, Ort nicht genannt</td><td>nicht ausgewiesen</td><td>nicht gebaut</td></tr>
+    <tr><td>Google Fact Check</td><td class="num">kostenlos</td><td>Google, USA</td><td>kein Cache über den Header, keine Datenbank</td><td>gebaut</td></tr>
+    <tr><td>Wikipedia, Wikidata</td><td class="num">kostenlos</td><td>Wikimedia</td><td>frei lizenziert</td><td>gebaut; seit 2026 200 Anfragen/min nur mit User-Agent</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Spracherkennung</h3>
+<div class="tbl"><table>
+  <thead><tr><th></th><th>Deepgram Nova-3 EU</th><th>AssemblyAI EU</th></tr></thead>
+  <tbody>
+    <tr><td>Streaming mit Diarisierung</td><td class="num">0,0068 USD/min</td><td class="num">0,0045 USD/min</td></tr>
+    <tr><td>Aufbewahrung</td><td>unbelegt (Seite 404, Privacy Policy nennt US-Server)</td><td>Zero Retention im Streaming bei abgewähltem Training</td></tr>
+    <tr><td>Stand im alten Repo</td><td>gebaut, echt getestet</td><td>gegen Mocks getestet</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="wohin">6 · Was wo liegt</h2>
+<div class="two">
+  <div class="card"><h3>live-factchecker-plan</h3><ul>
+    <li><strong>ADR 0006</strong> "Anbieter und Plattformen": Entscheidung, zwölf verworfene Wege, Folgen</li>
+    <li><strong><code>docs/spec/anbieter.md</code></strong>: Anbietermatrix, Modellrollen mit Startwerten, Schema-Erzwingung je Weg, Übergang für Version 1, Schlüssel und Konten</li>
+  </ul></div>
+  <div class="card"><h3>Kommentare an andere Tickets</h3><ul>
+    <li><strong>Datenschutzmodell (#11):</strong> Deepgram-Schranke; Brave, Google Fact Check und Wikimedia im Modus "Gespräch"; Vertex-Cache abschalten</li>
+    <li><strong>Betriebsmodell (#15):</strong> Konten AWS, Google Cloud, Brave, Deepgram; Schlüsselablage</li>
+    <li><strong>Topic und Vorrecherche (#24):</strong> Embeddings mit EU-Anforderung, ClaimReview-Index, amtliche Quellen</li>
+    <li><strong>Testkorpus (#25):</strong> Label-Vorschlag Sonnet 5.5, Zweitlabel Gemini 3.8 Flash, Übergangsschlüssel erlaubt</li>
+    <li><strong>Vergleichsprototyp (#30):</strong> Bedrock-EU-Adapter zuerst, Vertex als zweiter Adapter, Richter Gemini, Schema-Fehlerrate als Schalter</li>
+    <li><strong>Sicherheit (#22):</strong> Jev-Schlüssel entfernen; Schlüssel je Konto</li>
+  </ul></div>
+  <div class="card"><h3>Map</h3><ul>
+    <li>Decisions so far: eine Zeile mit Link auf dieses Ticket und dieses Schaubild</li>
+    <li>Nebel graduiert: "Qualitäts- und Eval-Strategie" wird das Grilling-Ticket <strong>Messaufbau der Prüfung</strong> (Benchmarks X-Fact, ClaimReview-Korpus; wählt die Modelle der Prüfung); der Rest des Nebels (Produktebene, ab wann Geld) bleibt</li>
+  </ul></div>
+  <div class="card"><h3>Noch offen, nicht hier</h3><ul>
+    <li>Beleg zur Aufbewahrung bei Deepgram</li>
+    <li>Partnerpreise Claude auf Bedrock und Vertex: mit der ersten Rechnung</li>
+    <li>Ob Haiku 5.5 Thinking abschalten kann (Tag eins von #30)</li>
+  </ul></div>
+</div>
+
+<h2 id="begriffe">Begriffe</h2>
+<dl class="gl">
+  <dt>Bedrock, Vertex</dt><dd>Die Cloud-Plattformen von Amazon und Google, über die Claude-Modelle mit Verarbeitung in der EU laufen. Anthropic selbst bietet keinen EU-Endpunkt.</dd>
+  <dt>Structured Outputs</dt><dd>Der Anbieter garantiert, dass die Antwort einem JSON-Schema folgt. Ohne das bleibt der Umweg über ein erzwungenes Tool, dessen Ausgabe man selbst prüft.</dd>
+  <dt>Aufbewahrung, ZDR</dt><dd>Ob und wie lange ein Anbieter Eingaben und Ausgaben speichert. Zero Data Retention heißt: nichts wird gespeichert.</dd>
+  <dt>DPA</dt><dd>Auftragsverarbeitungsvertrag nach Art. 28 DSGVO.</dd>
+  <dt>Namensmaske</dt><dd>Vor jedem Aufruf nach außen werden Namen privater Personen ersetzt; nur Personen, die das Setting als öffentlich markiert, bleiben benannt (ADR 0002).</dd>
+  <dt>Richter, Zweitlabel</dt><dd>Modelle nur im Messaufbau: der Richter ordnet Funde den Labels zu, das Zweitlabel labelt unabhängig; beide aus einer anderen Familie als der Extraktor (ADR 0003).</dd>
+  <dt>Embeddings</dt><dd>Zahlenvektoren für Texte, mit denen sich ähnliche Texte finden lassen; nötig für semantische Suche oder Cache.</dd>
+  <dt>ClaimReview</dt><dd>Ein Auszeichnungsformat, mit dem Faktenchecker ihre Prüfungen maschinenlesbar machen; Google Fact Check sucht darin.</dd>
+</dl>
+</div>
+
+</body></html>

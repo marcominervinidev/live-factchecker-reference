@@ -1,0 +1,17 @@
+{
+ "speakers": [
+  {
+   "name": "Kallac Haqy",
+   "role": "Moderation"
+  },
+  {
+   "name": "Anna Müller",
+   "role": "Gast, Politikerin"
+  },
+  {
+   "name": "Jens Weber",
+   "role": "Gast, Ökonom"
+  }
+ ],
+ "topic": "Mieten in Berlin"
+}

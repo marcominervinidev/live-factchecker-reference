@@ -1,0 +1,72 @@
+{
+  "issue": 187,
+  "approvedAt": "2026-11-18",
+  "ticketSha256": "85e807ef982233cb669900893bd37d73f7ed5b9aa843eb6847f6acc170969652",
+  "ticketSha256Note": "sha256 of `gh issue view 187 --json body -q .body | shasum -a 256` on 2026-11-18, after the main session put the gate-1 body on GitHub: .owner-pakete/refine-w47/ticket-187.md: the critic-approved draft .owner-pakete/refine-w47/187.md (sha256 b80b3032ed6b46a2fd380ca67fc70cc0e973a0d8798e0e95ff7f8ed15489af80) with the owner's answers folded in (questions 1 to 3 as recommended, Task 2 and AC6 removed, the PR job is #198) and AC5 amended by „Meldung ja“. approvedAt holds the date only: the owner's answer carries no time. Gate 1: owner 2026-11-18, „187 ok, Meldung ja, GitHub ja“ (earlier the same day „Bugs alle wie empfohlen“).",
+  "ownerDecisions": {
+    "G9": "2026-11-06, „g überall ja“: a timeout on production code fails the local Semgrep check",
+    "Q1": "2026-11-18, as recommended: every Semgrep timeout fails except on evals/golden/*/korrektur.html (an exception list, not an allow list)",
+    "Q2": "2026-11-18, as recommended: the PR job semgrep (.github/workflows/pr.yml:86-99) becomes its own ticket, blocked by this one; #187 covers make ci-local only (Task 1, size S); the new ticket is #198",
+    "Q3": "2026-11-18, as recommended: every other Semgrep error on a path in scope (a parse error, too) and every error without a path (a rule pack that does not load) fails as well; AC6 does not apply",
+    "W4": "2026-11-18, „Meldung ja“: an error without a path prints the first line of Semgrep's message, cut to about 200 characters; an error with a path still never prints its message (test designer's report round 2, critic agreed); AC5 of the issue body says so"
+  },
+  "paths": [
+    "tools/tests/test_check_semgrep_report.py",
+    "tools/tests/fixtures/semgrep/timeouts-1.178.0.json",
+    "tools/tests/fixtures/semgrep/parse-error-1.178.0.json",
+    "tools/tests/fixtures/semgrep/pack-not-loading-1.178.0.json",
+    "tools/tests/fixtures/semgrep/finding-1.178.0.json",
+    "tools/tests/fixtures/semgrep/clean-1.178.0.json"
+  ],
+  "tasks": {
+    "1": [
+      "tools/tests/test_check_semgrep_report.py",
+      "tools/tests/fixtures/semgrep/timeouts-1.178.0.json",
+      "tools/tests/fixtures/semgrep/parse-error-1.178.0.json",
+      "tools/tests/fixtures/semgrep/pack-not-loading-1.178.0.json",
+      "tools/tests/fixtures/semgrep/finding-1.178.0.json",
+      "tools/tests/fixtures/semgrep/clean-1.178.0.json"
+    ]
+  },
+  "taskNotes": {
+    "1": {
+      "finding": "A Semgrep timeout never fails make ci-local: scripts/ci/local.sh:118 takes Semgrep's exit code ('rc=$?'), and `--error` fails on findings, not on errors; the inline evaluation (:119-127) prints 'error: <type> <path>' without the rule",
+      "implementerPaths": [
+        "tools/check_semgrep_report.py",
+        "scripts/ci/local.sh"
+      ],
+      "interface": "`python3 -I tools/check_semgrep_report.py --semgrep-exit <code> <report.json>` (stdlib only). Exit 0 on a pass; non-zero on a finding, an error in scope, a missing, empty or unreadable report (also valid JSON that is not an object with the lists 'results' and 'errors') or a non-zero --semgrep-exit; a missing, empty or non-integer --semgrep-exit fails too, and its message names the option (A2). Output: per finding a line with rule, path and line ('<check_id>  <path>:<line>' as today, scripts/ci/local.sh:123); per error one line holding its type (for a list type such as [\"PartialParsing\", [<spans>]] only its first element), its path (if any) and its rule_id (if any); never an extra.fix, extra.lines or spans, and never the message of an error with a path (AC5); an error without a path additionally prints the first line of its message, cut to about 200 characters (AC5 as amended at gate 1, owner 2026-11-18: „Meldung ja“; the cases do not decide this, they forbid the message only for the parse error and the timeout, both with a path); the summary line exactly '<n> files, <f> finding(s), <i> error(s) in scope (<t> timeout(s)), <o> error(s) out of scope (<u> timeout(s))' with n = len(paths.scanned); a bad report is named by the path given. Scope: one list of exempt globs in the tool's header, today only 'evals/golden/*/korrektur.html', where '*' is one path segment (evals/golden/a/sub/korrektur.html is in scope), anchored at both ends (apps/web/evals/golden/a/korrektur.html is in scope) and case-sensitive; an error without a path is always in scope. The exemption applies to errors only: a finding on an exempt page is printed, counted and fails (A1). Errors out of scope are printed as well (W2, ticket: 'prints findings and errors as scripts/ci/local.sh:122-125 does today').",
+      "localSh": "scripts/ci/local.sh (semgrep_scan, :113-129): the inline Python is replaced by the tool, run as today in $PYTHON_IMAGE with --network none, the export mounted read-only (the tool is part of the export at /src/tools/check_semgrep_report.py, or mount it); pass Semgrep's rc as --semgrep-exit and return the tool's exit code. Do not add --strict and do not change the timeout value (ticket, Assumptions).",
+      "fixtures": "Cut from real reports of Semgrep 1.178.0 (pip wheel semgrep==1.178.0 in a throwaway venv in the toolbox of project lfc-187-td, 2026-11-18; only the key 'time' removed). timeouts: the planted run of the ticket (export of week/2026-w47 32ac8ec0, the five packs of local.sh, extra --timeout 1): Semgrep exit 0, 877 files, 20 Timeout errors (level warn, each with rule_id), 19 on evals/golden/*/korrektur.html, 1 on services/detection/src/claim-extractor/prompt.test.ts. parse-error: a broken .ts file outside the repository with a one-rule local config, exit 0, type [\"PartialParsing\", [...]], the message holds the source. pack-not-loading: --config p/no-such-pack-lfc-187, exit 7, two SemgrepError without path. finding: a Dockerfile without USER, p/dockerfile, exit 1, extra.fix holds the matched line. clean: exit 0. The variants the test derives (path or rule_id changed, an entry duplicated, rule_id removed) are named in its header.",
+      "standIn": "A throwaway stand-in outside the repository (about 30 lines) makes all 24 cases green. Mutants killed: round 1 exempt glob crossing '/', exempt by substring 'korrektur.html', only timeouts in scope (question 3 'nein'), Semgrep exit ignored, message printed, errors without path out of scope, list type printed raw; round 2 exemption applied to findings (A1), missing or empty --semgrep-exit taken as 0 (A2), glob as a search (W1), case-insensitive glob (W1), errors out of scope not printed (W2). Not part of this manifest, not given to the implementer."
+    }
+  },
+  "pyramidNote": "24 stdlib unittest cases (57 assertions with subtests) in tools/tests/test_check_semgrep_report.py, stage 1 of the root tools as the ticket asks ('Lowest stage of AC1 to AC6: stage 1 of the root tools (tools/tests/)'); tools/check_test_pyramid.py does not count .py files. No stage 2a, 3 or 4 case: no route, no contract, no service. The real make ci-local run with the summary quoted and the planted run (red, path and rule named) are evidence in the PR, not frozen cases; the wiring in scripts/ci/local.sh (Semgrep's exit passed on, the tool's exit returned) is checked at gate 2 on the diff (critic W3). 12 of the 24 are negative (AC3: 4 with the finding on a Golden Set page, AC4: 4 with the missing or empty --semgrep-exit, AC5: 3, AC2: the parse error on a Golden Set page that stays out of scope). All 24 are red on the base (the tool does not exist).",
+  "noCanary": "no acceptance case and no canary: make ci-local is a developer gate without an edge or a client; the owner's evidence is the frozen tool test, one real make ci-local run with its Semgrep summary and the planted run with --timeout 1 (ticket, Task 1 Verify)",
+  "verify": {
+    "1": "Frozen: python3 -I -m unittest discover -s tools/tests -p test_check_semgrep_report.py, green on the host and in the toolbox (scripts/tb python3 -I -m unittest discover -s tools/tests). Not frozen, evidence as the ticket asks: make ci-local BASE=<weekly branch>, Semgrep summary quoted (expected with the default timeout, as in the runs of 2026-11-16: 0 errors in scope, the 19 timeouts on evals/golden/*/korrektur.html out of scope, exit 0); one planted run on a throwaway branch with an extra --timeout 1, not committed: red, path and rule of the file in scope named (on 2026-11-18 it was services/detection/src/claim-extractor/prompt.test.ts with ajinabraham.njsscan.ssrf.ssrf_node.node_ssrf)."
+  },
+  "redRunHash": "sha256 over the unittest output without blank lines, the duration on the 'Ran <n> tests' line dropped, the worktree path replaced by <root>, the interpreter path before \": can't open file\" by <python> (Python prints the path of its Python.app, not sys.executable) and every path ending in a temp directory 'lfc-187-*' by <tmp>; lines joined with '\\n', no trailing newline. Executable (from the worktree root, log of the command in redRun): python3 -I -c 'import hashlib,re,sys;r=sys.argv[2];o=[re.sub(r\"\\S*/lfc-187-[A-Za-z0-9_]+\",\"<tmp>\",re.sub(r\"\\S+(: can.t open file)\",r\"<python>\\1\",re.sub(r\"^(Ran \\d+ tests?) in [\\d.]+s$\",r\"\\1\",l.rstrip(\"\\n\")).replace(r,\"<root>\"))) for l in open(sys.argv[1],encoding=\"utf-8\") if l.strip()];print(hashlib.sha256(\"\\n\".join(o).encode()).hexdigest())' <log> \"$PWD\"",
+  "redRun": {
+    "tools/tests/test_check_semgrep_report.py": {
+      "task": "1",
+      "command": "python3 -I -m unittest discover -s tools/tests -p test_check_semgrep_report.py",
+      "base": "week/2026-w47 32ac8ec0 (equal to origin/main 32ac8ec0) plus the frozen files, worktree wt-td-187",
+      "environment": "host (macOS, Python 3.12.3, stdlib only), two runs with the same normalised hash",
+      "exitCode": 1,
+      "sha256": "c3dcf5e5ea0821b5d8de48492b92466a365a30422b76c8d3a73a0d7255e08694",
+      "sha256Normalised": true,
+      "reason": "red for the right reason: failing tests, no load error (missing behaviour); tools/classify_red_reason.py agrees. 'Ran 24 tests', 'FAILED (failures=57)' (subtests counted): every run of the tool exits 2 with \"can't open file '<root>/tools/check_semgrep_report.py'\", so no case finds its error line, summary line, exit 0 or the option named in the message; none of the 24 is green on the base.",
+      "recordedBy": "test designer, 2026-11-18, re-recorded in round 2 after the critic (two runs, same normalised hash, reproduced with the executable line of redRunHash)"
+    }
+  },
+  "sha256": {
+    "tools/tests/test_check_semgrep_report.py": "57b8a14b036e9d07cc5b6ca9e4a2c488068dc80ecbf8f29f2b5f6b279e6b2b6e",
+    "tools/tests/fixtures/semgrep/timeouts-1.178.0.json": "5cac59d70d04e46ccba1a8ab6064728422be9b3cab83ec29ee4bf5d95e2efbff",
+    "tools/tests/fixtures/semgrep/parse-error-1.178.0.json": "af43a235b27ad1287e692930d872220f63ab6162d51588d4b4131dbbc707158b",
+    "tools/tests/fixtures/semgrep/pack-not-loading-1.178.0.json": "769f8e7139a0350c7d1f44bdd909139a2dc940c4ec731cbdca0b03431964fb0e",
+    "tools/tests/fixtures/semgrep/finding-1.178.0.json": "06969980b14a2d8ef66e4e53df11c25d56a02ba3d4b2cd64d490833ebf909d3c",
+    "tools/tests/fixtures/semgrep/clean-1.178.0.json": "2213b24f22a8e19d1e70d8088f4775b4ebfa43920b40d4aa90597c5ad35aa273"
+  },
+  "criticRound1": "Verdict FREIGEGEBEN mit Auflagen of 2026-11-18 (.owner-pakete/refine-w47/critic-td186-187.md): A1 (finding on an exempt page), A2 (missing or empty --semgrep-exit), A3 (reproducible normalisation) done in round 2; W1 (glob anchored, case-sensitive) and W2 (errors out of scope printed) taken up; W3 for gate 2; W4 (message of errors without path) is an owner recommendation in td187-bericht.md, the cases keep 'never a message'."
+}

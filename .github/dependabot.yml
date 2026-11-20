@@ -1,0 +1,91 @@
+# Dependabot version updates (#126, docs/process/pr-format.md "Supply chain"). Alerts and security updates are
+# repository settings the owner switches on; this file only drives version-update PRs.
+# `npm` covers the pnpm workspace through the root `pnpm-lock.yaml` (one grouped PR for all workspace packages).
+# `pip` stays out: `evals/` uses the Python standard library only, so there is no manifest or lockfile to update.
+# Images used in `docker run` steps (hadolint, trivy in pr.yml and nightly.yml) are not read by Dependabot's
+# docker ecosystem; they are bumped by hand, together with the `container.image` PR this file produces.
+# The stack's images (compose.yml: Redis, the Caddy edge) and the bases of the service Dockerfiles (node,
+# distroless) come through `docker-compose` and `docker` below (security review S1 of #25 task 3).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: build(deps)
+    labels: []
+  - package-ecosystem: docker
+    directory: /.github/workflows
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      images:
+        patterns: ['*']
+    commit-message:
+      prefix: build(deps)
+    labels: []
+  - package-ecosystem: docker-compose
+    directory: /
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      compose-images:
+        patterns: ['*']
+    commit-message:
+      prefix: build(deps)
+    labels: []
+  # Every service Dockerfile (node build stage, distroless runtime). The node build image follows .nvmrc and the
+  # toolbox, so its version moves by hand and Dependabot refreshes only its digest; the distroless tag names only
+  # the Node major, so a refreshed digest can raise the runtime's Node patch or minor level (review R7, round 4).
+  - package-ecosystem: docker
+    directories: ['/services/*']
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: monday
+    ignore:
+      - dependency-name: node
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+          - version-update:semver-patch
+    groups:
+      service-bases:
+        patterns: ['*']
+    commit-message:
+      prefix: build(deps)
+    labels: []
+  - package-ecosystem: npm
+    directory: /
+    # Paused while the weekly branch rhythm settles (owner, 2026-11-06); remove the limit to resume.
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      npm:
+        patterns: ['*']
+    # Majors that need their own PR: `@types/node` follows the runtime in .nvmrc (Node 24), and `typescript` moves
+    # only when typescript-eslint supports the new major (TypeScript 7 broke stage 0 in the grouped PR #132).
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+    commit-message:
+      prefix: build(deps)
+    labels: []

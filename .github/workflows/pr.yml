@@ -1,0 +1,294 @@
+# PR pipeline: only what ci.yml does not run (docs/process/pr-format.md). PR size, contract check, Dockerfile
+# lint, Semgrep, image build + Trivy (fixable CRITICAL blocks), Fallow audit on new findings, eval-report check,
+# stages 3 and 4 via stack-tests.yml; aggregate `pr passed`.
+# Until the first workspace exists only the repository-level checks run. A PR of documentation only
+# (docs_only from scripts/ci/docs-only.ts, the path rules of affected.ts) skips the image builds, the third-party
+# image scan and stages 3 and 4 by job condition, never by `on.paths`, so `pr passed` still reports (ticket #68 AC2).
+# Stryker runs nightly only (nightly.yml), advisory until the first retro; it returns to this workflow as an
+# `--incremental` job with the retro's `break` per package (#122).
+name: pr
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A new push to the PR cancels its running run (ticket #68 AC1); pull_request never runs on main itself.
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-checks:
+    name: pr size, commits, eval report
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      has_code: ${{ steps.probe.outputs.has_code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: probe
+        run: |
+          if [ -f pnpm-lock.yaml ]; then echo "has_code=true" >> "$GITHUB_OUTPUT"; else echo "has_code=false" >> "$GITHUB_OUTPUT"; fi
+      - name: PR size (production lines; warn over 400, block over 800)
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: python3 -I tools/check_pr_size.py "$BASE" HEAD
+      - name: commits of this PR follow Conventional Commits with known scopes
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: python3 -I tools/check_commits.py "$BASE..HEAD"
+      - name: PR title is a Conventional Commit (squash merge title)
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: python3 -I tools/check_commits.py --title "$TITLE"
+      - name: eval report present when prompts, models or pipeline parameters changed
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: python3 -I tools/check_eval_report.py "$BASE" HEAD
+
+  contract-check:
+    name: contract check
+    needs: pr-checks
+    if: needs.pr-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - env:
+          BASE_REF: ${{ github.base_ref }}
+        run: scripts/check-contract-change.sh "origin/$BASE_REF"
+
+  hadolint:
+    name: dockerfile lint
+    needs: pr-checks
+    if: needs.pr-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Tool images are pinned by digest with the tag kept as the version (.claude/rules/ci.md); Dependabot
+      # does not read `docker run` lines, so hadolint and trivy are bumped by hand with the semgrep PR.
+      - run: |
+          status=0
+          for file in $(git ls-files '**/Dockerfile' 'Dockerfile'); do
+            echo "== $file"
+            docker run --rm -i hadolint/hadolint:v2.15.1@sha256:32dac94127fd60b7b7e3fbfc65e1383b9b5e25c9bfd7b8536de7a539fe68a12d hadolint - < "$file" || status=1
+          done
+          exit $status
+
+  semgrep:
+    name: sast (semgrep)
+    needs: pr-checks
+    if: needs.pr-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    container:
+      image: semgrep/semgrep:1.178.0@sha256:32e459968daabe7ab86968184a29109b9564aa00392401156f9788452b42786b
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: >-
+          semgrep scan --error --metrics=off
+          --config p/typescript --config p/nodejsscan --config p/dockerfile
+          --config p/github-actions --config p/secrets
+
+  fallow:
+    name: fallow audit (new findings only)
+    needs: pr-checks
+    if: needs.pr-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # Pinned by commit SHA (tag v3.34.1, 2026-10-18); config in .fallowrc.json (docs/process/review-tools.md).
+      - uses: fallow-rs/fallow@d052786ef2baf78fa5b196f06dbccd6f0d26798e # v3.38.1
+        with:
+          command: audit
+          gate: new-only
+          auto-changed-since: true
+          comment: true
+          branded-token: false
+          fail-on-issues: true
+          version: 3.34.1
+
+  images-matrix:
+    name: images to build, docs-only flag
+    needs: pr-checks
+    if: needs.pr-checks.outputs.has_code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      images: ${{ steps.list.outputs.images }}
+      third_party: ${{ steps.list.outputs.third_party }}
+      docs_only: ${{ steps.docs.outputs.docs_only }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - id: list
+        run: node scripts/ci/images.ts
+      - id: docs
+        env:
+          BASE: origin/${{ github.base_ref }}
+        run: node scripts/ci/docs-only.ts "$BASE"
+
+  third-party-images:
+    # The images the stack runs or a service build starts from that are not built here (scripts/ci/images.ts,
+    # `third_party`): the edge, Redis, the node and distroless bases. One job, one Trivy database for all.
+    name: trivy · third-party images
+    needs: images-matrix
+    # Fail-safe: anything but an explicit docs_only=true scans.
+    if: >-
+      needs.images-matrix.outputs.third_party != '[]' && needs.images-matrix.outputs.third_party != ''
+      && needs.images-matrix.outputs.docs_only != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      # Only for .trivyignore: owner-approved exceptions, each with an expiry (exp:), read by the scan below.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: trivy (critical vulnerabilities with a fix fail the build)
+        env:
+          IMAGES: ${{ needs.images-matrix.outputs.third_party }}
+        run: |
+          status=0
+          for image in $(printf '%s' "$IMAGES" | jq -r '.[]'); do
+            echo "== $image"
+            docker run --rm -v trivy-cache:/root/.cache -v "$GITHUB_WORKSPACE/.trivyignore:/trivyignore:ro" \
+              aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969 \
+              image --scanners vuln --severity CRITICAL --ignore-unfixed --ignorefile /trivyignore --exit-code 1 \
+              --no-progress "$image" || status=1
+          done
+          exit $status
+
+  image:
+    name: image · ${{ matrix.image.name }}
+    needs: images-matrix
+    # Fail-safe: anything but an explicit docs_only=true builds.
+    if: needs.images-matrix.outputs.images != '[]' && needs.images-matrix.outputs.docs_only != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.images-matrix.outputs.images) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          # BuildKit pinned like every tool image (review round 2, S4); bump it with the other pins.
+          driver-opts: image=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ matrix.image.dockerfile }}
+          target: ${{ matrix.image.target }}
+          platforms: linux/amd64
+          tags: lfc/${{ matrix.image.name }}:pr-${{ github.event.pull_request.number }}
+          load: true
+          push: false
+          cache-from: type=gha,scope=${{ matrix.image.name }}
+          cache-to: type=gha,scope=${{ matrix.image.name }},mode=max
+      - name: trivy (critical vulnerabilities with a fix, and secrets, fail the build)
+        env:
+          IMAGE: lfc/${{ matrix.image.name }}:pr-${{ github.event.pull_request.number }}
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969
+          image --scanners vuln,secret --severity CRITICAL --ignore-unfixed --exit-code 1
+          --no-progress "$IMAGE"
+
+  stack-tests:
+    name: stack tests (stages 3 and 4)
+    needs: [pr-checks, images-matrix]
+    if: needs.pr-checks.outputs.has_code == 'true' && needs.images-matrix.outputs.docs_only != 'true'
+    uses: ./.github/workflows/stack-tests.yml
+    permissions:
+      contents: read
+      checks: write
+      packages: read
+    with:
+      # One shard in increment 1 (no client, no E2E yet); two shards from increment 2.
+      shards: '[1]'
+      # PR: Chromium desktop and mobile; one more browser per night (nightly.yml).
+      e2e-args: --project=chromium-desktop --project=chromium-mobile
+
+  flaky-issues:
+    # Not part of `pr passed`: a test that passed only on its single retry stays green, but gets an issue for the
+    # root-cause analysis (.claude/rules/tests.md, Flaky). @quarantine stays the owner's decision.
+    name: flaky tests to issues
+    needs: [pr-checks, stack-tests]
+    # Nothing to read when the stack tests did not run (docs only, or an earlier job failed).
+    if: always() && needs.pr-checks.outputs.has_code == 'true' && needs.stack-tests.result != 'skipped'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: stack-reports-${{ github.workflow }}-*
+          path: artifacts
+      - name: one issue per flaky test (labels flaky, needs-triage), skipped when one is open
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          tests=$(find artifacts -name flaky.txt -exec cat {} + 2>/dev/null | sort -u || true)
+          [ -n "$tests" ] || { echo "no flaky test"; exit 0; }
+          gh label create flaky -R "$GITHUB_REPOSITORY" --color d93f0b --description "Passed only on its CI retry; root cause open" 2>/dev/null || true
+          open=$(gh issue list -R "$GITHUB_REPOSITORY" --label flaky --state open --limit 500 --json title --jq '.[].title')
+          while IFS= read -r test; do
+            [ -n "$test" ] || continue
+            title="flaky: ${test:0:200}"
+            if printf '%s\n' "$open" | grep -Fxq -- "$title"; then echo "open already: $title"; continue; fi
+            {
+              echo "Failed and passed on its single CI retry in PR #$PR ($RUN_URL)."
+              echo
+              echo "Root-cause analysis needed (.claude/rules/tests.md, Flaky). Quarantine is the owner's decision only; a wait is never the fix."
+            } > body.md
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$title" --label flaky --label needs-triage --body-file body.md
+          done <<< "$tests"
+
+  pr-passed:
+    name: pr passed
+    needs:
+      - pr-checks
+      - contract-check
+      - hadolint
+      - semgrep
+      - fallow
+      - images-matrix
+      - image
+      - third-party-images
+      - stack-tests
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - env:
+          NEEDS: ${{ toJSON(needs) }}
+        # Advisory set is empty until the first retro: Stryker runs nightly, comes back here with `break` per package.
+        # A job skipped by its condition (docs only, no code yet) counts as green, as before.
+        run: |
+          printf '%s' "$NEEDS" | node -e "
+            const needs = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+            const advisory = new Set([]);
+            const bad = Object.entries(needs).filter(([k, v]) => !advisory.has(k) && !['success', 'skipped'].includes(v.result));
+            if (bad.length) { console.error('failed:', bad.map(([k, v]) => k + '=' + v.result).join(', ')); process.exit(1); }
+            console.log('all stages green');"

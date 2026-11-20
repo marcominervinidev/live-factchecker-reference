@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "tickAt": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "current": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    },
+    "new": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "tag",
+          "parent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "returned": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    },
+    "ended": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "tickAt",
+    "current",
+    "new",
+    "returned",
+    "ended"
+  ],
+  "additionalProperties": false
+}

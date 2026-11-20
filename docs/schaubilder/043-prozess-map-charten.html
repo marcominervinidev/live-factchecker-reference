@@ -1,0 +1,332 @@
+<!-- Quelle: https://claude.ai/artifact/Dyb1dMWfdrUooc5ZmD8h4G, exportiert 2026-10-23, Ticket #43 -->
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prozess-Map charten</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Schaubilder in voller Breite; vier Zonen von links nach rechts (Gerät, Backend EU, Auftragsverarbeiter EU, eigenständige Empfänger USA), die Grenze nach außen als bernsteinfarbene Linie; Schrift nie schwarz; dieselben Tokens wie die anderen Seiten der Map. */
+:root{
+  --bg:#f4f6f7; --fg:#1d3d5c; --muted:#4d6479; --panel:#ffffff; --line:#c7cfd6; --soft:#e8edf0;
+  --ok2:#0e7876; --warn:#a8580f; --ok:#2b7a3b; --bad:#b4271f; --rec:#e3f1ef;
+  --font-display:'Archivo',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+    --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12171b; --fg:#e4e8eb; --muted:#a6b1bb; --panel:#1a2026; --line:#3a444d; --soft:#232b32;
+  --ok2:#4fc3c0; --warn:#e5a35b; --ok:#72cf80; --bad:#f08a81; --rec:#16302e; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{margin-bottom:28px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:600;font-size:22px;margin:40px 0 8px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:16px;margin:18px 0 6px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:18px;max-width:70ch}
+.muted{color:var(--muted)}
+figure{margin:16px 0 8px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.fig svg{display:block;height:auto;max-width:100%;min-width:760px}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px;max-width:80ch}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.warn{color:var(--warn);border-color:var(--warn)}
+code{font-family:var(--font-mono);font-size:.9em;background:var(--soft);padding:1px 5px;border-radius:4px}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.nav a{font-family:var(--font-mono);font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.nav a:hover,.nav a:focus-visible{color:var(--fg);border-color:var(--fg);outline:none}
+.qs{display:grid;gap:16px;margin:14px 0}
+.q{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ok2);border-radius:8px;padding:14px 18px;min-width:0}
+.q h3{margin:0 0 8px;font-size:17px}
+.q h3 .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--ok2);margin-right:8px}
+.q .lbl{font-family:var(--font-display);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.q ul{margin:0;padding-left:18px;font-size:15px}
+.q li{margin:3px 0}
+.q .rec{background:var(--rec);border-radius:6px;padding:8px 12px;margin-top:6px}
+.q .rec .lbl{color:var(--ok2);margin-top:0}
+.later{border:1px dashed var(--line);border-radius:8px;padding:12px 16px;font-size:15px}
+.later ul{margin:4px 0 0;padding-left:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px;font-size:15px}
+.card li{margin:3px 0}
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;max-width:520px;font-size:15px;margin:12px 0}
+.dialog .k1{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:6px}
+.dialog .k2{color:var(--muted);font-size:13.5px;margin:6px 0}
+.dialog .k3{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-size:13.5px}
+.dialog .btn{display:inline-block;border:1px solid var(--ok2);color:var(--ok2);border-radius:6px;padding:2px 10px;font-family:var(--font-display);font-size:13px;margin-right:6px}
+.dialog .btn.ghost{border-color:var(--line);color:var(--muted)}
+dl.gl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:15px;max-width:84ch}
+dl.gl dt{font-weight:700}
+dl.gl dd{margin:0;min-width:0}
+@media (max-width:520px){dl.gl{grid-template-columns:1fr} dl.gl dd{margin-bottom:6px}}
+/* SVG */
+.d{font-family:var(--font-body);font-size:12px;color:var(--fg)}
+.d .box{fill:var(--panel);stroke:var(--muted);stroke-width:1.2}
+.d .box-ok{stroke:var(--ok2);stroke-width:1.8}
+.d .box-warn{stroke:var(--warn);stroke-width:1.8}
+.d .box-bad{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.d .zone{fill:var(--soft);stroke:var(--line);stroke-width:1}
+.d .t{fill:currentColor;font-weight:700}
+.d .t2{fill:var(--muted);font-size:11.5px}
+.d .t3{fill:var(--muted);font-size:11px}
+.d .lab{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.03em}
+.d .lab-ok{fill:var(--ok2)} .d .lab-bad{fill:var(--bad)} .d .lab-warn{fill:var(--warn)}
+.d .ln{stroke:var(--muted);stroke-width:1.3;fill:none}
+.d .ln-ok{stroke:var(--ok2)} .d .ln-warn{stroke:var(--warn)} .d .ln-bad{stroke:var(--bad)}
+.d .ln-dash{stroke-dasharray:5 4}
+.d .m{fill:var(--muted)} .d .m-ok{fill:var(--ok2)} .d .m-warn{fill:var(--warn)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Prozess-Map · Charting · Briefing Runde 1 · 2026-10-18</div>
+  <h1>Prozess-Map charten</h1>
+  <p class="lead">Das Sammelticket "Prozess-Map: gesammelte Ideen" (#17) hält seit dem 7. Oktober alles, was nicht Architektur ist: Rollen, Regeln, Testteam, PR-Format, Werkzeuge, Agenten-Betrieb. Drei Quellen liegen vollständig auf dem Tisch: das alte Repo (vier Rollen, acht Skills, sieben Hooks, AGENTS.md mit etwa hundert Regeln, NEXT_PROJECT.md), der Leitfaden für agentisches KI-Coding (26 Seiten) und die Testteam-Marktanalyse (zehn Rollen in drei Bahnen). Diese Seite sortiert das Material, zeichnet die Rollen-Landkarte, die sich aus den drei Quellen ergibt, und stellt die sechs Fragen, mit denen die zweite Map entsteht: Destination, Zuschnitt, erste Tickets.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#rollen">Rollen-Landkarte</a><a href="#sammel">Sammelticket</a><a href="#quellen">Drei Quellen</a><a href="#fragen">Runde 1</a>
+  </nav>
+</header>
+
+<h2 id="rollen">1 · Rollen-Landkarte aus den drei Quellen</h2>
+<p>So sieht der Arbeitsfluss aus, wenn man das Orchestrator-Muster des Leitfadens, die drei Bahnen der Testteam-Analyse und die vier Rollen des alten Repos übereinanderlegt. Marco steht an zwei Toren: er gibt die Fälle und Verträge frei, bevor gebaut wird, und er liest den Diff Datei für Datei, bevor gemergt wird. Zwischen den Toren arbeiten Agenten in drei Bahnen; deterministische Gates (Hooks, Lint, Tests, Scanner) stehen vor jedem Übergang. Gestrichelt ist, was noch keine Quelle entschieden hat.</p>
+<figure>
+<div class="fig">
+<svg class="d" viewBox="0 0 1000 560" role="img" aria-label="Drei Bahnen von links nach rechts: Planen (Grilling, Synthese, Testanalyst, Testdesigner, Kritiker), Bauen (Orchestrator, Implementierer, Ausführer ohne Modell, Spec- und Code-Reviewer, Security-Reviewer), Abnehmen und Lernen (Abnahme-Richter, Triage, Healer begrenzt, Retro und Scribe, Leitfaden-Reviewer). Marco steht an zwei Toren: Freigabe der Fälle und Verträge, Lesen des Diffs vor dem Merge. Darunter laufen deterministische Gates und der Limit-Wächter.">
+  <rect class="zone" x="10" y="40" width="300" height="400" rx="10"/>
+  <rect class="zone" x="350" y="40" width="300" height="400" rx="10"/>
+  <rect class="zone" x="690" y="40" width="300" height="400" rx="10"/>
+  <text class="lab" x="20" y="28">Bahn 1 · Planen</text>
+  <text class="lab" x="360" y="28">Bahn 2 · Bauen</text>
+  <text class="lab" x="700" y="28">Bahn 3 · Abnehmen und Lernen</text>
+
+  <!-- Bahn 1 -->
+  <rect class="box box-ok" x="22" y="56" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="76">Grilling und Wayfinder</text>
+  <text class="t3" x="32" y="94">Marco entscheidet; Skill vorhanden (alt, Map)</text>
+  <rect class="box box-ok" x="22" y="122" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="142">Synthese und Explore</text>
+  <text class="t3" x="32" y="160">liest viel, gibt wenig zurück (Leitfaden, eingebaut)</text>
+  <rect class="box box-bad" x="22" y="188" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="208">Testanalyst und Testdesigner</text>
+  <text class="t3" x="32" y="226">Fälle vor dem Code, TDD erzwingen (Testteam)</text>
+  <rect class="box box-bad" x="22" y="254" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="274">Kritiker mit Veto</text>
+  <text class="t3" x="32" y="292">andere Modellfamilie, höchstens zwei Runden (Testteam)</text>
+  <rect class="box" x="22" y="320" width="276" height="54" rx="6"/>
+  <text class="t" x="32" y="340">Platform-Engineer</text>
+  <text class="t3" x="32" y="358">Compose, CI, Manifeste (alt); Marcos Lernpfad</text>
+
+  <!-- Bahn 2 -->
+  <rect class="box box-ok" x="362" y="56" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="76">Orchestrator</text>
+  <text class="t3" x="372" y="94">Hauptsession hält Plan und Verträge (Leitfaden, alt)</text>
+  <rect class="box box-ok" x="362" y="122" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="142">Implementierer je Task</text>
+  <text class="t3" x="372" y="160">eigener Branch, ein Ziel, Verifikationsbefehl (alt, Leitfaden)</text>
+  <rect class="box box-ok" x="362" y="188" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="208">Ausführer ohne Modell</text>
+  <text class="t3" x="372" y="226">Tests, Lint, Scanner, Harness: Code, kein LLM (alle drei)</text>
+  <rect class="box box-ok" x="362" y="254" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="274">Reviewer und Security-Reviewer</text>
+  <text class="t3" x="372" y="292">parallel vor jedem PR, nie editierend (alt, Leitfaden)</text>
+  <rect class="box box-bad" x="362" y="320" width="276" height="54" rx="6"/>
+  <text class="t" x="372" y="340">Externe Reviewer</text>
+  <text class="t3" x="372" y="358">Greptile, CodeScene, Sonar: offen (#17, 2026-10-12)</text>
+
+  <!-- Bahn 3 -->
+  <rect class="box box-ok" x="702" y="56" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="76">Abnahme-Richter (uat-reviewer)</text>
+  <text class="t3" x="712" y="94">anderes Modell, nur Berichte, Kanarienvogel (ADR 0022 alt)</text>
+  <rect class="box box-bad" x="702" y="122" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="142">Triage und Healer, begrenzt</text>
+  <text class="t3" x="712" y="160">Healer nur Locatoren, nie Erwartungen (Testteam)</text>
+  <rect class="box box-ok" x="702" y="188" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="208">Retro und Lessons</text>
+  <text class="t3" x="712" y="226">Zweimal-Regel, Agenten-Bilanz (alt, Leitfaden)</text>
+  <rect class="box box-bad" x="702" y="254" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="274">Leitfaden-Reviewer</text>
+  <text class="t3" x="712" y="292">prüft Pläne, ADRs, PRs gegen den Leitfaden (Idee Marco)</text>
+  <rect class="box box-bad" x="702" y="320" width="276" height="54" rx="6"/>
+  <text class="t" x="712" y="340">Limit-Wächter</text>
+  <text class="t3" x="712" y="358">Skript, kein Agent: Session- und Wochenlimit (#17)</text>
+
+  <!-- Tore -->
+  <rect class="box box-warn" x="22" y="392" width="276" height="36" rx="6"/>
+  <text class="t" x="32" y="415">Tor 1 · Marco gibt Fälle und Verträge frei</text>
+  <rect class="box box-warn" x="702" y="392" width="276" height="36" rx="6"/>
+  <text class="t" x="712" y="415">Tor 2 · Marco liest den Diff, merged</text>
+  <rect class="box box-warn" x="362" y="392" width="276" height="36" rx="6"/>
+  <text class="t" x="372" y="415">Gates: Hooks, Lint, Tests, SAST, Vertragsprüfung</text>
+
+  <!-- Flüsse -->
+  <path class="ln ln-ok" d="M298 83 C330 83 330 83 362 83"/>
+  <path class="ln ln-ok" d="M638 83 C670 83 670 83 702 83"/>
+  <path class="ln ln-warn" d="M160 392 V374"/>
+  <path class="ln ln-warn" d="M840 392 V374"/>
+  <path class="ln" d="M500 392 V374"/>
+  <path class="ln ln-dash" d="M298 215 C330 215 330 149 362 149"/>
+  <path class="ln ln-dash" d="M978 149 C990 149 990 281 978 281"/>
+
+  <!-- Legende -->
+  <rect class="box box-ok" x="22" y="460" width="14" height="14" rx="3"/><text class="t3" x="42" y="471">in mindestens einer Quelle gebaut oder entschieden</text>
+  <rect class="box box-bad" x="22" y="484" width="14" height="14" rx="3"/><text class="t3" x="42" y="495">vorgeschlagen, noch nicht entschieden</text>
+  <rect class="box box-warn" x="22" y="508" width="14" height="14" rx="3"/><text class="t3" x="42" y="519">Tor oder Gate: hier wartet die Maschine auf Marco oder auf Code</text>
+  <text class="t3" x="362" y="471">Quellen: alt = live-factcheck (AGENTS.md, .claude/agents, ADR 0022), Leitfaden = PDF vom 5. Oktober,</text>
+  <text class="t3" x="362" y="489">Testteam = Marktanalyse vom 5. Oktober, #17 = Sammelticket. Grau = Rolle aus dem alten Repo ohne Entscheidung hier.</text>
+</svg>
+</div>
+<figcaption>Rollen sind Dateien: Agenten-Definitionen, Prompts, Skills und Hooks im Repo. Welche davon das neue Repo bekommt, in welcher Bahn, mit welchem Modell und welchen Rechten, ist der Kern der Prozess-Map. Die Tore bleiben bei Marco; ob der Orchestrator ein Modell oder Code ist (das Workflow-Werkzeug von Claude Code kann heute beides), ist eine der ersten Entscheidungen.</figcaption>
+</figure>
+
+<h2 id="sammel">2 · Was im Sammelticket liegt</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Thema</th><th>Stand</th><th>Was daraus wird</th></tr></thead>
+  <tbody>
+    <tr><td>Agenten-Betrieb</td><td><span class="tag ok">entschieden</span> lokal in Claude-Code-Sandbox plus Toolbox-Container, entfernte Sandbox nur für lange Messläufe (2026-10-07)</td><td>Notes der Map, kein Ticket</td></tr>
+    <tr><td>TDD, Backend zuerst, alles über GitHub Issues, Schaubild je Entscheidung</td><td><span class="tag ok">entschieden</span></td><td>Notes der Map</td></tr>
+    <tr><td>Conventional Commits</td><td><span class="tag ok">Form entschieden</span>, Durchsetzung und Scopes offen</td><td>Teil des PR-Tickets</td></tr>
+    <tr><td>Prozessartefakte übernehmen (AGENTS.md, Prompts, Skills, Hooks, Lessons, NEXT_PROJECT)</td><td><span class="tag">Ticket-Kandidat</span>, Prüfung Stück für Stück</td><td>Research: Inventar mit Empfehlung je Stück; Marco entscheidet im Rollen- und Regel-Ticket</td></tr>
+    <tr><td>Agentenregeln neu refinen</td><td><span class="tag">Ticket-Kandidat</span>, eigene Session</td><td>Grilling</td></tr>
+    <tr><td>Testteam aus Agenten, Testpyramide</td><td><span class="tag">Ticket-Kandidat</span>, Eingabe Marktanalyse, TDD erzwingen</td><td>Grilling</td></tr>
+    <tr><td>PR-Format und PR-Größe</td><td><span class="tag">Ticket-Kandidat</span>, "eigentlich alles" wieder haben, Größe offen</td><td>Grilling</td></tr>
+    <tr><td>Leitfaden-Essenzen und Review-Agent</td><td><span class="tag">Ticket-Kandidat</span>, PDF liegt vor (heute ausgewertet)</td><td>Research zuerst, dann Entscheidung im Rollen-Ticket</td></tr>
+    <tr><td>Review-Werkzeuge: CodeScene, Greptile, SonarQube Cloud</td><td><span class="tag">Ticket-Kandidat</span>, Zahlen unverifiziert, Datenschutz offen</td><td>Research zuerst, dann Task</td></tr>
+    <tr><td>Limit-Wächter für Claude Code</td><td><span class="tag">Ticket-Kandidat</span>, Datenquelle unverifiziert</td><td>Research, dann Task</td></tr>
+    <tr><td>Mitwirkung von Hand: Lernpfad Plattform-Engineering</td><td><span class="tag">Ticket-Kandidat</span></td><td>Grilling</td></tr>
+    <tr><td>Golden Set als Regressionstest (drei Stufen)</td><td><span class="tag">Idee</span> mit Vorschlag (2026-10-14)</td><td>Grilling, hängt am Testteam</td></tr>
+    <tr><td>Schaufenster-Repo</td><td><span class="tag">Idee</span>, Security-Frage</td><td>Nebel, bis Sicherheit (#22) entschieden ist</td></tr>
+    <tr><td>Fragen an Jan</td><td><span class="tag warn">unbeantwortet</span> (Chatfenster, Subagenten, Ressourcen, Monorepo-Regeln, Klassen im Manifest)</td><td>Eingabe, sobald Antworten da sind; blockiert nichts</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="quellen">3 · Die drei Quellen</h2>
+<div class="two">
+  <div class="card">
+    <h3>Altes Repo live-factcheck</h3>
+    <ul>
+      <li>Vier Rollen als Dateien: reviewer, security-reviewer, uat-reviewer (Sonnet, nur Berichte), platform-engineer; Prompts tool-neutral in <code>.ai/prompts</code>, Wrapper in <code>.claude/agents</code> und <code>.agents</code>.</li>
+      <li>Acht Skills: adr, evidence, grilling, new-event-contract, new-service, retro, security-scan, uat.</li>
+      <li>Sieben Hooks: Secrets-Guard, Vertrags-Warnung, Format und Lint, Stop-Tests, Session-Start, Pre-Compact, Hook-Test.</li>
+      <li>AGENTS.md: Toolbox statt Host, Review-Gates, Risiko und Sessiontyp je Task, Subagenten als Standard, PR-Paket (Merge-Danger, 400 Zeilen, Belegt-durch, Agenten-Bilanz, HTML-Guide), Zweimal-Regel, Deutsch an den Owner, elf Service-Regeln.</li>
+      <li>ADR 0022: Fälle vor Code, Richter auf anderem Modell, Kanarienvogel, kein Healer.</li>
+      <li>NEXT_PROJECT.md: 20 Punkte für Tag eins (Stryker von Anfang an, Wayfinder, Lessons, Sprache zuerst, SAST lokal).</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Leitfaden für agentisches KI-Coding</h3>
+    <ul>
+      <li>Grundsätze: Kontext ist das Produkt; der Mensch führt die Architektur; erst planen, dann coden; ein Ziel je Session; Zweimal-Regel; Belege statt Behauptungen.</li>
+      <li>Drei Geltungsbereiche für Regeln (Repo, Teilprojekt, Benutzer), Skills für Prozeduren, Subagenten für sauberen Kontext, MCP statt Shell, Hooks für Determinismus.</li>
+      <li>Acht Schritte vor dem Code: Design, Teilprojekte, Grenzen, Schnittstellen, Verträge, Peer-Check, Plan je Teilprojekt, Rückspiegeln ins Konzept.</li>
+      <li>Orchestrator-Session mit Implementierer je Task, Spec- und Code-Reviewer vor der Integration, Review-Gates, Datei-für-Datei-Staging mit drei Fragen.</li>
+      <li>Synthese-Sessions statt Rohdateien; <code>.ai/concepts/&lt;Datum Ticket Titel&gt;</code> mit ADRs; Selbstverifikation mit Artefakten über MCPs.</li>
+      <li>Hauptrisiko: Erosion der Modulgrenzen; Gegenmittel Grenzen vorab, Project References, Abhängigkeitsprüfung, Reviewer, die Verträge kennen.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Testteam-Marktanalyse</h3>
+    <ul>
+      <li>Zehn Rollen in drei Bahnen, gesteuert von Code: Orchestrator, Testanalyst, Testdesigner, Kritiker (andere Modellfamilie, Veto), Automatisierer, Ausführer ohne LLM, Quality Gates, Triage, Healer (nur Locatoren, höchstens drei Runden), Scribe.</li>
+      <li>Zwei menschliche Tore: Freigabe der Fälle, Merge durch jemand anderen als den Prompter.</li>
+      <li>Phasen: erst Analyse und Design (viel Nutzen, wenig Risiko), dann Automatisierung mit Flake-Gate, dann Wartung, dann Spezialisten.</li>
+      <li>Übertragung: GitHub Issues statt Jira, Pipeline- und Audio-Tests statt UI-Tests, Community-Skills prüfen und kopieren.</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="fragen">4 · Fragen der Runde 1: Destination und Zuschnitt</h2>
+<div class="qs">
+
+<div class="q">
+  <h3><span class="n">Q1</span>Destination der Prozess-Map</h3>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) "live-factchecker-v2 hat ein vollständiges Arbeitssystem"</b>: Rollen als Dateien (Agenten, Prompts, Skills, Hooks), Regeln je Geltungsbereich, Testpyramide mit Gates, PR-Format, Werkzeuge, Agenten-Betrieb; so weit, dass das erste Inkrement damit gebaut wird, ohne eine Prozessfrage neu aufzumachen. Hosting und Deployment bleiben beim Betriebsmodell (#15) der Architektur-Map; CI gehört als Gate hierher.</li>
+    <li>b) Enger: nur Rollen und Regeln; Testteam und Werkzeuge später in einer dritten Map.</li>
+    <li>c) Weiter: auch Deployment und Betrieb: doppelt sich mit #15.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q2</span>Plan oder Doing</h3>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Die Prozess-Map darf ausführen:</b> jedes Ticket endet mit den Dateien im neuen Repo (AGENTS.md, Agenten, Skills, Hooks, Vorlagen), committet und von Marco abgenommen; die Map ist fertig, wenn das Arbeitssystem im Repo liegt. Das ist die Ausnahme, die Wayfinder in den Notes erlaubt.</li>
+    <li>b) Nur planen wie die Architektur-Map: Entscheidungen als ADRs hier, die Dateien baut später jemand.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Bei Prozessartefakten ist die Datei die Entscheidung; ein zweiter Schritt "jetzt bauen" wäre Doppelarbeit. So kommst du ins Doing, ohne die Map zu verlassen.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q3</span>Rollen als Rückgrat</h3>
+  <div class="lbl">Optionen</div>
+  <ul>
+    <li><b>a) Ein erstes Grilling-Ticket "Rollen und Bahnen"</b> entscheidet die Landkarte aus Abschnitt 1: welche Rollen es gibt, wer blockieren darf, ob der Orchestrator Code oder Modell ist, welche Tore Marco hält, welches Modell je Rolle. Agentenregeln, Testteam und PR-Format hängen daran und werden danach je ein Ticket.</li>
+    <li>b) Rollen je Bereich entscheiden (Testteam-Rollen im Testteam-Ticket, Review-Rollen im PR-Ticket): schneller am Anfang, aber keine gemeinsame Landkarte.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>a. Das ist, was du heute planen willst, und alles andere braucht es als Eingabe.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q4</span>Research zuerst, parallel und ohne dich</h3>
+  <div class="lbl">Vorschlag</div>
+  <ul>
+    <li><b>Prozessartefakte-Inventar:</b> jedes Stück des alten Repos (Rollen, Skills, Hooks, Regeln, NEXT_PROJECT) mit Empfehlung übernehmen, anpassen, verwerfen; Eingabe für das Rollen-Ticket.</li>
+    <li><b>Leitfaden-Essenzen:</b> heute ausgewertet; als Research-Dokument festhalten, was gilt, was an GitHub angepasst wird, was verworfen wird; dazu die Prüfung, ob ein eigener "Leitfaden-Reviewer" Sinn hat oder ob Skill und Review-Prompt reichen.</li>
+    <li><b>Review-Werkzeuge:</b> CodeScene MCP, Greptile, SonarQube Cloud an den Quellen prüfen (Preise, Datenort, Training-Opt-out).</li>
+    <li><b>Limit-Wächter:</b> woher die Zahlen kommen, wie eine Nachricht die Session erreicht.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>Alle vier als Research-Tickets, sofort nach dem Charten als Subagenten gestartet; sie blockieren das Rollen-Ticket nicht, machen es aber schärfer.</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q5</span>Welche Tickets jetzt, was bleibt Nebel</h3>
+  <div class="lbl">Vorschlag</div>
+  <ul>
+    <li><b>Jetzt als Tickets:</b> Rollen und Bahnen (Grilling, frei); Agentenregeln je Geltungsbereich (Grilling, nach Rollen); Testteam und Testpyramide mit Golden-Set-Regression (Grilling, nach Rollen); PR-Format, PR-Größe und Commits (Grilling, nach Rollen); Mitwirkung von Hand, Lernpfad (Grilling, nach Rollen); die vier Research-Tickets; Limit-Wächter bauen (Task, nach seiner Research); Review-Werkzeuge einrichten (Task, nach seiner Research und dem PR-Ticket).</li>
+    <li><b>Nebel:</b> Schaufenster-Repo (wartet auf Sicherheit #22); Jans Antworten; Synthese-Ordner und Konzept-Ablage (<code>.ai/concepts</code> oder Issues), wird mit den Agentenregeln scharf; Bahn-3-Rollen Triage und Healer, erst wenn das Testteam steht.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>So anlegen; die Map lebt als zweites <code>wayfinder:map</code>-Issue in diesem Repo, die Notes übernehmen die Arbeitsweise der Architektur-Map (Briefing je Runde, Schaubild je Entscheidung, ein Ticket je Session, Deutsch).</div>
+</div>
+
+<div class="q">
+  <h3><span class="n">Q6</span>Out of scope</h3>
+  <div class="lbl">Vorschlag</div>
+  <ul>
+    <li>Hosting, Deployment, Beobachtbarkeit: Betriebsmodell (#15) der Architektur-Map.</li>
+    <li>Produktentscheidungen jeder Art: Architektur-Map.</li>
+    <li>Werkzeuge für Marcos Arbeitsplatz außerhalb des Repos (Editor, Shell): keine Map.</li>
+  </ul>
+  <div class="rec"><div class="lbl">Empfehlung</div>So abgrenzen.</div>
+</div>
+
+</div>
+
+</div>
+</body>
+</html>
+
+</body></html>

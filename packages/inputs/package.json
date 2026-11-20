@@ -1,0 +1,25 @@
+{
+  "name": "@lfc/inputs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Replay Inputs: a reference transcript and an STT recording turned into contract-valid Segments on a simulated clock.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test:unit": "vitest run",
+    "test:mutation": "stryker run"
+  },
+  "dependencies": {
+    "@lfc/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "10.1.1",
+    "@types/node": "24.19.2",
+    "fast-check": "4.10.2",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}
